@@ -2,133 +2,258 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Indian Restaurant AR Menu</title>
 
-  <!-- Model Viewer -->
-  <script type="module"
-    src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js">
-  </script>
+  <!-- 3D + AR (Model Viewer) -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
   <style>
+    :root {
+      --bg: #fafafa;
+      --card: #ffffff;
+      --text: #1f1f1f;
+      --muted: #6b6b6b;
+      --border: #e9e9e9;
+      --accent: #ff6b35;
+      --accent2: #e85b27;
+      --shadow: 0 10px 24px rgba(0,0,0,0.06);
+      --radius: 18px;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       margin: 0;
-      background: #fafafa;
-      color: #222;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
     }
 
     header {
-      padding: 20px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 16px;
       text-align: center;
-      background: white;
-      border-bottom: 1px solid #eee;
     }
 
-    h1 {
+    header h1 {
       margin: 0;
-      font-size: 28px;
+      font-size: 22px;
+      letter-spacing: 0.2px;
     }
 
-    p.subtitle {
-      color: #666;
-      margin-top: 6px;
+    header p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 14px;
     }
 
-    .menu-container {
+    .wrap {
       max-width: 1100px;
-      margin: 40px auto;
-      padding: 0 20px;
+      margin: 24px auto;
+      padding: 0 16px 40px;
+    }
+
+    .hint {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 14px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow);
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 30px;
+      gap: 18px;
     }
 
     .dish-card {
-      background: white;
-      border-radius: 18px;
-      padding: 20px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
     }
 
     .dish-card h2 {
-      margin-top: 0;
-      margin-bottom: 8px;
-      font-size: 20px;
+      margin: 0;
+      font-size: 18px;
     }
 
-    .dish-card p {
-      color: #666;
-      font-size: 14px;
-      margin-bottom: 15px;
+    .tag {
+      font-size: 12px;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 4px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .desc {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
     }
 
     model-viewer {
       width: 100%;
-      height: 350px;
-      background: #f3f3f3;
+      height: 340px;
       border-radius: 14px;
+      background: #f2f2f2;
+      overflow: hidden;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
     }
 
     button {
-      margin-top: 15px;
-      width: 100%;
-      padding: 12px;
+      flex: 1;
+      border: 0;
       border-radius: 12px;
-      border: none;
-      background: #ff6b35;
-      color: white;
-      font-size: 15px;
+      padding: 12px 12px;
+      font-size: 14px;
       cursor: pointer;
-      transition: 0.2s ease;
     }
 
-    button:hover {
-      background: #e85b27;
+    .btn-ar {
+      background: var(--accent);
+      color: white;
     }
 
-    footer {
+    .btn-ar:hover { background: var(--accent2); }
+
+    .btn-view {
+      background: white;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .footer {
       text-align: center;
-      padding: 30px;
+      margin-top: 22px;
+      color: var(--muted);
       font-size: 13px;
-      color: #777;
+    }
+
+    .warn {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    code {
+      background: #f1f1f1;
+      padding: 1px 6px;
+      border-radius: 6px;
     }
   </style>
 </head>
 
 <body>
-
   <header>
     <h1>Indian Restaurant AR Menu</h1>
-    <p class="subtitle">Place the dish on your table and see its real size</p>
+    <p>Tap a dish, then “View in AR” to place it on your table in real size.</p>
   </header>
 
-  <div class="menu-container">
-
-    <div class="dish-card">
-      <h2>Pizza</h2>
-      <p>Creamy tomato-based curry served in a traditional bowl.</p>
-
-      <model-viewer
-        src="Pizza.glb"
-        ar
-        ar-modes="webxr scene-viewer quick-look"
-        camera-controls
-        auto-rotate
-        shadow-intensity="1"
-        exposure="1">
-      </model-viewer>
-
-      <button onclick="this.parentElement.querySelector('model-viewer').activateAR()">
-        View in AR
-      </button>
+  <div class="wrap">
+    <div class="hint">
+      <strong>iPhone tip:</strong> For AR to work on iPhone, each dish should have a <code>.usdz</code> file set in <code>ios-src</code>.
+      Open this page in <strong>Safari</strong> (not inside Instagram/WhatsApp browsers).
     </div>
 
+    <div class="grid">
+
+      <!-- DISH 1 -->
+      <div class="dish-card">
+        <div class="top">
+          <h2>Butter Chicken</h2>
+          <div class="tag">🫚 Mild</div>
+        </div>
+        <p class="desc">Creamy tomato curry served in a bowl.</p>
+
+        <model-viewer
+          src="models/Pizza.glb"
+          ios-src="models/Pizzaios.usdz"
+          ar
+          ar-modes="quick-look webxr scene-viewer"
+          camera-controls
+          auto-rotate
+          shadow-intensity="1"
+          exposure="1"
+          alt="Butter Chicken 3D model">
+        </model-viewer>
+
+        <div class="row">
+          <button class="btn-ar" onclick="this.closest('.dish-card').querySelector('model-viewer').activateAR()">
+            View in AR
+          </button>
+          <button class="btn-view" onclick="this.closest('.dish-card').querySelector('model-viewer').dismissPoster()">
+            View 3D
+          </button>
+        </div>
+
+        <div class="warn">
+          If AR doesn’t open on iPhone: make sure <code>butter-chicken.usdz</code> exists and you’re in Safari.
+        </div>
+      </div>
+
+      <!-- DISH 2 -->
+      <div class="dish-card">
+        <div class="top">
+          <h2>Biryani</h2>
+          <div class="tag">🌶️ Medium</div>
+        </div>
+        <p class="desc">Fragrant basmati rice layered with spices.</p>
+
+        <model-viewer
+          src="models/Pizza.glb"
+          ios-src="models/Pizzaios.usdz"
+          ar
+          ar-modes="quick-look webxr scene-viewer"
+          camera-controls
+          auto-rotate
+          shadow-intensity="1"
+          exposure="1"
+          alt="Biryani 3D model">
+        </model-viewer>
+
+        <div class="row">
+          <button class="btn-ar" onclick="this.closest('.dish-card').querySelector('model-viewer').activateAR()">
+            View in AR
+          </button>
+          <button class="btn-view" onclick="this.closest('.dish-card').querySelector('model-viewer').dismissPoster()">
+            View 3D
+          </button>
+        </div>
+
+        <div class="warn">
+          iPhone AR needs <code>biryani.usdz</code>. Android uses the <code>.glb</code>.
+        </div>
+      </div>
+
+      <!-- Add more dishes by copying a dish-card block and changing filenames + text -->
+
+    </div>
+
+    <div class="footer">
+      Scan. Place. Decide. 🍛
+    </div>
   </div>
-
-  <footer>
-    Scan. Place. Experience. 🍛
-  </footer>
-
 </body>
 </html>
