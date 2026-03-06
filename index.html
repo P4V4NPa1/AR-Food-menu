@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AR Food Menu</title>
 
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
@@ -42,7 +42,7 @@
       background: white;
       padding: 20px;
       border-radius: 16px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
     }
 
     .card h2 {
@@ -54,6 +54,7 @@
     .card p {
       color: #666;
       font-size: 14px;
+      margin-bottom: 15px;
     }
 
     model-viewer {
@@ -73,6 +74,7 @@
       color: white;
       font-size: 15px;
       cursor: pointer;
+      transition: 0.2s;
     }
 
     button:hover {
@@ -99,17 +101,18 @@
       <p>View the dish in 3D or place it in AR.</p>
 
       <model-viewer
-  src="models/Pizza.glb"
-  ios-src="models/Pizzaios.usdz"
-  ar
-  ar-modes="quick-look webxr scene-viewer"
-  quick-look-browsers="safari"
-  camera-controls
-  auto-rotate
-  shadow-intensity="1"
-  exposure="1"
-  scale="0.3 0.3 0.3">
-</model-viewer>
+        src="models/Pizza.glb"
+        ios-src="models/Pizzaios.usdz"
+        ar
+        ar-modes="quick-look webxr scene-viewer"
+        ar-scale="fixed"
+        quick-look-browsers="safari"
+        camera-controls
+        auto-rotate
+        shadow-intensity="1"
+        exposure="1"
+        alt="Pizza 3D model">
+      </model-viewer>
 
       <button onclick="this.parentElement.querySelector('model-viewer').activateAR()">
         View in AR
