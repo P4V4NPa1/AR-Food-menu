@@ -99,16 +99,17 @@
       <p>View the dish in 3D or place it in AR.</p>
 
       <model-viewer
-        src="models/Pizza.glb"
-        ios-src="models/Pizzaios.usdz"
-        ar
-        ar-modes="quick-look webxr scene-viewer"
-        quick-look-browsers="safari"
-        camera-controls
-        auto-rotate
-        shadow-intensity="1"
-        exposure="1">
-      </model-viewer>
+  src="models/Pizza.glb"
+  ios-src="models/Pizzaios.usdz"
+  ar
+  ar-modes="quick-look webxr scene-viewer"
+  quick-look-browsers="safari"
+  camera-controls
+  auto-rotate
+  shadow-intensity="1"
+  exposure="1"
+  scale="0.3 0.3 0.3">
+</model-viewer>
 
       <button onclick="this.parentElement.querySelector('model-viewer').activateAR()">
         View in AR
