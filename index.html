@@ -5,10 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AR Food Menu</title>
 
-  <script
-    type="module"
-    src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js">
-  </script>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
   <style>
     body {
@@ -68,7 +65,8 @@
       display: block;
     }
 
-    .ar-btn {
+    .ar-link {
+      display: block;
       margin-top: 15px;
       width: 100%;
       padding: 12px;
@@ -78,10 +76,12 @@
       color: white;
       font-size: 15px;
       cursor: pointer;
-      transition: 0.2s;
+      text-decoration: none;
+      text-align: center;
+      box-sizing: border-box;
     }
 
-    .ar-btn:hover {
+    .ar-link:hover {
       background: #e85b27;
     }
 
@@ -102,46 +102,25 @@
   <div class="container">
     <div class="card">
       <h2>Pizza</h2>
-      <p>View the dish in 3D or place it in AR.</p>
+      <p>Preview in 3D, then open it in AR.</p>
 
       <model-viewer
-        id="pizzaViewer"
         src="models/Pizza.glb"
-        ios-src="models/Pizzaios.usdz"
         alt="Pizza 3D model"
-        ar
-        ar-modes="quick-look scene-viewer webxr"
-        quick-look-browsers="safari"
         camera-controls
         auto-rotate
         shadow-intensity="1"
         exposure="1">
       </model-viewer>
 
-      <button id="arButton" class="ar-btn" type="button">
+      <a class="ar-link" rel="ar" href="models/Pizzaios.usdz">
         View in AR
-      </button>
+      </a>
     </div>
   </div>
 
   <footer>
     Scan. Place. Experience. 🍕
   </footer>
-
-  <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      const viewer = document.getElementById("pizzaViewer");
-      const button = document.getElementById("arButton");
-
-      button.addEventListener("click", async () => {
-        try {
-          await viewer.activateAR();
-        } catch (err) {
-          console.error("AR failed:", err);
-          alert("AR could not open. Please use Safari on iPhone and make sure the USDZ file is valid.");
-        }
-      });
-    });
-  </script>
 </body>
 </html>
