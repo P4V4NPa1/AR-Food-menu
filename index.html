@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Indian Restaurant AR Menu</title>
+  <title>AR Food Menu</title>
 
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <script
+    type="module"
+    src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js">
+  </script>
 
   <style>
     body {
@@ -42,7 +45,7 @@
       background: white;
       padding: 20px;
       border-radius: 16px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
     }
 
     .card h2 {
@@ -62,25 +65,23 @@
       height: 380px;
       background: #f3f3f3;
       border-radius: 12px;
-      --poster-color: transparent;
+      display: block;
     }
 
-    .ar-button {
+    .ar-btn {
+      margin-top: 15px;
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
       background: #ff6b35;
       color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 12px 18px;
       font-size: 15px;
       cursor: pointer;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: 0.2s;
     }
 
-    .ar-button:hover {
+    .ar-btn:hover {
       background: #e85b27;
     }
 
@@ -94,7 +95,7 @@
 </head>
 <body>
   <header>
-    <h1>Indian Restaurant AR Menu</h1>
+    <h1>AR Food Menu</h1>
     <p class="subtitle">Place the dish on your table and see it in real life size</p>
   </header>
 
@@ -104,6 +105,7 @@
       <p>View the dish in 3D or place it in AR.</p>
 
       <model-viewer
+        id="pizzaViewer"
         src="models/Pizza.glb"
         ios-src="models/Pizzaios.usdz"
         alt="Pizza 3D model"
@@ -114,16 +116,32 @@
         auto-rotate
         shadow-intensity="1"
         exposure="1">
-
-        <button slot="ar-button" class="ar-button">
-          View in AR
-        </button>
       </model-viewer>
+
+      <button id="arButton" class="ar-btn" type="button">
+        View in AR
+      </button>
     </div>
   </div>
 
   <footer>
     Scan. Place. Experience. 🍕
   </footer>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const viewer = document.getElementById("pizzaViewer");
+      const button = document.getElementById("arButton");
+
+      button.addEventListener("click", async () => {
+        try {
+          await viewer.activateAR();
+        } catch (err) {
+          console.error("AR failed:", err);
+          alert("AR could not open. Please use Safari on iPhone and make sure the USDZ file is valid.");
+        }
+      });
+    });
+  </script>
 </body>
 </html>
