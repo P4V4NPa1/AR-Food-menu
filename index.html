@@ -3,101 +3,219 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Curry Leaves - AR Menu</title>
+  <title>Curry Leaves — AR Menu</title>
   <script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Inter', sans-serif;
       background: #1A0F00;
       color: #3D2B1A;
-      min-height: 100vh;
     }
 
-    header {
+    nav {
       background: #1A0F00;
-      padding: 16px 20px;
+      padding: 0 24px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      border-bottom: 2px solid #C4943A;
+      justify-content: space-between;
+      height: 64px;
+      border-bottom: 1px solid rgba(196, 148, 58, 0.2);
       position: sticky;
       top: 0;
       z-index: 100;
     }
 
-    .logo {
-      height: 44px;
-      width: auto;
-      display: block;
-    }
+    nav .logo { height: 36px; width: auto; display: block; }
 
-    .tagline {
-      text-align: center;
-      padding: 28px 20px 10px;
-      background: linear-gradient(135deg, #FFF8E7 0%, #FFF0D0 100%);
-    }
+    nav .nav-links { display: flex; gap: 28px; list-style: none; }
 
-    .tagline h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 20px;
-      font-weight: 700;
-      color: #8B1A1A;
-      letter-spacing: 0.5px;
-    }
-
-    .tagline p {
+    nav .nav-links a {
+      color: #A89880;
+      text-decoration: none;
       font-size: 13px;
-      color: #8B7D6B;
-      margin-top: 4px;
-      font-weight: 400;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      transition: color 0.2s;
     }
 
-    .container {
+    nav .nav-links a:hover { color: #C4943A; }
+
+    .hero {
+      position: relative;
+      padding: 80px 24px 60px;
+      text-align: center;
+      background: linear-gradient(160deg, #1A0F00 0%, #2D1A05 40%, #1A0F00 100%);
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(196,148,58,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 50%, rgba(139,26,26,0.1) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero .ornament {
+      font-size: 28px;
+      color: #C4943A;
+      opacity: 0.4;
+      letter-spacing: 12px;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 34px;
+      font-weight: 700;
+      color: #FFF8E7;
+      line-height: 1.2;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .hero h1 em { font-style: italic; color: #C4943A; }
+
+    .hero p {
+      color: #A89880;
+      font-size: 15px;
+      margin-top: 14px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+    }
+
+    .hero .cta {
+      display: inline-block;
+      margin-top: 28px;
+      padding: 12px 32px;
+      border: 1px solid #C4943A;
+      color: #C4943A;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: all 0.3s;
+    }
+
+    .hero .cta:hover { background: #C4943A; color: #1A0F00; }
+
+    .section-title {
+      text-align: center;
+      padding: 48px 20px 10px;
+      background: #FFF8E7;
+    }
+
+    .section-title .ornament {
+      font-size: 20px;
+      color: #C4943A;
+      opacity: 0.5;
+      letter-spacing: 8px;
+      margin-bottom: 8px;
+    }
+
+    .section-title h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: #1A0F00;
+    }
+
+    .section-title h2 span { color: #8B1A1A; }
+
+    .section-title p {
+      font-size: 14px;
+      color: #8B7D6B;
+      margin-top: 6px;
+    }
+
+    .menu-section {
+      background: #FFF8E7;
+      padding: 10px 16px 40px;
+    }
+
+    .menu-grid {
       max-width: 720px;
       margin: 0 auto;
-      padding: 16px 16px 30px;
-      background: #FFF8E7;
-      min-height: calc(100vh - 180px);
+    }
+
+    .menu-category {
+      font-family: 'Playfair Display', serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #C4943A;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      padding: 20px 8px 10px;
+      border-bottom: 1px solid #E8DCC8;
+      margin-bottom: 16px;
     }
 
     .card {
       background: white;
       border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(139, 26, 26, 0.08);
+      box-shadow: 0 4px 24px rgba(139, 26, 26, 0.06);
       border: 1px solid #F0E4D0;
       margin-bottom: 20px;
+      transition: box-shadow 0.3s, transform 0.3s;
     }
+
+    .card:hover { box-shadow: 0 8px 32px rgba(139, 26, 26, 0.1); transform: translateY(-2px); }
 
     .card-header {
       padding: 18px 20px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
     }
 
-    .card-header h2 {
+    .card-header .info { flex: 1; }
+
+    .card-header h3 {
       font-family: 'Playfair Display', serif;
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 700;
       color: #1A0F00;
     }
 
     .card-header .price {
-      display: inline-block;
-      margin-top: 4px;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 600;
       color: #C4943A;
+      white-space: nowrap;
+      margin-left: 12px;
+      padding-top: 4px;
     }
 
-    .card-header p {
+    .card-header .desc {
       font-size: 13px;
       color: #8B7D6B;
       margin-top: 4px;
       line-height: 1.5;
+    }
+
+    .card-header .badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      color: #8B1A1A;
+      background: #FFF0E8;
+      padding: 2px 10px;
+      border-radius: 20px;
+      margin-left: 8px;
+      vertical-align: middle;
+      letter-spacing: 0.3px;
     }
 
     .viewer-wrap {
@@ -141,9 +259,7 @@
       --progress-bar-height: 2px;
     }
 
-    .card-actions {
-      padding: 0 20px 18px;
-    }
+    .card-actions { padding: 0 20px 18px; }
 
     .btn-ar {
       width: 100%;
@@ -152,190 +268,257 @@
       border-radius: 12px;
       background: linear-gradient(135deg, #C4943A 0%, #A0762E 100%);
       color: white;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       font-family: 'Inter', sans-serif;
       cursor: pointer;
-      transition: all 0.2s;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
+      transition: all 0.2s;
     }
 
     .btn-ar:hover {
       background: linear-gradient(135deg, #D4A44A 0%, #B0863E 100%);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(196, 148, 58, 0.3);
+      box-shadow: 0 4px 16px rgba(196, 148, 58, 0.3);
     }
 
-    .btn-ar:active { transform: translateY(0); }
+    .btn-ar svg { width: 18px; height: 18px; fill: currentColor; flex-shrink: 0; }
 
-    .btn-ar svg { width: 18px; height: 18px; fill: currentColor; }
-
-    .badge {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 600;
-      color: #8B1A1A;
-      background: #FFF0E8;
-      padding: 2px 10px;
-      border-radius: 20px;
-      margin-left: 8px;
-      vertical-align: middle;
-    }
-
-    .divider {
+    .divider-line {
       height: 1px;
       background: linear-gradient(to right, transparent, #E8DCC8, transparent);
-      margin: 16px 20px;
+      margin: 14px 20px;
     }
 
-    footer {
+    .contact-bar {
+      background: linear-gradient(135deg, #1A0F00 0%, #2D1A05 100%);
+      padding: 40px 24px;
       text-align: center;
-      padding: 20px;
-      color: #8B7D6B;
-      font-size: 12px;
-      background: #1A0F00;
-      border-top: 1px solid #2A1F10;
+      border-top: 1px solid rgba(196, 148, 58, 0.15);
+      border-bottom: 1px solid rgba(196, 148, 58, 0.15);
     }
+
+    .contact-bar .ornament {
+      font-size: 18px;
+      color: #C4943A;
+      opacity: 0.3;
+      letter-spacing: 6px;
+      margin-bottom: 12px;
+    }
+
+    .contact-bar .quote {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-style: italic;
+      color: #A89880;
+      max-width: 500px;
+      margin: 0 auto 24px;
+      line-height: 1.5;
+    }
+
+    .contact-bar .contact-items {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .contact-bar .contact-items a {
+      color: #C4943A;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+
+    .contact-bar .contact-items a:hover { color: #D4A44A; }
+
+    .contact-bar .contact-items svg { width: 14px; height: 14px; fill: currentColor; }
+
+    footer {
+      background: #1A0F00;
+      padding: 24px 20px;
+      text-align: center;
+    }
+
+    footer p { color: #6B5B3E; font-size: 12px; }
 
     footer span { color: #C4943A; }
 
     @media (max-width: 640px) {
       body { background: #FFF8E7; }
-      header { padding: 12px 16px; }
-      .logo { height: 36px; }
-      .tagline { padding: 20px 16px 8px; }
-      .tagline h1 { font-size: 17px; }
-      .tagline p { font-size: 12px; margin-top: 3px; }
-      .container { padding: 12px 0 20px; background: #FFF2DC; }
+      nav { padding: 0 16px; height: 56px; }
+      nav .logo { height: 30px; }
+      nav .nav-links { gap: 16px; }
+      nav .nav-links a { font-size: 11px; }
+      .hero { padding: 48px 20px 40px; }
+      .hero h1 { font-size: 26px; }
+      .hero p { font-size: 14px; }
+      .hero .cta { padding: 10px 24px; font-size: 12px; }
+      .section-title { padding: 36px 16px 8px; }
+      .section-title h2 { font-size: 22px; }
+      .menu-section { padding: 10px 0 30px; }
+      .menu-category { padding: 16px 12px 8px; }
       .card { border-radius: 0; border-left: none; border-right: none; margin-bottom: 10px; }
+      .card:hover { transform: none; }
       .card-header { padding: 14px 16px 0; }
-      .card-header h2 { font-size: 18px; }
-      .card-header p { font-size: 12px; }
+      .card-header h3 { font-size: 17px; }
+      .card-header .desc { font-size: 12px; }
       .viewer-wrap { height: 260px; }
       .card-actions { padding: 0 16px 14px; }
-      .btn-ar { padding: 13px; font-size: 14px; }
-      .divider { margin: 12px 16px; }
-      footer { padding: 16px; font-size: 11px; }
+      .btn-ar { padding: 13px; font-size: 13px; }
+      .divider-line { margin: 10px 16px; }
+      .contact-bar { padding: 32px 20px; }
+      .contact-bar .quote { font-size: 16px; }
+      .contact-bar .contact-items { gap: 20px; flex-direction: column; align-items: center; }
     }
 
     @media (max-width: 400px) {
-      header { padding: 10px 12px; }
-      .logo { height: 30px; }
-      .tagline h1 { font-size: 15px; }
+      .hero h1 { font-size: 22px; }
       .viewer-wrap { height: 220px; }
-      .card-header h2 { font-size: 16px; }
-    }
-
-    @media (prefers-color-scheme: dark) {
-      .container { background: #1A0F00; }
-      .card { background: #2A1F10; border-color: #3D2B1A; }
-      .card-header h2 { color: #FFF8E7; }
-      .card-header p { color: #A89880; }
-      .tagline { background: linear-gradient(135deg, #2A1F10 0%, #1A0F00 100%); }
-      .tagline h1 { color: #C4943A; }
-      .tagline p { color: #8B7D6B; }
-      .badge { background: #3D2B1A; }
-      .divider { background: linear-gradient(to right, transparent, #3D2B1A, transparent); }
+      .card-header h3 { font-size: 15px; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <img class="logo" src="logo.png" alt="Curry Leaves Restaurant">
-  </header>
 
-  <div class="tagline">
-    <h1>Experience Our Menu in 3D &amp; AR</h1>
-    <p>Place the dish on your table and see it in real size</p>
+  <nav>
+    <img class="logo" src="logo.png" alt="Curry Leaves">
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#" style="color:#C4943A;">Menu</a></li>
+      <li><a href="#">Locations</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <div class="ornament">&#9679; &#9679; &#9679;</div>
+    <h1>Experience Our Dishes in <em>Augmented Reality</em></h1>
+    <p>Point your phone at the table and see every dish in real size before you order.</p>
+    <a class="cta" href="#menu">Explore the Menu</a>
+  </section>
+
+  <div class="section-title" id="menu">
+    <div class="ornament">&#8212; &#9679; &#8212;</div>
+    <h2>AR <span>Menu</span></h2>
+    <p>Tap "View in AR" to place each dish on your table</p>
   </div>
 
-  <div class="container">
-    <div class="card">
-      <div class="card-header">
-        <h2>Samosa <span class="badge">New</span></h2>
-        <span class="price">18 / 20 PLN</span>
-        <p>Traditional Indian pastry stuffed with spiced potatoes &amp; peas or chicken. Crispy, golden, and served with chutney.</p>
-      </div>
+  <div class="menu-section">
+    <div class="menu-grid">
 
-      <div class="viewer-wrap">
-        <div class="loading" id="load-samosa">
-          <div class="spinner"></div>
-          <span>Loading 3D model...</span>
+      <div class="menu-category">&#9679; Appetizers</div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="info">
+            <h3>Samosa <span class="badge">New</span></h3>
+            <div class="desc">Triangular pastry stuffed with spiced potatoes, peas &amp; chicken. Golden fried, served with mint chutney.</div>
+          </div>
+          <div class="price">18/20 PLN</div>
         </div>
-        <model-viewer
-          id="samosa-viewer"
-          src="models/Samosa.glb"
-          ar
-          ar-modes="webxr scene-viewer quick-look"
-          camera-controls
-          auto-rotate
-          rotation-per-second="30deg"
-          shadow-intensity="0"
-          exposure="1.2"
-          ar-scale="fixed"
-          reveal="auto"
-          onload="document.getElementById('load-samosa').style.display='none'">
-        </model-viewer>
+        <div class="viewer-wrap">
+          <div class="loading" id="load-samosa">
+            <div class="spinner"></div>
+            <span>Loading 3D model...</span>
+          </div>
+          <model-viewer
+            id="samosa-viewer"
+            src="models/Samosa.glb"
+            ar
+            ar-modes="webxr scene-viewer quick-look"
+            camera-controls
+            auto-rotate
+            rotation-per-second="30deg"
+            shadow-intensity="0"
+            exposure="1.2"
+            ar-scale="fixed"
+            reveal="auto"
+            onload="document.getElementById('load-samosa').style.display='none'">
+          </model-viewer>
+        </div>
+        <div class="divider-line"></div>
+        <div class="card-actions">
+          <button class="btn-ar" onclick="document.getElementById('samosa-viewer').activateAR()">
+            <svg viewBox="0 0 24 24"><path d="M21 3H3v18h18V3zm-2 16H5V5h14v14zm-5-7l-4 5h8l-4-5z"/></svg>
+            View in AR
+          </button>
+        </div>
       </div>
 
-      <div class="divider"></div>
+      <div class="menu-category">&#9679; Main Course</div>
 
-      <div class="card-actions">
-        <button class="btn-ar" onclick="document.getElementById('samosa-viewer').activateAR()">
-          <svg viewBox="0 0 24 24"><path d="M21 3H3v18h18V3zm-2 16H5V5h14v14zm-5-7l-4 5h8l-4-5z"/></svg>
-          View in AR
-        </button>
+      <div class="card">
+        <div class="card-header">
+          <div class="info">
+            <h3>Margherita Pizza</h3>
+            <div class="desc">Tomato sauce, fresh mozzarella, basil on a thin crispy crust. Baked in a wood-fired oven.</div>
+          </div>
+          <div class="price">32 PLN</div>
+        </div>
+        <div class="viewer-wrap">
+          <div class="loading" id="load-pizza">
+            <div class="spinner"></div>
+            <span>Loading 3D model...</span>
+          </div>
+          <model-viewer
+            id="pizza-viewer"
+            src="models/Pizza.glb"
+            ios-src="models/Pizzaios.usdz"
+            ar
+            ar-modes="webxr scene-viewer quick-look"
+            camera-controls
+            auto-rotate
+            rotation-per-second="30deg"
+            shadow-intensity="0.8"
+            exposure="1.2"
+            scale="0.056 0.056 0.056"
+            ar-scale="fixed"
+            ar-placement="floor"
+            reveal="auto"
+            flat-shading
+            onload="document.getElementById('load-pizza').style.display='none'">
+          </model-viewer>
+        </div>
+        <div class="divider-line"></div>
+        <div class="card-actions">
+          <button class="btn-ar" onclick="document.getElementById('pizza-viewer').activateAR()">
+            <svg viewBox="0 0 24 24"><path d="M21 3H3v18h18V3zm-2 16H5V5h14v14zm-5-7l-4 5h8l-4-5z"/></svg>
+            View in AR
+          </button>
+        </div>
       </div>
+
     </div>
+  </div>
 
-    <div class="card">
-      <div class="card-header">
-        <h2>Margherita Pizza</h2>
-        <span class="price">32 PLN</span>
-        <p>Classic Italian pizza with tomato sauce, fresh mozzarella, and basil on a crispy thin crust.</p>
-      </div>
-
-      <div class="viewer-wrap">
-        <div class="loading" id="load-pizza">
-          <div class="spinner"></div>
-          <span>Loading 3D model...</span>
-        </div>
-        <model-viewer
-          id="pizza-viewer"
-          src="models/Pizza.glb"
-          ios-src="models/Pizzaios.usdz"
-          ar
-          ar-modes="webxr scene-viewer quick-look"
-          camera-controls
-          auto-rotate
-          rotation-per-second="30deg"
-          shadow-intensity="0.8"
-          exposure="1.2"
-          scale="0.056 0.056 0.056"
-          ar-scale="fixed"
-          ar-placement="floor"
-          reveal="auto"
-          flat-shading
-          onload="document.getElementById('load-pizza').style.display='none'">
-        </model-viewer>
-      </div>
-
-      <div class="divider"></div>
-
-      <div class="card-actions">
-        <button class="btn-ar" onclick="document.getElementById('pizza-viewer').activateAR()">
-          <svg viewBox="0 0 24 24"><path d="M21 3H3v18h18V3zm-2 16H5V5h14v14zm-5-7l-4 5h8l-4-5z"/></svg>
-          View in AR
-        </button>
-      </div>
+  <div class="contact-bar">
+    <div class="ornament">&#9679; &#9679; &#9679;</div>
+    <div class="quote">"Authentic Indian Flavors, Crafted with Passion at Curry Leaves."</div>
+    <div class="contact-items">
+      <a href="#">
+        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+        Koszykowa 63, 00-667 Warszawa
+      </a>
+      <a href="#">
+        <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        +48 577 777 695
+      </a>
+      <a href="#">
+        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        info.curryleaves@gmail.com
+      </a>
     </div>
   </div>
 
   <footer>
-    <span>Curry Leaves</span> &mdash; Authentic Indian Flavors, Crafted with Passion &bull; Warsaw, Poland
+    <p><span>Curry Leaves</span> &copy; 2024 &mdash; All Rights Reserved</p>
   </footer>
+
 </body>
 </html>
