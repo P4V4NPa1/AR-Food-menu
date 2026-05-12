@@ -46,6 +46,8 @@
 
     nav .nav-links a:hover { color: #C4943A; }
 
+    html { scroll-behavior: smooth; }
+
     .hero {
       position: relative;
       padding: 80px 24px 60px;
@@ -350,6 +352,97 @@
 
     footer span { color: #C4943A; }
 
+    .locations-section {
+      background: #FFF8E7;
+      padding: 10px 16px 48px;
+    }
+
+    .locations-grid {
+      max-width: 720px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .location-card {
+      background: white;
+      border-radius: 16px;
+      padding: 28px 24px;
+      border: 1px solid #F0E4D0;
+      box-shadow: 0 4px 20px rgba(139, 26, 26, 0.05);
+      transition: all 0.3s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .location-card:hover { box-shadow: 0 8px 32px rgba(139, 26, 26, 0.1); transform: translateY(-2px); }
+
+    .location-card .city-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #C4943A, #A0762E);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      font-family: 'Playfair Display', serif;
+      margin-bottom: 14px;
+    }
+
+    .location-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #1A0F00;
+      margin-bottom: 2px;
+    }
+
+    .location-card .neighborhood {
+      font-size: 12px;
+      color: #C4943A;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .location-card .address {
+      font-size: 13px;
+      color: #8B7D6B;
+      line-height: 1.5;
+      margin-bottom: 4px;
+    }
+
+    .location-card .phone {
+      font-size: 13px;
+      color: #8B7D6B;
+      margin-bottom: 16px;
+    }
+
+    .location-card .btn-dir {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      border: 1px solid #C4943A;
+      border-radius: 10px;
+      color: #C4943A;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
+      margin-top: auto;
+      align-self: flex-start;
+    }
+
+    .location-card .btn-dir:hover { background: #C4943A; color: white; }
+    .location-card .btn-dir svg { width: 14px; height: 14px; fill: currentColor; }
+
     @media (max-width: 640px) {
       body { background: #FFF8E7; }
       nav { padding: 0 16px; height: 56px; }
@@ -374,6 +467,10 @@
       .btn-ar { padding: 13px; font-size: 13px; }
       .divider-line { margin: 10px 16px; }
       .contact-bar { padding: 32px 20px; }
+      .locations-grid { grid-template-columns: 1fr; gap: 16px; }
+      .location-card { padding: 20px; }
+      .location-card .city-icon { width: 44px; height: 44px; font-size: 18px; }
+      .location-card h3 { font-size: 16px; }
       .contact-bar .quote { font-size: 16px; }
       .contact-bar .contact-items { gap: 20px; flex-direction: column; align-items: center; }
     }
@@ -390,9 +487,9 @@
   <nav>
     <img class="logo" src="logo.png" alt="Curry Leaves">
     <ul class="nav-links">
-      <li><a href="#">Home</a></li>
-      <li><a href="#" style="color:#C4943A;">Menu</a></li>
-      <li><a href="#">Locations</a></li>
+      <li><a href="https://curryleaves.pl" target="_blank">Home</a></li>
+      <li><a href="#menu" style="color:#C4943A;">Menu</a></li>
+      <li><a href="#locations">Locations</a></li>
     </ul>
   </nav>
 
@@ -497,19 +594,79 @@
     </div>
   </div>
 
+  <div class="section-title" id="locations">
+    <div class="ornament">&#8212; &#9679; &#8212;</div>
+    <h2>Our <span>Locations</span></h2>
+    <p>Find us in three cities across Poland</p>
+  </div>
+
+  <div class="locations-section">
+    <div class="locations-grid">
+
+      <div class="location-card">
+        <div class="city-icon">W</div>
+        <h3>Warszawa &mdash; Centrum</h3>
+        <div class="neighborhood">&#9733; Flagship</div>
+        <div class="address">Koszykowa 63<br>00-667 Warszawa</div>
+        <div class="phone">+48 577 777 695</div>
+        <a class="btn-dir" href="https://www.google.com/maps/dir/?api=1&destination=Koszykowa+63+Warszawa" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Get Directions
+        </a>
+      </div>
+
+      <div class="location-card">
+        <div class="city-icon">W</div>
+        <h3>Warszawa &mdash; Z&#x0142;ote Tarasy</h3>
+        <div class="neighborhood">&#9733; City Center</div>
+        <div class="address">Z&#x0142;ota 59<br>00-120 Warszawa</div>
+        <div class="phone">+48 729 633 166</div>
+        <a class="btn-dir" href="https://www.google.com/maps/dir/?api=1&destination=Zlota+59+Warszawa" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Get Directions
+        </a>
+      </div>
+
+      <div class="location-card">
+        <div class="city-icon">G</div>
+        <h3>Gda&#x0144;sk</h3>
+        <div class="neighborhood">&#9733; Old Town</div>
+        <div class="address">Chmielna 10<br>80-748 Gda&#x0144;sk</div>
+        <div class="phone">&nbsp;</div>
+        <a class="btn-dir" href="https://www.google.com/maps/dir/?api=1&destination=Chmielna+10+Gdansk" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Get Directions
+        </a>
+      </div>
+
+      <div class="location-card">
+        <div class="city-icon">P</div>
+        <h3>Pozna&#x0144;</h3>
+        <div class="neighborhood">&#9733; Wilda District</div>
+        <div class="address">Pleszewska 1<br>61-136 Pozna&#x0144;</div>
+        <div class="phone">&nbsp;</div>
+        <a class="btn-dir" href="https://www.google.com/maps/dir/?api=1&destination=Pleszewska+1+Poznan" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Get Directions
+        </a>
+      </div>
+
+    </div>
+  </div>
+
   <div class="contact-bar">
     <div class="ornament">&#9679; &#9679; &#9679;</div>
     <div class="quote">"Authentic Indian Flavors, Crafted with Passion at Curry Leaves."</div>
     <div class="contact-items">
-      <a href="#">
+      <a href="https://www.google.com/maps/dir/?api=1&destination=Koszykowa+63+Warszawa" target="_blank">
         <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
         Koszykowa 63, 00-667 Warszawa
       </a>
-      <a href="#">
+      <a href="tel:+48577777695">
         <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
         +48 577 777 695
       </a>
-      <a href="#">
+      <a href="mailto:info.curryleaves@gmail.com">
         <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
         info.curryleaves@gmail.com
       </a>
