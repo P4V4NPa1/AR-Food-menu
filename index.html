@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Curry Leaves - AR Menu</title>
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -100,11 +100,45 @@
       line-height: 1.5;
     }
 
-    model-viewer {
+    .viewer-wrap {
+      position: relative;
       width: 100%;
       height: 340px;
       background: #FFF8E7;
+      overflow: hidden;
+    }
+
+    .viewer-wrap .loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #C4943A;
+      font-size: 13px;
+      gap: 10px;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .viewer-wrap .loading .spinner {
+      width: 28px;
+      height: 28px;
+      border: 3px solid #F0E4D0;
+      border-top-color: #C4943A;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    model-viewer {
+      width: 100%;
+      height: 100%;
       --poster-color: transparent;
+      --progress-bar-color: #C4943A;
+      --progress-bar-height: 2px;
     }
 
     .card-actions {
@@ -135,15 +169,9 @@
       box-shadow: 0 4px 12px rgba(196, 148, 58, 0.3);
     }
 
-    .btn-ar:active {
-      transform: translateY(0);
-    }
+    .btn-ar:active { transform: translateY(0); }
 
-    .btn-ar svg {
-      width: 18px;
-      height: 18px;
-      fill: currentColor;
-    }
+    .btn-ar svg { width: 18px; height: 18px; fill: currentColor; }
 
     .badge {
       display: inline-block;
@@ -172,9 +200,7 @@
       border-top: 1px solid #2A1F10;
     }
 
-    footer span {
-      color: #C4943A;
-    }
+    footer span { color: #C4943A; }
 
     @media (max-width: 640px) {
       body { background: #FFF8E7; }
@@ -188,7 +214,7 @@
       .card-header { padding: 14px 16px 0; }
       .card-header h2 { font-size: 18px; }
       .card-header p { font-size: 12px; }
-      model-viewer { height: 260px; }
+      .viewer-wrap { height: 260px; }
       .card-actions { padding: 0 16px 14px; }
       .btn-ar { padding: 13px; font-size: 14px; }
       .divider { margin: 12px 16px; }
@@ -199,7 +225,7 @@
       header { padding: 10px 12px; }
       .logo { height: 30px; }
       .tagline h1 { font-size: 15px; }
-      model-viewer { height: 220px; }
+      .viewer-wrap { height: 220px; }
       .card-header h2 { font-size: 16px; }
     }
 
@@ -234,24 +260,32 @@
         <p>Traditional Indian pastry stuffed with spiced potatoes &amp; peas or chicken. Crispy, golden, and served with chutney.</p>
       </div>
 
-      <model-viewer
-        src="models/Samosa.glb"
-        ar
-        ar-modes="quick-look webxr scene-viewer"
-        quick-look-browsers="safari"
-        camera-controls
-        auto-rotate
-        rotation-per-second="30deg"
-        shadow-intensity="0.8"
-        exposure="1.2"
-        ar-scale="fixed"
-        ar-placement="floor">
-      </model-viewer>
+      <div class="viewer-wrap">
+        <div class="loading" id="load-samosa">
+          <div class="spinner"></div>
+          <span>Loading 3D model...</span>
+        </div>
+        <model-viewer
+          id="samosa-viewer"
+          src="models/Samosa.glb"
+          ar
+          ar-modes="webxr scene-viewer quick-look"
+          camera-controls
+          auto-rotate
+          rotation-per-second="30deg"
+          shadow-intensity="0.8"
+          exposure="1.2"
+          ar-scale="fixed"
+          ar-placement="floor"
+          reveal="auto"
+          onload="document.getElementById('load-samosa').style.display='none'">
+        </model-viewer>
+      </div>
 
       <div class="divider"></div>
 
       <div class="card-actions">
-        <button class="btn-ar" onclick="this.parentElement.parentElement.querySelector('model-viewer').activateAR()">
+        <button class="btn-ar" onclick="document.getElementById('samosa-viewer').activateAR()">
           <svg viewBox="0 0 24 24"><path d="M21 3H3v18h18V3zm-2 16H5V5h14v14zm-5-7l-4 5h8l-4-5z"/></svg>
           View in AR
         </button>
@@ -265,25 +299,33 @@
         <p>Classic Italian pizza with tomato sauce, fresh mozzarella, and basil on a crispy thin crust.</p>
       </div>
 
-      <model-viewer
-        src="models/Pizza.glb"
-        ios-src="models/Pizzaios.usdz"
-        ar
-        ar-modes="quick-look webxr scene-viewer"
-        quick-look-browsers="safari"
-        camera-controls
-        auto-rotate
-        rotation-per-second="30deg"
-        shadow-intensity="0.8"
-        exposure="1.2"
-        ar-scale="fixed"
-        ar-placement="floor">
-      </model-viewer>
+      <div class="viewer-wrap">
+        <div class="loading" id="load-pizza">
+          <div class="spinner"></div>
+          <span>Loading 3D model...</span>
+        </div>
+        <model-viewer
+          id="pizza-viewer"
+          src="models/Pizza.glb"
+          ios-src="models/Pizzaios.usdz"
+          ar
+          ar-modes="webxr scene-viewer quick-look"
+          camera-controls
+          auto-rotate
+          rotation-per-second="30deg"
+          shadow-intensity="0.8"
+          exposure="1.2"
+          ar-scale="fixed"
+          ar-placement="floor"
+          reveal="auto"
+          onload="document.getElementById('load-pizza').style.display='none'">
+        </model-viewer>
+      </div>
 
       <div class="divider"></div>
 
       <div class="card-actions">
-        <button class="btn-ar" onclick="this.parentElement.parentElement.querySelector('model-viewer').activateAR()">
+        <button class="btn-ar" onclick="document.getElementById('pizza-viewer').activateAR()">
           <svg viewBox="0 0 24 24"><path d="M21 3H3v18h18V3zm-2 16H5V5h14v14zm-5-7l-4 5h8l-4-5z"/></svg>
           View in AR
         </button>
