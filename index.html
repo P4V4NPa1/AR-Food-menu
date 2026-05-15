@@ -325,57 +325,40 @@
       border-radius: 8px;
       transform: translateZ(0);
       backface-visibility: hidden;
-      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease;
+      transition: box-shadow 0.3s ease, background 0.3s ease;
     }
 
     .menu-item:hover {
-      transform: scale(1.02) translateY(-3px);
-      box-shadow: 0 12px 32px rgba(139, 26, 26, 0.08);
+      transform: none;
+      box-shadow: 0 6px 18px rgba(139, 26, 26, 0.05);
       background: rgba(196, 148, 58, 0.04);
     }
 
     .menu-item .info { flex: 1; }
 
     .menu-item h4 {
-      font-family: 'Playfair Display', serif;
+      display: inline-block;
+      width: fit-content;
+      cursor: pointer;
+      font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
       font-size: 16px;
       font-weight: 700;
-      color: #1A0F00;
+      color: #2b1608;
       position: relative;
       z-index: 2;
-      padding: 4px 14px;
-      margin: -4px -14px;
       border-radius: 30px;
       background: transparent;
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease, background 0.3s ease;
+      transition: transform 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
     }
 
     .menu-item h4:hover {
-      transform: perspective(400px) translateZ(30px) rotateX(4deg) scale(1.5);
-      color: #C4943A;
-      background: linear-gradient(135deg, rgba(196, 148, 58, 0.1), rgba(196, 148, 58, 0.03));
+      transform: scale(1.08) translateY(-2px);
+      color: #b8862b;
       text-shadow:
-        0 1px 0 #b8860b,
-        0 2px 0 #a0762e,
-        0 3px 0 #8b6520,
-        0 4px 0 #7a5518,
-        0 5px 0 #6a4510,
-        0 6px 8px rgba(0,0,0,0.08),
-        0 8px 16px rgba(0,0,0,0.05);
-    }
-
-    .menu-item:hover .desc {
-      transform: perspective(400px) translateZ(8px);
-      color: #6B5B3E;
-    }
-
-    .menu-item:hover .price {
-      transform: perspective(400px) translateZ(12px) scale(1.05);
-      color: #D4A44A;
-    }
-
-    .menu-item:hover .spice {
-      transform: perspective(400px) translateZ(6px);
+        1px 1px 0 #7a4f12,
+        2px 2px 0 rgba(90, 55, 10, 0.35),
+        0 8px 18px rgba(0, 0, 0, 0.22);
+      background: transparent;
     }
 
     .menu-item .desc {
@@ -383,12 +366,11 @@
       color: #8B7D6B;
       margin-top: 2px;
       line-height: 1.4;
-      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
     }
 
     .menu-item .meta { display: flex; align-items: center; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
 
-    .menu-item .spice { font-size: 12px; letter-spacing: 1px; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+    .menu-item .spice { font-size: 12px; letter-spacing: 1px; }
     .menu-item .diet-tag {
       font-size: 9px;
       font-weight: 600;
@@ -409,7 +391,6 @@
       white-space: nowrap;
       margin-left: 12px;
       padding-top: 2px;
-      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
     }
 
     .menu-item .pair {
@@ -921,16 +902,16 @@
     .modal-content {
       background: #FFF8E7;
       border-radius: 20px;
-      max-width: 680px;
+      max-width: 800px;
       width: 100%;
       max-height: 90vh;
       overflow-y: auto;
       position: relative;
       box-shadow: 0 40px 80px rgba(0,0,0,0.3);
-      transform: scale(0.95) translateY(20px);
+      transform: translateY(20px);
       transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
+    .modal-overlay.active .modal-content { transform: translateY(0); }
     .modal-close {
       position: absolute;
       top: 14px;
@@ -1063,29 +1044,27 @@
     .btn-ar-modal {
       width: 100%;
       padding: 14px;
-      border: 1px solid rgba(196, 148, 58, 0.3);
+      border: none;
       border-radius: 12px;
-      background: transparent;
-      color: #C4943A;
+      background: linear-gradient(135deg, #C4943A 0%, #A0762E 100%);
+      color: white;
       font-size: 14px;
       font-weight: 600;
       font-family: 'Inter', sans-serif;
       cursor: pointer;
-      margin-top: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
       transition: all 0.2s;
     }
-    .btn-ar-modal:hover { background: rgba(196, 148, 58, 0.06); border-color: #C4943A; }
-    .btn-ar-modal svg { width: 16px; height: 16px; fill: currentColor; flex-shrink: 0; }
+    .btn-ar-modal:hover { background: linear-gradient(135deg, #D4A44A 0%, #B0863E 100%); box-shadow: 0 4px 16px rgba(196, 148, 58, 0.3); transform: translateY(-1px); }
+    .btn-ar-modal svg { width: 18px; height: 18px; fill: currentColor; flex-shrink: 0; }
     .btn-ar-modal:disabled {
       opacity: 0.4;
       cursor: not-allowed;
-      border-color: rgba(196, 148, 58, 0.15);
     }
-    .btn-ar-modal:disabled:hover { background: transparent; }
+    .btn-ar-modal:disabled:hover { background: linear-gradient(135deg, #C4943A 0%, #A0762E 100%); box-shadow: none; transform: none; }
     .modal-actions {
       display: flex;
       gap: 10px;
@@ -1589,7 +1568,7 @@
   <div class="menu-section">
     <div class="menu-grid">
 
-      <div class="card fade-up">
+      <div class="card fade-up" id="samosa">
         <div class="card-header">
           <div class="info">
             <h3>Samosa <span class="badge">New in AR</span></h3>
@@ -1626,7 +1605,7 @@
         </div>
       </div>
 
-      <div class="card fade-up">
+      <div class="card fade-up" id="pizza">
         <div class="card-header">
           <div class="info">
             <h3>Margherita Pizza</h3>
@@ -2146,8 +2125,25 @@
             mv.setAttribute('src', model.src);
             if (model.scale) mv.setAttribute('scale', model.scale);
 
-            // Enable AR button only after model loads so activateAR() works
-            arBtn.onclick = () => { try { mv.activateAR(); } catch(e) {} };
+            // Enable AR button — try activateAR(), fall back to scrolling to AR section
+            arBtn.onclick = async () => {
+              const mv = document.getElementById('modalModelViewer');
+              if (mv && mv.canActivateAR) {
+                try {
+                  await mv.activateAR();
+                  return;
+                } catch (error) {
+                  console.warn('AR activation failed, scrolling to AR section instead:', error);
+                }
+              }
+              closeModal();
+              const sectionIdMap = { 'Samosa': 'samosa' };
+              const sectionId = sectionIdMap[name];
+              const section = sectionId ? document.getElementById(sectionId) : null;
+              if (section) {
+                section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
+            };
 
             const modelTimeout = setTimeout(() => {
               if (loader.style.display !== 'none') {
@@ -2166,6 +2162,11 @@
               mv.style.display = 'none';
               showPlaceholder(visual, name);
             }, { once: true });
+
+            if (mv.loaded) {
+              loader.style.display = 'none';
+              arBtn.disabled = false;
+            }
           } else {
             loader.style.display = 'none';
             showPlaceholder(visual, name);
