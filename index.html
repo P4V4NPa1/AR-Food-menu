@@ -300,6 +300,7 @@
     .menu-grid {
       max-width: 720px;
       margin: 0 auto;
+      perspective: 1000px;
     }
 
     .menu-category {
@@ -321,11 +322,17 @@
       padding: 14px 8px;
       border-bottom: 1px solid #F0E4D0;
       cursor: pointer;
-      transition: background 0.2s;
       border-radius: 8px;
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease;
     }
 
-    .menu-item:hover { background: rgba(196, 148, 58, 0.04); }
+    .menu-item:hover {
+      transform: scale(1.02) translateY(-3px);
+      box-shadow: 0 12px 32px rgba(139, 26, 26, 0.08);
+      background: rgba(196, 148, 58, 0.04);
+    }
 
     .menu-item .info { flex: 1; }
 
@@ -366,6 +373,14 @@
       white-space: nowrap;
       margin-left: 12px;
       padding-top: 2px;
+    }
+
+    .menu-item .pair {
+      font-size: 11px;
+      color: #C4943A;
+      margin-top: 5px;
+      font-weight: 500;
+      opacity: 0.85;
     }
 
     .card {
@@ -792,6 +807,7 @@
       .menu-item .desc { font-size: 11px; }
       .menu-item .meta { gap: 6px; }
       .menu-item .price { font-size: 14px; }
+      .menu-item .pair { font-size: 10px; }
       .card { border-radius: 0; border-left: none; border-right: none; margin-bottom: 10px; }
       .card:hover { transform: none; }
       .card-header { padding: 14px 16px 0; }
@@ -828,7 +844,7 @@
   <nav>
     <img class="logo" src="logo.png" alt="Curry Leaves">
     <ul class="nav-links">
-      <li><a href="#hero">Home</a></li>
+      <li><a href="https://curryleaves.pl" target="_blank">Home</a></li>
       <li><a href="#menu-full" style="color:#C4943A;">Menu</a></li>
       <li><a href="#ar-menu">AR</a></li>
       <li><a href="#locations">Locations</a></li>
@@ -1450,6 +1466,42 @@
           document.getElementById('load-pizza').style.display = 'none';
         });
       }
+
+      const pairings = {
+        'Samosa': 'Mint Chutney',
+        'Vegetable Pakora (8pcs)': 'Tamarind Chutney',
+        'Fry 65 \u2014 Chicken (8pcs)': 'Mint Chutney',
+        'Fry 65 \u2014 Paneer (8pcs)': 'Mint Chutney',
+        'Tandoori Grill Chicken (6pcs)': 'Mint Chutney',
+        'Malai Tikka': 'Mint Chutney',
+        'Tomato Rasam': 'Papadum',
+        'Dal Soup': 'Papadum',
+        'Palak Paneer': 'Garlic Naan',
+        'Chana Masala': 'Bhatura',
+        'Dal Tadka': 'Jeera Rice',
+        'Aloo Gobi Methi': 'Roti',
+        'Butter Chicken': 'Butter Naan',
+        'Chicken Tikka Masala': 'Garlic Naan',
+        'Dum Biryani': 'Raita',
+        'Bhuna Mutton': 'Garlic Naan',
+        'Vegetable Biryani': 'Raita',
+        'Garlic Naan': 'Dal Tadka',
+        'Butter Naan': 'Butter Chicken',
+        'Roti': 'Dal Tadka',
+      };
+
+      document.querySelectorAll('.menu-item h4').forEach(h4 => {
+        let name = h4.textContent.trim();
+        name = name.replace(/ (Bestseller|#1)$/, '');
+        if (pairings[name]) {
+          const info = h4.closest('.info');
+          const meta = info.querySelector('.meta');
+          const pair = document.createElement('div');
+          pair.className = 'pair';
+          pair.textContent = 'Recommended with ' + pairings[name];
+          meta.parentNode.insertBefore(pair, meta.nextSibling);
+        }
+      });
     });
   </script>
 </body>
