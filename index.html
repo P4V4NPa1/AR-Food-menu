@@ -341,42 +341,22 @@
       font-size: 16px;
       font-weight: 700;
       color: #1A0F00;
-      transition: color 0.3s ease;
+      position: relative;
+      z-index: 2;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease;
     }
 
     .menu-item h4:hover {
+      transform: perspective(400px) translateZ(30px) rotateX(4deg) scale(1.5);
       color: #C4943A;
-    }
-
-    /* === Magnifying Glass Lens === */
-    .magnifier-lens {
-      position: fixed;
-      pointer-events: none;
-      z-index: 9999;
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 2.5px solid rgba(196, 148, 58, 0.4);
-      background: rgba(255, 248, 231, 0.9);
-      display: none;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 0 40px rgba(196, 148, 58, 0.12), 0 4px 20px rgba(0,0,0,0.12), inset 0 0 30px rgba(196, 148, 58, 0.06);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      overflow: hidden;
-    }
-    .magnifier-lens.active { display: block; }
-    .magnifier-lens span {
-      position: absolute;
-      top: 0;
-      left: 0;
-      font-family: 'Playfair Display', serif;
-      font-size: 42px;
-      font-weight: 700;
-      color: #C4943A;
-      white-space: nowrap;
-      pointer-events: none;
-      line-height: 1.1;
+      text-shadow:
+        0 1px 0 #b8860b,
+        0 2px 0 #a0762e,
+        0 3px 0 #8b6520,
+        0 4px 0 #7a5518,
+        0 5px 0 #6a4510,
+        0 6px 8px rgba(0,0,0,0.08),
+        0 8px 16px rgba(0,0,0,0.05);
     }
 
     .menu-item:hover .desc {
@@ -1821,6 +1801,19 @@
           <div class="loading-spinner" id="modalLoader">
             <div class="spinner"></div>
           </div>
+          <model-viewer id="modalModelViewer"
+            camera-controls
+            auto-rotate
+            rotation-per-second="30deg"
+            shadow-intensity="0"
+            exposure="1.2"
+            ar
+            ar-modes="webxr scene-viewer quick-look"
+            ar-scale="fixed"
+            reveal="auto"
+            loading="eager"
+            style="width:100%;height:100%;display:none;">
+          </model-viewer>
         </div>
         <div class="modal-info">
           <h3 id="modalTitle"></h3>
@@ -1856,8 +1849,6 @@
       <button class="btn-order" id="checkoutBtn">Place Order</button>
     </div>
   </div>
-
-  <div class="magnifier-lens" id="magnifierLens"><span></span></div>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -2060,9 +2051,9 @@
       function closeModal() {
         modal.classList.remove('active');
         document.body.style.overflow = '';
-        // Remove old model-viewer
-        const oldViewer = document.querySelector('#modalVisual model-viewer');
-        if (oldViewer) oldViewer.remove();
+        const mv = document.getElementById('modalModelViewer');
+        mv.style.display = 'none';
+        mv.removeAttribute('src');
       }
 
       const modelFiles = {
@@ -2118,62 +2109,45 @@
           // 3D viewer or placeholder
           const visual = document.getElementById('modalVisual');
           const loader = document.getElementById('modalLoader');
-          loader.style.display = 'flex';
-
-          const existingViewer = visual.querySelector('model-viewer');
-          if (existingViewer) existingViewer.remove();
+          const mv = document.getElementById('modalModelViewer');
           const existingPH = visual.querySelector('.placeholder-dish');
           if (existingPH) existingPH.remove();
 
           const arBtn = document.getElementById('viewArBtn');
           arBtn.classList.add('hidden');
 
-          // Check if model-viewer custom element is available
-          const mvSupported = typeof customElements !== 'undefined' && customElements.get('model-viewer');
+          // Show/hide model-viewer
+          mv.style.display = 'none';
 
-          if (modelFiles[name] && mvSupported) {
+          if (modelFiles[name]) {
             const model = modelFiles[name];
-            visual.insertAdjacentHTML('beforeend', `
-              <model-viewer
-                src="${model.src}"
-                camera-controls
-                auto-rotate
-                rotation-per-second="30deg"
-                shadow-intensity="0"
-                exposure="1.2"
-                ar
-                ar-modes="webxr scene-viewer quick-look"
-                ar-scale="fixed"
-                reveal="auto"
-                loading="eager"
-                ${model.scale ? 'scale="' + model.scale + '"' : ''}
-                alt="${name}"
-                style="width:100%;height:100%;"
-              ></model-viewer>
-            `);
-            const mv = visual.querySelector('model-viewer:last-child');
+            loader.style.display = 'flex';
+            mv.style.display = 'block';
+            mv.setAttribute('src', model.src);
+            if (model.scale) mv.setAttribute('scale', model.scale);
 
-            // Timeout: if model takes >8s, show placeholder
+            // Show AR button immediately
+            arBtn.classList.remove('hidden');
+            arBtn.onclick = () => { try { mv.activateAR(); } catch(e) {} };
+
+            // Timeout: hide loader after 8s even if model hasn't loaded
             const modelTimeout = setTimeout(() => {
               if (loader.style.display !== 'none') {
                 loader.style.display = 'none';
-                arBtn.classList.add('hidden');
-                showPlaceholder(visual, name);
               }
             }, 8000);
 
             mv.addEventListener('load', () => {
               clearTimeout(modelTimeout);
               loader.style.display = 'none';
-              arBtn.classList.remove('hidden');
-              arBtn.onclick = () => { try { mv.activateAR(); } catch(e) {} };
-            });
+            }, { once: true });
             mv.addEventListener('error', () => {
               clearTimeout(modelTimeout);
               loader.style.display = 'none';
+              mv.style.display = 'none';
               arBtn.classList.add('hidden');
               showPlaceholder(visual, name);
-            });
+            }, { once: true });
           } else {
             loader.style.display = 'none';
             arBtn.classList.add('hidden');
@@ -2251,29 +2225,13 @@
         window.open(`https://wa.me/?text=${msg}`, '_blank');
       });
 
-      // ===== Magnifying Glass =====
-      const lens = document.getElementById('magnifierLens');
-      const lensSpan = lens.querySelector('span');
-      const LENS = 120, SCALE = 2.8;
-
+      // ===== Letter-scale hover on text =====
       document.querySelectorAll('.menu-item h4').forEach(h4 => {
-        h4.addEventListener('mouseenter', () => {
-          let name = h4.textContent.trim();
-          name = name.replace(/ (Bestseller|#1)$/, '');
-          lensSpan.textContent = name;
-          lens.classList.add('active');
-        });
         h4.addEventListener('mousemove', (e) => {
           const rect = h4.getBoundingClientRect();
-          const mx = e.clientX - rect.left;
-          const my = e.clientY - rect.top;
-          lens.style.left = e.clientX + 'px';
-          lens.style.top = e.clientY + 'px';
-          lensSpan.style.left = -(mx * SCALE - LENS / 2) + 'px';
-          lensSpan.style.top = -(my * SCALE - LENS / 2) + 'px';
-        });
-        h4.addEventListener('mouseleave', () => {
-          lens.classList.remove('active');
+          const x = ((e.clientX - rect.left) / rect.width) * 100;
+          const y = ((e.clientY - rect.top) / rect.height) * 100;
+          h4.style.transformOrigin = `${x}% ${y}%`;
         });
       });
 
