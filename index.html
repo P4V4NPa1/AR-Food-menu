@@ -341,6 +341,29 @@
       font-size: 16px;
       font-weight: 700;
       color: #1A0F00;
+      transform: translateZ(0);
+      will-change: transform;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease, text-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .menu-item:hover h4 {
+      transform: perspective(400px) translateZ(18px) rotateX(2deg);
+      color: #C4943A;
+      text-shadow: 0 2px 4px rgba(196, 148, 58, 0.15), 0 4px 12px rgba(196, 148, 58, 0.08);
+    }
+
+    .menu-item:hover .desc {
+      transform: perspective(400px) translateZ(8px);
+      color: #6B5B3E;
+    }
+
+    .menu-item:hover .price {
+      transform: perspective(400px) translateZ(12px) scale(1.05);
+      color: #D4A44A;
+    }
+
+    .menu-item:hover .spice {
+      transform: perspective(400px) translateZ(6px);
     }
 
     .menu-item .desc {
@@ -348,11 +371,12 @@
       color: #8B7D6B;
       margin-top: 2px;
       line-height: 1.4;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
     }
 
     .menu-item .meta { display: flex; align-items: center; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
 
-    .menu-item .spice { font-size: 12px; letter-spacing: 1px; }
+    .menu-item .spice { font-size: 12px; letter-spacing: 1px; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
     .menu-item .diet-tag {
       font-size: 9px;
       font-weight: 600;
@@ -373,6 +397,7 @@
       white-space: nowrap;
       margin-left: 12px;
       padding-top: 2px;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
     }
 
     .menu-item .pair {
@@ -837,6 +862,324 @@
       .card-header h3 { font-size: 15px; }
       .hero .rating-badge { flex-wrap: wrap; justify-content: center; }
     }
+    /* === Cart Icon === */
+    .nav-cart {
+      position: relative;
+      cursor: pointer;
+      padding: 6px;
+      margin-left: 16px;
+      transition: transform 0.2s;
+    }
+    .nav-cart:hover { transform: scale(1.1); }
+    .nav-cart svg { display: block; }
+    .cart-count {
+      position: absolute;
+      top: -2px;
+      right: -4px;
+      background: #C4943A;
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+    }
+
+    /* === Modal === */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      padding: 20px;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: all; }
+    .modal-content {
+      background: #FFF8E7;
+      border-radius: 20px;
+      max-width: 680px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.3);
+      transform: scale(0.95) translateY(20px);
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(0,0,0,0.06);
+      color: #3D2B1A;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      z-index: 5;
+      font-family: 'Inter', sans-serif;
+    }
+    .modal-close:hover { background: rgba(0,0,0,0.1); transform: scale(1.1); }
+    .modal-body { padding: 0; }
+    .modal-visual {
+      width: 100%;
+      height: 340px;
+      background: linear-gradient(135deg, #2D1A05, #1A0F00);
+      border-radius: 20px 20px 0 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .modal-visual model-viewer { width: 100%; height: 100%; }
+    .modal-visual .placeholder-dish {
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 72px;
+      color: #C4943A;
+    }
+    .modal-visual .placeholder-dish span:last-child {
+      font-size: 16px;
+      font-family: 'Playfair Display', serif;
+      color: #A89880;
+      margin-top: 8px;
+    }
+    .modal-visual .loading-spinner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-visual .loading-spinner .spinner {
+      width: 28px; height: 28px;
+      border: 3px solid rgba(196,148,58,0.2);
+      border-top-color: #C4943A;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    .modal-info { padding: 24px 28px; }
+    .modal-info h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: #1A0F00;
+      transform: none !important;
+      text-shadow: none !important;
+    }
+    .modal-meta {
+      margin-top: 6px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .modal-desc {
+      font-size: 14px;
+      color: #5A4A38;
+      line-height: 1.6;
+      margin-top: 10px;
+    }
+    .modal-pairing { margin-top: 18px; }
+    .pairing-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: white;
+      border-radius: 14px;
+      padding: 12px 16px;
+      border: 1px solid #F0E4D0;
+      box-shadow: 0 2px 8px rgba(139,26,26,0.04);
+    }
+    .pairing-card .pairing-img {
+      width: 56px; height: 56px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+    .pairing-card .pairing-label { font-size: 10px; color: #8B7D6B; text-transform: uppercase; letter-spacing: 0.5px; }
+    .pairing-card .pairing-name { font-size: 15px; font-weight: 600; color: #1A0F00; margin-top: 1px; }
+    .modal-price {
+      font-size: 22px;
+      font-weight: 700;
+      color: #C4943A;
+      margin-top: 16px;
+    }
+    .btn-add-cart {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #C4943A, #A0762E);
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-add-cart:hover { box-shadow: 0 8px 24px rgba(196,148,58,0.3); transform: translateY(-1px); }
+    .btn-add-cart.added { background: linear-gradient(135deg, #2E7D32, #1B5E20); }
+
+    /* === Cart Sidebar === */
+    .cart-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 300;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .cart-overlay.active { opacity: 1; pointer-events: all; }
+    .cart-sidebar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 380px;
+      max-width: 100vw;
+      background: #FFF8E7;
+      z-index: 301;
+      transform: translateX(100%);
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      box-shadow: -4px 0 24px rgba(0,0,0,0.1);
+    }
+    .cart-sidebar.active { transform: translateX(0); }
+    .cart-sidebar .cart-header {
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #F0E4D0;
+    }
+    .cart-sidebar .cart-header h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: #1A0F00;
+    }
+    .cart-sidebar .cart-close {
+      width: 32px; height: 32px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.05);
+      color: #3D2B1A;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', sans-serif;
+    }
+    .cart-sidebar .cart-close:hover { background: rgba(0,0,0,0.1); }
+    .cart-sidebar .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 24px;
+    }
+    .cart-sidebar .cart-empty { color: #8B7D6B; font-size: 14px; text-align: center; padding: 40px 0; }
+    .cart-sidebar .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #F0E4D0;
+    }
+    .cart-item .ci-info { flex: 1; }
+    .cart-item .ci-name { font-size: 14px; font-weight: 600; color: #1A0F00; }
+    .cart-item .ci-price { font-size: 13px; color: #C4943A; font-weight: 600; }
+    .cart-item .ci-qty { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+    .cart-item .ci-qty button {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      border: 1px solid #E8DCC8;
+      background: white;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #3D2B1A;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.15s;
+    }
+    .cart-item .ci-qty button:hover { border-color: #C4943A; color: #C4943A; }
+    .cart-item .ci-qty .qty-num { font-size: 14px; font-weight: 600; min-width: 20px; text-align: center; }
+    .cart-item .ci-remove {
+      width: 28px; height: 28px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: #BDB0A0;
+      font-size: 18px;
+      transition: color 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .cart-item .ci-remove:hover { color: #8B1A1A; }
+    .cart-sidebar .cart-footer {
+      padding: 16px 24px 24px;
+      border-top: 1px solid #F0E4D0;
+    }
+    .cart-sidebar .cart-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 16px;
+      font-weight: 700;
+      color: #1A0F00;
+      margin-bottom: 12px;
+    }
+    .cart-sidebar .cart-total .total-val { color: #C4943A; }
+    .cart-sidebar .btn-order {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #C4943A, #A0762E);
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .cart-sidebar .btn-order:hover { box-shadow: 0 8px 24px rgba(196,148,58,0.3); }
+
+    @media (max-width: 640px) {
+      .modal-visual { height: 240px; }
+      .modal-info { padding: 18px 20px; }
+      .modal-info h3 { font-size: 22px; }
+      .cart-sidebar { width: 100vw; }
+      .nav-cart { margin-left: 8px; }
+    }
   </style>
 </head>
 <body>
@@ -849,6 +1192,13 @@
       <li><a href="#ar-menu">AR</a></li>
       <li><a href="#locations">Locations</a></li>
     </ul>
+    <div class="nav-cart" id="cartToggle">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A89880" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+      </svg>
+      <span class="cart-count" id="cartBadge">0</span>
+    </div>
   </nav>
 
   <section class="hero" id="hero">
@@ -1411,6 +1761,47 @@
     <p><span>Curry Leaves</span> &copy; 2026 &mdash; All Rights Reserved</p>
   </footer>
 
+  <!-- Dish Modal -->
+  <div class="modal-overlay" id="dishModal">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose">&times;</button>
+      <div class="modal-body">
+        <div class="modal-visual" id="modalVisual">
+          <div class="loading-spinner" id="modalLoader">
+            <div class="spinner"></div>
+          </div>
+        </div>
+        <div class="modal-info">
+          <h3 id="modalTitle"></h3>
+          <div class="modal-meta" id="modalMeta"></div>
+          <div class="modal-desc" id="modalDesc"></div>
+          <div class="modal-pairing" id="modalPairing"></div>
+          <div class="modal-price" id="modalPrice"></div>
+          <button class="btn-add-cart" id="addToCartBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Sidebar -->
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+      <h3>Your Cart</h3>
+      <button class="cart-close" id="cartClose">&times;</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <p class="cart-empty">Your cart is empty</p>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total">Total: <span class="total-val" id="cartTotal">0</span> PLN</div>
+      <button class="btn-order" id="checkoutBtn">Place Order</button>
+    </div>
+  </div>
+
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const observer = new IntersectionObserver((entries) => {
@@ -1467,6 +1858,7 @@
         });
       }
 
+      // Pairings data
       const pairings = {
         'Samosa': 'Mint Chutney',
         'Vegetable Pakora (8pcs)': 'Tamarind Chutney',
@@ -1490,6 +1882,20 @@
         'Roti': 'Dal Tadka',
       };
 
+      const pairingEmojis = {
+        'Mint Chutney': { emoji: '\ud83c\udf3f', bg: 'linear-gradient(135deg, #4CAF50, #2E7D32)' },
+        'Tamarind Chutney': { emoji: '\ud83e\uded2', bg: 'linear-gradient(135deg, #795548, #4E342E)' },
+        'Papadum': { emoji: '\ud83e\udd5f', bg: 'linear-gradient(135deg, #FFCC80, #F57C00)' },
+        'Garlic Naan': { emoji: '\ud83e\uded1', bg: 'linear-gradient(135deg, #FFE0B2, #FF9800)' },
+        'Bhatura': { emoji: '\ud83e\uded1', bg: 'linear-gradient(135deg, #FFD54F, #F9A825)' },
+        'Jeera Rice': { emoji: '\ud83c\udf5a', bg: 'linear-gradient(135deg, #E0E0E0, #9E9E9E)' },
+        'Roti': { emoji: '\ud83e\uded1', bg: 'linear-gradient(135deg, #D7CCC8, #8D6E63)' },
+        'Raita': { emoji: '\ud83e\udd52', bg: 'linear-gradient(135deg, #C8E6C9, #43A047)' },
+        'Butter Naan': { emoji: '\ud83e\uded1', bg: 'linear-gradient(135deg, #FFE082, #FFA000)' },
+        'Butter Chicken': { emoji: '\ud83c\udf5b', bg: 'linear-gradient(135deg, #EF5350, #B71C1C)' },
+        'Dal Tadka': { emoji: '\ud83e\uded8', bg: 'linear-gradient(135deg, #FFD54F, #F57F17)' },
+      };
+
       document.querySelectorAll('.menu-item h4').forEach(h4 => {
         let name = h4.textContent.trim();
         name = name.replace(/ (Bestseller|#1)$/, '');
@@ -1502,6 +1908,266 @@
           meta.parentNode.insertBefore(pair, meta.nextSibling);
         }
       });
+
+      // ===== Cart State =====
+      let cart = JSON.parse(localStorage.getItem('clCart') || '[]');
+
+      function saveCart() {
+        localStorage.setItem('clCart', JSON.stringify(cart));
+      }
+
+      function renderCart() {
+        const container = document.getElementById('cartItems');
+        const badge = document.getElementById('cartBadge');
+        const totalEl = document.getElementById('cartTotal');
+
+        const count = cart.reduce((s, i) => s + i.qty, 0);
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'flex' : 'none';
+
+        if (cart.length === 0) {
+          container.innerHTML = '<p class="cart-empty">Your cart is empty</p>';
+          totalEl.textContent = '0';
+          return;
+        }
+
+        let html = '';
+        let total = 0;
+        cart.forEach((item, idx) => {
+          const priceNum = parseFloat(item.price.replace(/[^0-9.]/g, ''));
+          total += priceNum * item.qty;
+          html += `
+            <div class="cart-item">
+              <div class="ci-info">
+                <div class="ci-name">${item.name}</div>
+                <div class="ci-price">${item.price}</div>
+                <div class="ci-qty">
+                  <button onclick="window.cartDec(${idx})">\u2212</button>
+                  <span class="qty-num">${item.qty}</span>
+                  <button onclick="window.cartInc(${idx})">+</button>
+                </div>
+              </div>
+              <button class="ci-remove" onclick="window.cartRemove(${idx})">&times;</button>
+            </div>`;
+        });
+        container.innerHTML = html;
+        totalEl.textContent = total.toFixed(0);
+      }
+
+      window.cartInc = function(idx) {
+        cart[idx].qty++;
+        saveCart();
+        renderCart();
+      };
+
+      window.cartDec = function(idx) {
+        if (cart[idx].qty > 1) {
+          cart[idx].qty--;
+        } else {
+          cart.splice(idx, 1);
+        }
+        saveCart();
+        renderCart();
+      };
+
+      window.cartRemove = function(idx) {
+        cart.splice(idx, 1);
+        saveCart();
+        renderCart();
+      };
+
+      function addToCart(name, price) {
+        const existing = cart.find(i => i.name === name);
+        if (existing) {
+          existing.qty++;
+        } else {
+          cart.push({ name, price, qty: 1 });
+        }
+        saveCart();
+        renderCart();
+      }
+
+      // ===== Modal =====
+      const modal = document.getElementById('dishModal');
+      const modalClose = document.getElementById('modalClose');
+      let currentDish = null;
+
+      modalClose.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+      });
+
+      function closeModal() {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+        // Remove old model-viewer
+        const oldViewer = document.querySelector('#modalVisual model-viewer');
+        if (oldViewer) oldViewer.remove();
+      }
+
+      const modelFiles = {
+        'Samosa': { src: 'models/Samosa.glb', scale: '0.05 0.05 0.05' },
+      };
+
+      function getDishName(h4) {
+        let name = h4.textContent.trim();
+        return name.replace(/ (Bestseller|#1)$/, '');
+      }
+
+      document.querySelectorAll('.menu-item').forEach(item => {
+        item.addEventListener('click', function() {
+          const info = this.querySelector('.info');
+          const h4 = info.querySelector('h4');
+          const name = getDishName(h4);
+          const desc = info.querySelector('.desc').textContent;
+          const price = this.querySelector('.price').textContent;
+          const spice = info.querySelector('.spice');
+          const dietTags = info.querySelectorAll('.diet-tag');
+          const pairing = pairings[name];
+
+          currentDish = { name, price };
+
+          document.getElementById('modalTitle').textContent = name;
+          document.getElementById('modalDesc').textContent = desc;
+          document.getElementById('modalPrice').textContent = price;
+
+          // Meta (spice + tags)
+          let metaHtml = '';
+          if (spice) metaHtml += `<span class="spice">${spice.textContent}</span>`;
+          dietTags.forEach(t => {
+            metaHtml += `<span class="diet-tag ${t.className.replace('diet-tag ', '')}">${t.textContent}</span>`;
+          });
+          document.getElementById('modalMeta').innerHTML = metaHtml;
+
+          // Pairing
+          const pairingContainer = document.getElementById('modalPairing');
+          if (pairing && pairingEmojis[pairing]) {
+            const p = pairingEmojis[pairing];
+            pairingContainer.innerHTML = `
+              <div class="pairing-card">
+                <div class="pairing-img" style="background:${p.bg}">${p.emoji}</div>
+                <div>
+                  <div class="pairing-label">Recommended with</div>
+                  <div class="pairing-name">${pairing}</div>
+                </div>
+              </div>`;
+          } else {
+            pairingContainer.innerHTML = '';
+          }
+
+          // 3D viewer or placeholder
+          const visual = document.getElementById('modalVisual');
+          const loader = document.getElementById('modalLoader');
+          loader.style.display = 'flex';
+
+          const existingViewer = visual.querySelector('model-viewer');
+          if (existingViewer) existingViewer.remove();
+          const existingPH = visual.querySelector('.placeholder-dish');
+          if (existingPH) existingPH.remove();
+
+          if (modelFiles[name]) {
+            const mv = document.createElement('model-viewer');
+            mv.src = modelFiles[name].src;
+            mv.setAttribute('camera-controls', '');
+            mv.setAttribute('auto-rotate', '');
+            mv.setAttribute('rotation-per-second', '30deg');
+            mv.setAttribute('shadow-intensity', '0');
+            mv.setAttribute('exposure', '1.2');
+            mv.setAttribute('ar', '');
+            mv.setAttribute('ar-modes', 'webxr scene-viewer quick-look');
+            mv.setAttribute('reveal', 'auto');
+            mv.style.width = '100%';
+            mv.style.height = '100%';
+            if (modelFiles[name].scale) mv.setAttribute('scale', modelFiles[name].scale);
+            mv.addEventListener('load', () => {
+              loader.style.display = 'none';
+            });
+            mv.addEventListener('error', () => {
+              loader.style.display = 'none';
+              showPlaceholder(visual, name);
+            });
+            visual.appendChild(mv);
+          } else {
+            loader.style.display = 'none';
+            showPlaceholder(visual, name);
+          }
+
+          // Add to cart button
+          const btn = document.getElementById('addToCartBtn');
+          btn.className = 'btn-add-cart';
+          btn.innerHTML = `
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            Add to Cart`;
+          btn.onclick = function() {
+            addToCart(currentDish.name, currentDish.price);
+            this.className = 'btn-add-cart added';
+            this.innerHTML = `
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Added!`;
+            setTimeout(() => {
+              closeModal();
+            }, 800);
+          };
+
+          modal.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        });
+      });
+
+      function showPlaceholder(visual, name) {
+        const ph = document.createElement('div');
+        ph.className = 'placeholder-dish';
+        const emojiMap = {
+          'Samosa': '\ud83e\udd5f', 'Vegetable Pakora (8pcs)': '\ud83e\udd5f',
+          'Fry 65 \u2014 Chicken (8pcs)': '\ud83c\udf57', 'Fry 65 \u2014 Paneer (8pcs)': '\ud83e\uddc0',
+          'Tandoori Grill Chicken (6pcs)': '\ud83c\udf57', 'Malai Tikka': '\ud83c\udf57',
+          'Tomato Rasam': '\ud83c\udf36\ufe0f', 'Dal Soup': '\ud83c\udf72',
+          'Palak Paneer': '\ud83e\uddc0', 'Chana Masala': '\ud83e\uded8',
+          'Dal Tadka': '\ud83e\uded8', 'Aloo Gobi Methi': '\ud83e\udd54',
+          'Butter Chicken': '\ud83c\udf5b', 'Chicken Tikka Masala': '\ud83c\udf5b',
+          'Dum Biryani': '\ud83c\udf5b', 'Bhuna Mutton': '\ud83c\udf5b',
+          'Vegetable Biryani': '\ud83c\udf5a', 'Garlic Naan': '\ud83e\uded1',
+          'Butter Naan': '\ud83e\uded1', 'Roti': '\ud83e\uded1',
+        };
+        ph.innerHTML = `<span>${emojiMap[name] || '\ud83c\udf7d\ufe0f'}</span><span>${name}</span>`;
+        visual.appendChild(ph);
+      }
+
+      // ===== Cart Sidebar =====
+      const cartToggle = document.getElementById('cartToggle');
+      const cartSidebar = document.getElementById('cartSidebar');
+      const cartOverlay = document.getElementById('cartOverlay');
+      const cartClose = document.getElementById('cartClose');
+
+      function openCart() {
+        cartSidebar.classList.add('active');
+        cartOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeCart() {
+        cartSidebar.classList.remove('active');
+        cartOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
+      cartToggle.addEventListener('click', openCart);
+      cartClose.addEventListener('click', closeCart);
+      cartOverlay.addEventListener('click', closeCart);
+
+      document.getElementById('checkoutBtn').addEventListener('click', function() {
+        if (cart.length === 0) return;
+        const items = cart.map(i => `${i.name} x${i.qty}`).join('\n');
+        const total = document.getElementById('cartTotal').textContent;
+        const msg = encodeURIComponent(`Hi! I'd like to order:\n${items}\n\nTotal: ${total} PLN`);
+        window.open(`https://wa.me/?text=${msg}`, '_blank');
+      });
+
+      // Init cart
+      renderCart();
     });
   </script>
 </body>
