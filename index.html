@@ -352,7 +352,17 @@
     }
 
     .menu-item h4:hover {
-      transform: scale(1.08) translateY(-2px);
+      transform: scale(1.5) translateY(-2px);
+      color: #b8862b;
+      text-shadow:
+        1px 1px 0 #7a4f12,
+        2px 2px 0 rgba(90, 55, 10, 0.35),
+        0 8px 18px rgba(0, 0, 0, 0.22);
+      background: transparent;
+    }
+
+    .menu-item h4.active {
+      transform: scale(1.5) translateY(-2px);
       color: #b8862b;
       text-shadow:
         1px 1px 0 #7a4f12,
@@ -1198,6 +1208,24 @@
     }
     .cart-sidebar .btn-order:hover { box-shadow: 0 8px 24px rgba(196,148,58,0.3); }
 
+    /* === 3D Depth Gallery === */
+    .food-float-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .food-float {
+      position: absolute;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      object-fit: cover;
+      will-change: transform;
+      backface-visibility: hidden;
+      opacity: 0;
+    }
+
     @media (max-width: 640px) {
       .modal-visual { height: 240px; }
       .modal-info { padding: 18px 20px; }
@@ -1205,7 +1233,7 @@
       .cart-sidebar { width: 100vw; }
       .nav-cart { margin-left: 8px; }
       .btn-ar-modal { font-size: 13px; padding: 12px; }
-
+      .food-float { display: none; }
     }
   </style>
 </head>
@@ -1227,6 +1255,17 @@
       <span class="cart-count" id="cartBadge">0</span>
     </div>
   </nav>
+
+  <div class="food-float-container">
+    <img class="food-float" src="https://curryleaves.pl/wp-content/uploads/2024/10/CurryLeaves-Slider.png" alt="">
+    <img class="food-float" src="https://curryleaves.pl/wp-content/uploads/2024/10/CurryLeaves-Slider-1.png" alt="">
+    <img class="food-float" src="https://curryleaves.pl/wp-content/uploads/2024/10/Untitled-design-1.png" alt="">
+    <img class="food-float" src="https://curryleaves.pl/wp-content/uploads/2024/10/Untitled-design-2.png" alt="">
+    <img class="food-float" src="https://curryleaves.pl/wp-content/uploads/2024/10/Add-a-heading-2-1.png" alt="">
+    <img class="food-float" src="https://curryleaves.pl/wp-content/uploads/2024/10/14.png" alt="">
+    <img class="food-float" src="https://curryleaves.pl/wp-content/uploads/2024/10/15.png" alt="">
+    <img class="food-float" src="https://curryleaves.pl/wp-content/uploads/2024/10/10.png" alt="">
+  </div>
 
   <section class="hero" id="hero">
     <div class="hero-particles">
@@ -2252,6 +2291,111 @@
           h4.style.transformOrigin = `${x}% ${y}%`;
         });
       });
+
+      // ===== 3D Depth Gallery =====
+      const items = document.querySelectorAll('.food-float');
+      const n = items.length;
+      const baseSizes = [
+        [160, 107], [140, 92], [110, 143], [140, 95],
+        [155, 104], [130, 86], [145, 98], [110, 143]
+      ];
+      const origW = [], origH = [];
+      items.forEach((el, i) => {
+        const [w, h] = baseSizes[i];
+        origW[i] = w; origH[i] = h;
+        if (i % 2 === 0) {
+          el.style.left = '6px';
+          el.style.right = 'auto';
+        } else {
+          el.style.right = '6px';
+          el.style.left = 'auto';
+        }
+        el.style.top = '50%';
+        el.style.marginTop = (-h / 2) + 'px';
+        el.style.width = w + 'px';
+        el.style.height = h + 'px';
+      });
+
+      function easeInOut(t) {
+        return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+      }
+
+      function smoothPlateau(t) {
+        const p = 0.3, q = 0.7;
+        if (t < p) return 0.5 * easeInOut(t / p);
+        if (t > q) return 0.5 + 0.5 * easeInOut((t - q) / (1 - q));
+        return 0.5;
+      }
+
+      function updateDepthGallery() {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? Math.min(Math.max(scrollTop / docHeight, 0), 1) : 0;
+        const maxW = window.innerWidth * 0.22;
+
+        items.forEach((el, i) => {
+          const zoneSize = 1 / n;
+          const zoneStart = i * zoneSize;
+          const zoneEnd = (i + 1) * zoneSize;
+          const rawT = (progress - zoneStart) / zoneSize;
+          const clampedT = Math.max(0, Math.min(1, rawT));
+          const smoothT = smoothPlateau(clampedT);
+
+          const scale = 0.25 + 1.75 * Math.sin(smoothT * Math.PI);
+          const opacity = Math.max(0.04, 0.04 + 0.91 * Math.sin(smoothT * Math.PI));
+          const shiftY = (0.5 - smoothT) * 120;
+          const rotate = (smoothT - 0.5) * 20;
+          const zDepth = smoothT < 0.5 ? smoothT * 2 : (1 - smoothT) * 2;
+          const blur = Math.max(0, (1 - zDepth) * 5);
+
+          const displayW = Math.min(Math.round(origW[i] * scale), maxW);
+          const displayH = Math.round(displayW * (origH[i] / origW[i]));
+          el.style.width = displayW + 'px';
+          el.style.height = displayH + 'px';
+          el.style.marginTop = (-displayH / 2) + 'px';
+
+          el.style.opacity = opacity;
+          el.style.transform = `translateY(${shiftY}px) rotateY(${rotate}deg)`;
+          el.style.filter = `blur(${blur}px)`;
+        });
+      }
+
+      let rafId = null;
+      window.addEventListener('scroll', () => {
+        if (!rafId) {
+          rafId = requestAnimationFrame(() => {
+            updateDepthGallery();
+            updateCenterItem();
+            rafId = null;
+          });
+        }
+      }, { passive: true });
+
+      updateDepthGallery();
+
+      // ===== Scroll-center 3D item =====
+      let lastActive = null;
+      function updateCenterItem() {
+        const viewCenter = window.innerHeight / 2;
+        let closest = null;
+        let closestDist = Infinity;
+        document.querySelectorAll('.menu-item h4').forEach(h4 => {
+          const rect = h4.getBoundingClientRect();
+          const mid = rect.top + rect.height / 2;
+          const dist = Math.abs(mid - viewCenter);
+          if (dist < closestDist) {
+            closestDist = dist;
+            closest = h4;
+          }
+        });
+        if (closest !== lastActive) {
+          if (lastActive) lastActive.classList.remove('active');
+          if (closest) closest.classList.add('active');
+          lastActive = closest;
+        }
+      }
+
+      updateCenterItem();
 
       // Init cart
       renderCart();
