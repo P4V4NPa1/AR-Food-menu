@@ -133,7 +133,7 @@
       max-width: 640px;
       margin: 0 auto;
       position: relative;
-      z-index: 1;
+      z-index: 3;
     }
 
     .hero h1 em { font-style: italic; color: #C4943A; }
@@ -147,7 +147,7 @@
       margin-right: auto;
       line-height: 1.7;
       position: relative;
-      z-index: 1;
+      z-index: 3;
     }
 
     .hero-buttons {
@@ -248,6 +248,14 @@
     .section-title h2 span { color: #8B1A1A; }
     .section-title p { font-size: 14px; color: #8B7D6B; margin-top: 6px; }
 
+    #menu-full {
+      background:
+        radial-gradient(ellipse at 18% 0%, rgba(196,148,58,0.14), transparent 38%),
+        radial-gradient(ellipse at 82% 12%, rgba(139,26,26,0.08), transparent 35%),
+        linear-gradient(180deg, #FFF8E7 0%, #FBF0D9 100%);
+      padding-bottom: 12px;
+    }
+
     .about-section {
       background: #FFF8E7;
       padding: 20px 20px 50px;
@@ -270,7 +278,16 @@
       max-width: 720px;
       margin: 16px auto 0;
       padding: 0 16px;
-      background: #FFF8E7;
+      background: transparent;
+      position: relative;
+      z-index: 2;
+    }
+
+    #menu-filter {
+      max-width: 760px;
+      padding: 10px 16px 18px;
+      margin-top: 0;
+      background: linear-gradient(180deg, #FBF0D9 0%, rgba(251,240,217,0.88) 100%);
     }
 
     .menu-filter button {
@@ -293,14 +310,34 @@
     }
 
     .menu-section {
-      background: #FFF8E7;
-      padding: 10px 16px 50px;
+      background:
+        radial-gradient(ellipse at 12% 18%, rgba(196,148,58,0.13), transparent 34%),
+        radial-gradient(ellipse at 88% 42%, rgba(139,26,26,0.08), transparent 30%),
+        linear-gradient(180deg, #FFF8E7 0%, #FBF0D9 46%, #FFF8E7 100%);
+      padding: 18px 16px 58px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .menu-section::before {
+      content: '';
+      position: absolute;
+      inset: 18px max(18px, calc((100vw - 860px) / 2)) 32px;
+      border: 1px solid rgba(196,148,58,0.18);
+      border-radius: 30px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.48), rgba(255,248,231,0.08)),
+        radial-gradient(circle at 50% 0%, rgba(255,255,255,0.52), transparent 42%);
+      box-shadow: 0 24px 80px rgba(139,26,26,0.06), inset 0 1px 0 rgba(255,255,255,0.65);
+      pointer-events: none;
     }
 
     .menu-grid {
       max-width: 720px;
       margin: 0 auto;
       perspective: 1000px;
+      position: relative;
+      z-index: 1;
     }
 
     .menu-category {
@@ -348,26 +385,49 @@
       z-index: 2;
       border-radius: 30px;
       background: transparent;
-      transition: transform 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
+      transform-style: preserve-3d;
+      transition: transform 0.34s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease, text-shadow 0.3s ease, letter-spacing 0.3s ease;
+      isolation: isolate;
+    }
+
+    .menu-item h4::after {
+      content: '';
+      position: absolute;
+      inset: -4px -12px -5px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.72), rgba(196,148,58,0.16));
+      box-shadow: 0 12px 28px rgba(139,26,26,0.1), inset 0 1px 0 rgba(255,255,255,0.78);
+      opacity: 0;
+      transform: translateZ(-1px) scale(0.92);
+      transition: opacity 0.28s ease, transform 0.34s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: -1;
     }
 
     .menu-item h4:hover {
-      transform: scale(1.5) translateY(-2px);
-      color: #b8862b;
+      transform: perspective(700px) translateY(-2px) translateZ(18px) rotateX(5deg) scale(1.18);
+      color: #9f6d1f;
+      letter-spacing: 0.2px;
       text-shadow:
-        1px 1px 0 #7a4f12,
-        2px 2px 0 rgba(90, 55, 10, 0.35),
-        0 8px 18px rgba(0, 0, 0, 0.22);
+        0 1px 0 rgba(255,255,255,0.85),
+        0 8px 18px rgba(139,26,26,0.12),
+        0 18px 34px rgba(26,15,0,0.16);
       background: transparent;
     }
 
+    .menu-item h4:hover::after,
+    .menu-item h4.active::after {
+      opacity: 1;
+      transform: translateZ(-1px) scale(1);
+    }
+
     .menu-item h4.active {
-      transform: scale(1.5) translateY(-2px);
-      color: #b8862b;
+      transform: perspective(700px) translateY(-2px) translateZ(18px) rotateX(5deg) scale(1.18);
+      color: #9f6d1f;
+      letter-spacing: 0.2px;
       text-shadow:
-        1px 1px 0 #7a4f12,
-        2px 2px 0 rgba(90, 55, 10, 0.35),
-        0 8px 18px rgba(0, 0, 0, 0.22);
+        0 1px 0 rgba(255,255,255,0.85),
+        0 8px 18px rgba(139,26,26,0.12),
+        0 18px 34px rgba(26,15,0,0.16);
       background: transparent;
     }
 
@@ -1208,22 +1268,277 @@
     }
     .cart-sidebar .btn-order:hover { box-shadow: 0 8px 24px rgba(196,148,58,0.3); }
 
-    /* === 3D Depth Gallery === */
-    .food-float-container {
+    /* === AI Menu Assistant === */
+    .ai-assistant {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 420;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .ai-toggle {
+      width: 62px;
+      height: 62px;
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 22px;
+      background: linear-gradient(145deg, #1A0F00 0%, #3b2106 45%, #C4943A 130%);
+      color: #fff8e7;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 18px 50px rgba(26,15,0,0.32), 0 0 0 6px rgba(196,148,58,0.12);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .ai-toggle:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 22px 60px rgba(26,15,0,0.38), 0 0 0 8px rgba(196,148,58,0.12); }
+    .ai-toggle svg { width: 30px; height: 30px; fill: currentColor; }
+
+    .ai-panel {
+      position: absolute;
+      right: 0;
+      bottom: 78px;
+      width: 380px;
+      max-width: calc(100vw - 32px);
+      height: 560px;
+      max-height: calc(100vh - 120px);
+      background: rgba(255,248,231,0.96);
+      border: 1px solid rgba(196,148,58,0.26);
+      border-radius: 24px;
+      box-shadow: 0 28px 80px rgba(26,15,0,0.28);
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(16px) scale(0.96);
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ai-assistant.open .ai-panel { opacity: 1; transform: translateY(0) scale(1); pointer-events: all; }
+
+    .ai-header {
+      padding: 18px 18px 16px;
+      background:
+        radial-gradient(circle at 18% 20%, rgba(196,148,58,0.28), transparent 34%),
+        linear-gradient(135deg, #1A0F00, #321b05 62%, #8B1A1A);
+      color: #FFF8E7;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .ai-kicker { font-size: 10px; letter-spacing: 1.4px; text-transform: uppercase; color: #E7C46F; font-weight: 700; }
+    .ai-title { font-family: 'Playfair Display', serif; font-size: 22px; line-height: 1.1; margin-top: 2px; }
+    .ai-subtitle { font-size: 12px; color: rgba(255,248,231,0.72); margin-top: 5px; line-height: 1.4; }
+
+    .ai-close {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      color: #FFF8E7;
+      font-size: 18px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .ai-messages {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .ai-msg {
+      max-width: 88%;
+      padding: 11px 13px;
+      border-radius: 16px;
+      font-size: 13px;
+      line-height: 1.48;
+      white-space: pre-line;
+    }
+
+    .ai-msg.bot {
+      align-self: flex-start;
+      background: white;
+      color: #3D2B1A;
+      border: 1px solid #F0E4D0;
+      border-bottom-left-radius: 5px;
+      box-shadow: 0 6px 18px rgba(139,26,26,0.04);
+    }
+
+    .ai-msg.user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #C4943A, #A0762E);
+      color: white;
+      border-bottom-right-radius: 5px;
+      box-shadow: 0 8px 20px rgba(196,148,58,0.22);
+    }
+
+    .ai-chips {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 0 16px 12px;
+      scrollbar-width: none;
+    }
+
+    .ai-chips::-webkit-scrollbar { display: none; }
+    .ai-chip {
+      border: 1px solid #E8DCC8;
+      background: white;
+      color: #5A4A38;
+      border-radius: 999px;
+      padding: 8px 11px;
+      font-size: 11px;
+      white-space: nowrap;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+    }
+    .ai-chip:hover { border-color: #C4943A; color: #8B1A1A; transform: translateY(-1px); }
+
+    .ai-form {
+      border-top: 1px solid #F0E4D0;
+      padding: 12px;
+      display: flex;
+      gap: 8px;
+      background: rgba(255,255,255,0.64);
+    }
+
+    .ai-form input {
+      flex: 1;
+      border: 1px solid #E8DCC8;
+      border-radius: 14px;
+      background: white;
+      padding: 12px 13px;
+      color: #2b1608;
+      font-size: 13px;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      min-width: 0;
+    }
+
+    .ai-form input:focus { border-color: #C4943A; box-shadow: 0 0 0 3px rgba(196,148,58,0.12); }
+
+    .ai-form button {
+      width: 44px;
+      border: none;
+      border-radius: 14px;
+      background: #1A0F00;
+      color: #FFF8E7;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .ai-form button svg { width: 18px; height: 18px; fill: currentColor; }
+
+    /* === Scroll Spice Aurora === */
+    .spice-field {
       position: fixed;
       inset: 0;
       pointer-events: none;
-      z-index: 0;
+      z-index: 3;
       overflow: hidden;
+      opacity: 0.75;
+      --scroll: 0;
+      --spin: 0deg;
+      --spin-rev: 0deg;
+      --spin-soft: 0deg;
+      --bloom: 0;
+      --field-scale: 1;
+      --field-rotate: 0deg;
+      --field-y: 0px;
+      --ring-1-scale: 0.7;
+      --ring-2-scale: 0.82;
+      --ring-3-scale: 0.88;
+      mask-image: radial-gradient(ellipse 34% 78% at 50% 50%, transparent 0 50%, #000 70%);
+      -webkit-mask-image: radial-gradient(ellipse 34% 78% at 50% 50%, transparent 0 50%, #000 70%);
+      mix-blend-mode: multiply;
     }
-    .food-float {
+
+    .spice-field::before,
+    .spice-field::after {
+      content: '';
       position: absolute;
-      border-radius: 16px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-      object-fit: cover;
+      inset: -20%;
+      background:
+        conic-gradient(from var(--spin), transparent 0deg, rgba(196,148,58,0.34) 42deg, transparent 92deg, rgba(139,26,26,0.22) 156deg, transparent 230deg, rgba(235,166,49,0.28) 298deg, transparent 360deg);
+      filter: blur(52px) saturate(1.4);
+      transform: scale(var(--field-scale)) rotate(var(--field-rotate));
+      opacity: 0.38;
+    }
+
+    .spice-field::after {
+      inset: 6% 0;
+      background:
+        radial-gradient(circle at 8% 18%, rgba(196,148,58,0.45), transparent 16%),
+        radial-gradient(circle at 92% 35%, rgba(139,26,26,0.32), transparent 18%),
+        radial-gradient(circle at 10% 82%, rgba(235,166,49,0.38), transparent 15%),
+        radial-gradient(circle at 90% 78%, rgba(196,148,58,0.4), transparent 16%);
+      filter: blur(34px);
+      transform: translateY(var(--field-y));
+      opacity: 0.7;
+    }
+
+    .spice-ring {
+      position: absolute;
+      width: 46vmax;
+      height: 46vmax;
+      border: 1px solid rgba(196,148,58,0.22);
+      border-radius: 50%;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) rotate(var(--spin)) scale(var(--ring-1-scale));
+      box-shadow:
+        inset 0 0 70px rgba(196,148,58,0.06),
+        0 0 70px rgba(139,26,26,0.08);
+      opacity: 0.42;
       will-change: transform;
-      backface-visibility: hidden;
-      opacity: 0;
+    }
+
+    .spice-ring:nth-child(2) {
+      width: 64vmax;
+      height: 64vmax;
+      border-color: rgba(139,26,26,0.18);
+      transform: translate(-50%, -50%) rotate(var(--spin-rev)) scale(var(--ring-2-scale));
+    }
+
+    .spice-ring:nth-child(3) {
+      width: 82vmax;
+      height: 82vmax;
+      border-style: dashed;
+      border-color: rgba(196,148,58,0.18);
+      transform: translate(-50%, -50%) rotate(var(--spin-soft)) scale(var(--ring-3-scale));
+    }
+
+    .spice-spark {
+      position: absolute;
+      width: 9px;
+      height: 9px;
+      left: 50%;
+      top: 50%;
+      border-radius: 999px;
+      background: radial-gradient(circle, #fff7cf 0 10%, #e6aa36 45%, rgba(139,26,26,0.1) 72%, transparent 73%);
+      box-shadow: 0 0 22px rgba(196,148,58,0.58);
+      opacity: 0.78;
+      transform: translate(-50%, -50%);
+      will-change: transform, opacity;
+    }
+
+    .about-section, .section-title, .menu-filter, .menu-section, .delivery-section, .locations-section, .contact-bar, .testimonials, .social-bar, footer {
+      position: relative;
+      z-index: 2;
     }
 
     @media (max-width: 640px) {
@@ -1233,7 +1548,47 @@
       .cart-sidebar { width: 100vw; }
       .nav-cart { margin-left: 8px; }
       .btn-ar-modal { font-size: 13px; padding: 12px; }
-      .food-float { display: none; }
+      .spice-field {
+        opacity: 0.42;
+        mask-image: radial-gradient(ellipse 58% 82% at 50% 50%, transparent 0 54%, #000 78%);
+        -webkit-mask-image: radial-gradient(ellipse 58% 82% at 50% 50%, transparent 0 54%, #000 78%);
+      }
+      .spice-ring { width: 68vmax; height: 68vmax; }
+      .spice-spark { width: 6px; height: 6px; }
+      .menu-item h4:hover,
+      .menu-item h4.active {
+        transform: perspective(560px) translateY(-1px) translateZ(12px) rotateX(4deg) scale(1.1);
+      }
+      .menu-item h4::after { inset: -3px -8px -4px; }
+
+      .ai-assistant {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+      }
+
+      .ai-toggle {
+        width: 56px;
+        height: 56px;
+        margin-left: auto;
+        border-radius: 19px;
+      }
+
+      .ai-panel {
+        left: 0;
+        right: 0;
+        bottom: 68px;
+        width: auto;
+        max-width: none;
+        height: min(72vh, 560px);
+        max-height: calc(100vh - 92px);
+        border-radius: 22px;
+      }
+
+      .ai-header { padding: 16px; }
+      .ai-title { font-size: 20px; }
+      .ai-msg { font-size: 12.5px; max-width: 92%; }
+      .ai-form input { font-size: 16px; padding: 11px 12px; }
     }
   </style>
 </head>
@@ -1256,15 +1611,21 @@
     </div>
   </nav>
 
-  <div class="food-float-container">
-    <img class="food-float" src="https://curryleaves.pl/wp-content/uploads/2024/10/CurryLeaves-Slider.png" alt="">
-    <img class="food-float" src="https://curryleaves.pl/wp-content/uploads/2024/10/CurryLeaves-Slider-1.png" alt="">
-    <img class="food-float" src="https://curryleaves.pl/wp-content/uploads/2024/10/Untitled-design-1.png" alt="">
-    <img class="food-float" src="https://curryleaves.pl/wp-content/uploads/2024/10/Untitled-design-2.png" alt="">
-    <img class="food-float" src="https://curryleaves.pl/wp-content/uploads/2024/10/Add-a-heading-2-1.png" alt="">
-    <img class="food-float" src="https://curryleaves.pl/wp-content/uploads/2024/10/14.png" alt="">
-    <img class="food-float" src="https://curryleaves.pl/wp-content/uploads/2024/10/15.png" alt="">
-    <img class="food-float" src="https://curryleaves.pl/wp-content/uploads/2024/10/10.png" alt="">
+  <div class="spice-field" aria-hidden="true">
+    <span class="spice-ring"></span>
+    <span class="spice-ring"></span>
+    <span class="spice-ring"></span>
+    <span class="spice-spark"></span>
+    <span class="spice-spark"></span>
+    <span class="spice-spark"></span>
+    <span class="spice-spark"></span>
+    <span class="spice-spark"></span>
+    <span class="spice-spark"></span>
+    <span class="spice-spark"></span>
+    <span class="spice-spark"></span>
+    <span class="spice-spark"></span>
+    <span class="spice-spark"></span>
+    <span class="spice-spark"></span>
   </div>
 
   <section class="hero" id="hero">
@@ -1887,6 +2248,38 @@
     </div>
   </div>
 
+  <!-- AI Menu Assistant -->
+  <div class="ai-assistant" id="aiAssistant">
+    <div class="ai-panel" role="dialog" aria-label="Curry Leaves AI menu assistant">
+      <div class="ai-header">
+        <div>
+          <div class="ai-kicker">AI Menu Guide</div>
+          <div class="ai-title">Ask about dishes</div>
+          <div class="ai-subtitle">Vegan options, ingredients, spice levels, pairings, prices, and locations.</div>
+        </div>
+        <button class="ai-close" id="aiClose" type="button" aria-label="Close assistant">&times;</button>
+      </div>
+      <div class="ai-messages" id="aiMessages">
+        <div class="ai-msg bot">Hi, I can help you choose from the Curry Leaves menu. Ask me things like “Is Dal Tadka vegan?”, “What is in Butter Chicken?”, or “Where are your locations?”</div>
+      </div>
+      <div class="ai-chips" id="aiChips">
+        <button class="ai-chip" type="button">vegan options</button>
+        <button class="ai-chip" type="button">recommend something spicy</button>
+        <button class="ai-chip" type="button">where are you located?</button>
+        <button class="ai-chip" type="button">gluten free dishes</button>
+      </div>
+      <form class="ai-form" id="aiForm">
+        <input id="aiInput" type="text" autocomplete="off" placeholder="Ask about food, ingredients, locations...">
+        <button type="submit" aria-label="Send question">
+          <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+        </button>
+      </form>
+    </div>
+    <button class="ai-toggle" id="aiToggle" type="button" aria-label="Open AI menu assistant" aria-expanded="false">
+      <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-7 7v1.1A5 5 0 007 20h10a5 5 0 002-9.58V9a7 7 0 00-7-7zm-3 8.5a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5zm6 0a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5zm-6.4 3.1h6.8c-.45 1.35-1.64 2.25-3.4 2.25s-2.95-.9-3.4-2.25z"/></svg>
+    </button>
+  </div>
+
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const observer = new IntersectionObserver((entries) => {
@@ -1992,6 +2385,135 @@
           pair.textContent = 'Recommended with ' + pairings[name];
           meta.parentNode.insertBefore(pair, meta.nextSibling);
         }
+      });
+
+      // ===== AI Menu Assistant =====
+      const aiAssistant = document.getElementById('aiAssistant');
+      const aiToggle = document.getElementById('aiToggle');
+      const aiClose = document.getElementById('aiClose');
+      const aiForm = document.getElementById('aiForm');
+      const aiInput = document.getElementById('aiInput');
+      const aiMessages = document.getElementById('aiMessages');
+
+      const cleanName = (name) => name.replace(/\s*(Bestseller|#1)\s*$/i, '').trim();
+      const menuData = Array.from(menuItems).map(item => {
+        const tags = Array.from(item.querySelectorAll('.diet-tag')).map(tag => tag.textContent.trim().toUpperCase());
+        const spice = item.querySelector('.spice')?.textContent.trim() || 'Mild';
+        const name = cleanName(item.querySelector('h4')?.textContent || '');
+        return {
+          name,
+          searchName: name.toLowerCase(),
+          category: item.dataset.cat || '',
+          desc: item.querySelector('.desc')?.textContent.trim() || '',
+          price: item.querySelector('.price')?.textContent.trim() || '',
+          spice,
+          tags,
+          pairing: pairings[name] || ''
+        };
+      }).filter(item => item.name);
+
+      const locationData = Array.from(document.querySelectorAll('.location-card')).map(card => ({
+        name: card.querySelector('h3')?.textContent.trim() || '',
+        area: card.querySelector('.neighborhood')?.textContent.trim() || '',
+        hours: card.querySelector('.hours')?.textContent.trim() || '',
+        address: card.querySelector('.address')?.innerText.trim().replace(/\n/g, ', ') || '',
+        phone: card.querySelector('.phone')?.textContent.trim() || ''
+      })).filter(location => location.name);
+
+      function addAiMessage(text, type = 'bot') {
+        const msg = document.createElement('div');
+        msg.className = `ai-msg ${type}`;
+        msg.textContent = text;
+        aiMessages.appendChild(msg);
+        aiMessages.scrollTop = aiMessages.scrollHeight;
+      }
+
+      function findDish(query) {
+        const q = query.toLowerCase();
+        return menuData.find(item => q.includes(item.searchName)) ||
+          menuData.find(item => item.searchName.split(/\s+|—|-|\(|\)/).filter(Boolean).some(part => part.length > 3 && q.includes(part)));
+      }
+
+      function formatDish(item) {
+        const diet = [];
+        if (item.tags.includes('VG')) diet.push('vegan');
+        if (item.tags.includes('V')) diet.push('vegetarian');
+        if (item.tags.includes('GF')) diet.push('gluten-free');
+        return `${item.name} — ${item.price}\n${item.desc}\nSpice: ${item.spice}${diet.length ? `\nDiet: ${diet.join(', ')}` : ''}${item.pairing ? `\nRecommended with: ${item.pairing}` : ''}`;
+      }
+
+      function listByTag(tag, label) {
+        const matches = menuData.filter(item => item.tags.includes(tag));
+        return matches.length
+          ? `${label}:\n${matches.map(item => `• ${item.name} (${item.price})`).join('\n')}`
+          : `I could not find any ${label.toLowerCase()} marked on this menu.`;
+      }
+
+      function answerQuestion(question) {
+        const q = question.toLowerCase();
+        const dish = findDish(q);
+
+        if (/location|address|where|phone|hours|open|warszawa|warsaw|gda|poznan|pozna/.test(q)) {
+          return `Curry Leaves locations:\n${locationData.map(loc => `• ${loc.name}: ${loc.address}${loc.phone ? `, ${loc.phone}` : ''}\n  ${loc.hours}`).join('\n')}`;
+        }
+
+        if (/vegan|plant/.test(q)) return listByTag('VG', 'Vegan options');
+        if (/vegetarian|veggie/.test(q)) return listByTag('V', 'Vegetarian options');
+        if (/gluten|gf|gluten-free|gluten free/.test(q)) return listByTag('GF', 'Gluten-free options');
+
+        if (/recommend|suggest|best|popular|what should|choose/.test(q)) {
+          if (/spicy|hot|chilli|chili/.test(q)) {
+            const spicy = menuData.filter(item => (item.spice.match(/🌶️/g) || []).length >= 3).slice(0, 5);
+            return `For a spicy order, I would recommend:\n${spicy.map(formatDish).join('\n\n')}`;
+          }
+          const picks = ['Butter Chicken', 'Samosa', 'Chicken Tikka Masala', 'Palak Paneer'].map(name => menuData.find(item => item.name === name)).filter(Boolean);
+          return `A strong first order would be:\n${picks.map(formatDish).join('\n\n')}`;
+        }
+
+        if (dish) {
+          if (/vegan/.test(q)) return dish.tags.includes('VG') ? `Yes, ${dish.name} is marked vegan.\n${formatDish(dish)}` : `${dish.name} is not marked vegan on this menu.\n${formatDish(dish)}`;
+          if (/vegetarian/.test(q)) return dish.tags.includes('V') ? `Yes, ${dish.name} is marked vegetarian.\n${formatDish(dish)}` : `${dish.name} is not marked vegetarian on this menu.\n${formatDish(dish)}`;
+          if (/gluten|gf/.test(q)) return dish.tags.includes('GF') ? `Yes, ${dish.name} is marked gluten-free.\n${formatDish(dish)}` : `${dish.name} is not marked gluten-free on this menu.\n${formatDish(dish)}`;
+          if (/ingredient|what.*in|made|contain/.test(q)) return `${dish.name} ingredients from the menu description:\n${dish.desc}\n\nSpice: ${dish.spice}${dish.pairing ? `\nRecommended with: ${dish.pairing}` : ''}`;
+          if (/price|cost|how much/.test(q)) return `${dish.name} costs ${dish.price}.`;
+          if (/spice|spicy|hot/.test(q)) return `${dish.name} spice level: ${dish.spice}.\n${dish.desc}`;
+          return formatDish(dish);
+        }
+
+        if (/menu|food|dish/.test(q)) {
+          return `You can ask me about any dish name, dietary filter, spice level, price, pairing, or ingredients. Try “Is Chana Masala vegan?”, “What is in Samosa?”, or “recommend something spicy”.`;
+        }
+
+        return `I can help with menu questions, vegan/vegetarian/gluten-free options, ingredients, spice levels, prices, pairings, and locations. Try asking “Is Dal Tadka vegan?” or “Where is Curry Leaves in Warszawa?”`;
+      }
+
+      function submitAiQuestion(question) {
+        const text = question.trim();
+        if (!text) return;
+        addAiMessage(text, 'user');
+        aiInput.value = '';
+        setTimeout(() => addAiMessage(answerQuestion(text)), 180);
+      }
+
+      aiToggle.addEventListener('click', () => {
+        aiAssistant.classList.toggle('open');
+        const open = aiAssistant.classList.contains('open');
+        aiToggle.setAttribute('aria-expanded', String(open));
+        if (open) setTimeout(() => aiInput.focus(), 120);
+      });
+
+      aiClose.addEventListener('click', () => {
+        aiAssistant.classList.remove('open');
+        aiToggle.setAttribute('aria-expanded', 'false');
+      });
+
+      aiForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        submitAiQuestion(aiInput.value);
+      });
+
+      document.querySelectorAll('.ai-chip').forEach(chip => {
+        chip.addEventListener('click', () => submitAiQuestion(chip.textContent));
       });
 
       // ===== Cart State =====
@@ -2292,71 +2814,40 @@
         });
       });
 
-      // ===== 3D Depth Gallery =====
-      const items = document.querySelectorAll('.food-float');
-      const n = items.length;
-      const baseSizes = [
-        [160, 107], [140, 92], [110, 143], [140, 95],
-        [155, 104], [130, 86], [145, 98], [110, 143]
-      ];
-      const origW = [], origH = [];
-      items.forEach((el, i) => {
-        const [w, h] = baseSizes[i];
-        origW[i] = w; origH[i] = h;
-        if (i % 2 === 0) {
-          el.style.left = '6px';
-          el.style.right = 'auto';
-        } else {
-          el.style.right = '6px';
-          el.style.left = 'auto';
-        }
-        el.style.top = '50%';
-        el.style.marginTop = (-h / 2) + 'px';
-        el.style.width = w + 'px';
-        el.style.height = h + 'px';
-      });
+      // ===== Scroll Spice Aurora =====
+      const spiceField = document.querySelector('.spice-field');
+      const spiceSparks = document.querySelectorAll('.spice-spark');
 
-      function easeInOut(t) {
-        return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-      }
-
-      function smoothPlateau(t) {
-        const p = 0.3, q = 0.7;
-        if (t < p) return 0.5 * easeInOut(t / p);
-        if (t > q) return 0.5 + 0.5 * easeInOut((t - q) / (1 - q));
-        return 0.5;
-      }
-
-      function updateDepthGallery() {
+      function updateSpiceField() {
+        if (!spiceField) return;
         const scrollTop = window.scrollY;
         const docHeight = document.documentElement.scrollHeight - window.innerHeight;
         const progress = docHeight > 0 ? Math.min(Math.max(scrollTop / docHeight, 0), 1) : 0;
-        const maxW = window.innerWidth * 0.22;
+        const bloom = 0.45 + 0.55 * Math.sin(progress * Math.PI * 5);
 
-        items.forEach((el, i) => {
-          const zoneSize = 1 / n;
-          const zoneStart = i * zoneSize;
-          const zoneEnd = (i + 1) * zoneSize;
-          const rawT = (progress - zoneStart) / zoneSize;
-          const clampedT = Math.max(0, Math.min(1, rawT));
-          const smoothT = smoothPlateau(clampedT);
+        spiceField.style.setProperty('--scroll', progress.toFixed(4));
+        spiceField.style.setProperty('--spin', `${(progress * 820).toFixed(2)}deg`);
+        spiceField.style.setProperty('--spin-rev', `${(progress * -574).toFixed(2)}deg`);
+        spiceField.style.setProperty('--spin-soft', `${(progress * 369).toFixed(2)}deg`);
+        spiceField.style.setProperty('--bloom', bloom.toFixed(4));
+        spiceField.style.setProperty('--field-scale', (1 + bloom * 0.16).toFixed(4));
+        spiceField.style.setProperty('--field-rotate', `${(progress * 90).toFixed(2)}deg`);
+        spiceField.style.setProperty('--field-y', `${((progress - 0.5) * -120).toFixed(1)}px`);
+        spiceField.style.setProperty('--ring-1-scale', (0.7 + bloom * 0.22).toFixed(4));
+        spiceField.style.setProperty('--ring-2-scale', (0.82 + bloom * 0.16).toFixed(4));
+        spiceField.style.setProperty('--ring-3-scale', (0.88 + bloom * 0.12).toFixed(4));
 
-          const scale = 0.25 + 1.75 * Math.sin(smoothT * Math.PI);
-          const opacity = Math.max(0.04, 0.04 + 0.91 * Math.sin(smoothT * Math.PI));
-          const shiftY = (0.5 - smoothT) * 120;
-          const rotate = (smoothT - 0.5) * 20;
-          const zDepth = smoothT < 0.5 ? smoothT * 2 : (1 - smoothT) * 2;
-          const blur = Math.max(0, (1 - zDepth) * 5);
+        spiceSparks.forEach((spark, i) => {
+          const angle = progress * Math.PI * (2.4 + (i % 4) * 0.28) + i * 0.78;
+          const side = i % 2 === 0 ? -1 : 1;
+          const edgeDrift = Math.min(window.innerWidth * 0.46, 520);
+          const x = side * (edgeDrift + Math.sin(angle * 1.7) * 44);
+          const y = Math.cos(angle) * window.innerHeight * 0.43 + Math.sin(progress * Math.PI * 6 + i) * 32;
+          const scale = 0.55 + ((i % 5) * 0.16) + bloom * 0.38;
+          const opacity = 0.35 + 0.5 * Math.abs(Math.sin(angle));
 
-          const displayW = Math.min(Math.round(origW[i] * scale), maxW);
-          const displayH = Math.round(displayW * (origH[i] / origW[i]));
-          el.style.width = displayW + 'px';
-          el.style.height = displayH + 'px';
-          el.style.marginTop = (-displayH / 2) + 'px';
-
-          el.style.opacity = opacity;
-          el.style.transform = `translateY(${shiftY}px) rotateY(${rotate}deg)`;
-          el.style.filter = `blur(${blur}px)`;
+          spark.style.opacity = opacity.toFixed(3);
+          spark.style.transform = `translate(-50%, -50%) translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) scale(${scale.toFixed(3)})`;
         });
       }
 
@@ -2364,14 +2855,14 @@
       window.addEventListener('scroll', () => {
         if (!rafId) {
           rafId = requestAnimationFrame(() => {
-            updateDepthGallery();
+            updateSpiceField();
             updateCenterItem();
             rafId = null;
           });
         }
       }, { passive: true });
 
-      updateDepthGallery();
+      updateSpiceField();
 
       // ===== Scroll-center 3D item =====
       let lastActive = null;
