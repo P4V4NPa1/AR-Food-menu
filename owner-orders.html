@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Curry Leaves Orders Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { min-height: 100vh; background: #120a00; color: #2b1608; font-family: 'Inter', sans-serif; }
+    .shell { min-height: 100vh; background: radial-gradient(circle at 12% 12%, rgba(196,148,58,0.18), transparent 32%), linear-gradient(135deg, #1A0F00, #2D1A05); padding: 26px; }
+    .topbar { max-width: 1180px; margin: 0 auto 18px; display: flex; justify-content: space-between; align-items: center; gap: 16px; color: #FFF8E7; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand img { width: 118px; height: auto; }
+    .brand h1 { font-family: 'Playfair Display', serif; font-size: 28px; }
+    .brand p { color: #CDBB9B; font-size: 13px; margin-top: 3px; }
+    .pill { border: 1px solid rgba(196,148,58,0.28); border-radius: 999px; color: #E7C46F; padding: 9px 13px; font-size: 12px; background: rgba(255,248,231,0.04); }
+    .login, .dashboard { max-width: 1180px; margin: 0 auto; }
+    .panel { background: #FFF8E7; border: 1px solid rgba(196,148,58,0.22); border-radius: 24px; box-shadow: 0 28px 90px rgba(0,0,0,0.32); overflow: hidden; }
+    .login .panel { max-width: 460px; margin: 80px auto 0; padding: 28px; }
+    .login h2 { font-family: 'Playfair Display', serif; font-size: 28px; margin-bottom: 8px; }
+    .login p { color: #6b5a44; font-size: 13px; line-height: 1.6; margin-bottom: 18px; }
+    input, select { width: 100%; border: 1px solid #E8DCC8; border-radius: 12px; padding: 12px 13px; background: white; color: #2b1608; font-family: 'Inter', sans-serif; font-size: 14px; outline: none; }
+    input:focus, select:focus { border-color: #C4943A; box-shadow: 0 0 0 3px rgba(196,148,58,0.12); }
+    button { border: none; border-radius: 12px; padding: 11px 13px; font-family: 'Inter', sans-serif; font-weight: 800; cursor: pointer; transition: all 0.2s; }
+    .primary { background: linear-gradient(135deg, #C4943A, #A0762E); color: white; width: 100%; margin-top: 12px; }
+    .secondary { background: #1A0F00; color: #FFF8E7; }
+    .danger { background: #8B1A1A; color: white; }
+    .light { background: white; color: #3D2B1A; border: 1px solid #E8DCC8; }
+    .dash-head { padding: 20px 22px; display: flex; justify-content: space-between; gap: 14px; align-items: center; border-bottom: 1px solid #F0E4D0; }
+    .dash-head h2 { font-family: 'Playfair Display', serif; font-size: 26px; }
+    .dash-head p { color: #8B7D6B; font-size: 13px; margin-top: 3px; }
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; padding: 16px 22px; background: rgba(255,255,255,0.45); border-bottom: 1px solid #F0E4D0; }
+    .filters button.active { background: #C4943A; color: white; border-color: #C4943A; }
+    .orders { padding: 18px 22px 24px; display: grid; gap: 14px; }
+    .order-card { background: white; border: 1px solid #F0E4D0; border-radius: 18px; padding: 16px; display: grid; grid-template-columns: 1fr auto; gap: 16px; box-shadow: 0 10px 28px rgba(139,26,26,0.05); }
+    .order-meta { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 12px; }
+    .tag { border-radius: 999px; padding: 5px 9px; font-size: 11px; font-weight: 800; background: #FFF3E0; color: #A65F00; }
+    .tag.status { background: #E8F5E9; color: #2E7D32; }
+    .tag.pay { background: #E3F2FD; color: #1565C0; }
+    .order-card h3 { font-size: 17px; margin-bottom: 3px; }
+    .muted { color: #8B7D6B; font-size: 12px; line-height: 1.5; }
+    .items { margin-top: 10px; display: grid; gap: 5px; font-size: 13px; }
+    .items div { display: flex; justify-content: space-between; gap: 14px; border-bottom: 1px solid #F8EEDC; padding-bottom: 5px; }
+    .actions { min-width: 260px; display: grid; gap: 8px; align-content: start; }
+    .prep-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+    .empty { text-align: center; color: #8B7D6B; padding: 36px; }
+    @media (max-width: 760px) {
+      .shell { padding: 16px; }
+      .topbar { align-items: flex-start; flex-direction: column; }
+      .order-card { grid-template-columns: 1fr; }
+      .actions { min-width: 0; }
+      .dash-head { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand">
+        <img src="logo.png" alt="Curry Leaves">
+        <div>
+          <h1>Orders Dashboard</h1>
+          <p>Accept orders, set prep time, and update customer status.</p>
+        </div>
+      </div>
+      <div class="pill" id="modePill">Demo mode</div>
+    </div>
+
+    <section class="login" id="loginView">
+      <div class="panel">
+        <h2>Staff Access</h2>
+        <p>This frontend passcode is for demo/staging. For production, connect Supabase Auth or a real backend login.</p>
+        <input id="passcodeInput" type="password" placeholder="Enter staff passcode">
+        <button class="primary" id="loginBtn">Open Dashboard</button>
+      </div>
+    </section>
+
+    <section class="dashboard" id="dashboardView" style="display:none;">
+      <div class="panel">
+        <div class="dash-head">
+          <div>
+            <h2>Incoming Orders</h2>
+            <p id="orderCount">Loading orders...</p>
+          </div>
+          <button class="secondary" id="refreshBtn">Refresh</button>
+        </div>
+        <div class="filters" id="filters">
+          <button class="light active" data-status="all">All</button>
+          <button class="light" data-status="sent">New</button>
+          <button class="light" data-status="accepted">Accepted</button>
+          <button class="light" data-status="preparing">Preparing</button>
+          <button class="light" data-status="ready">Ready</button>
+          <button class="light" data-status="completed">Completed</button>
+        </div>
+        <div class="orders" id="ordersList"></div>
+      </div>
+    </section>
+  </div>
+
+  <script src="order-system.js"></script>
+  <script>
+    const loginView = document.getElementById('loginView');
+    const dashboardView = document.getElementById('dashboardView');
+    const ordersList = document.getElementById('ordersList');
+    const orderCount = document.getElementById('orderCount');
+    const modePill = document.getElementById('modePill');
+    let activeStatus = 'all';
+
+    modePill.textContent = window.CurryOrders.hasSupabase() ? 'Supabase live mode' : 'Demo mode: local browser orders only';
+
+    function money(total) { return `${Number(total || 0).toFixed(0)} PLN`; }
+    function shortDate(value) { return new Date(value).toLocaleString(); }
+
+    async function renderOrders() {
+      const orders = await window.CurryOrders.listOrders();
+      const filtered = activeStatus === 'all' ? orders : orders.filter(order => order.status === activeStatus);
+      orderCount.textContent = `${filtered.length} shown · ${orders.length} total`;
+      if (!filtered.length) {
+        ordersList.innerHTML = '<div class="empty">No orders in this view yet.</div>';
+        return;
+      }
+      ordersList.innerHTML = filtered.map(order => `
+        <article class="order-card" data-id="${order.id}">
+          <div>
+            <h3>${order.customer_name || 'Customer'} · ${money(order.total)}</h3>
+            <div class="muted">${order.phone || ''} · ${shortDate(order.created_at)}</div>
+            <div class="order-meta">
+              <span class="tag status">${window.CurryOrders.statusLabel(order)}</span>
+              <span class="tag">${(order.order_type || '').replace('_', ' ')}</span>
+              <span class="tag pay">${window.CurryOrders.paymentLabel(order.payment_method)}</span>
+            </div>
+            ${order.notes ? `<div class="muted"><strong>Notes:</strong> ${order.notes}</div>` : ''}
+            <div class="items">
+              ${(order.items || []).map(item => `<div><span>${item.name} x${item.qty}</span><strong>${item.price}</strong></div>`).join('')}
+            </div>
+          </div>
+          <div class="actions">
+            <div class="prep-row">
+              <input type="number" min="1" max="180" value="${order.prep_minutes || 20}" aria-label="Preparation minutes">
+              <button class="secondary" data-action="accept">Accept</button>
+            </div>
+            <button class="light" data-action="preparing">Mark Preparing</button>
+            <button class="light" data-action="ready">Mark Ready</button>
+            <button class="light" data-action="completed">Complete</button>
+            <button class="danger" data-action="rejected">Reject</button>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      const pass = document.getElementById('passcodeInput').value;
+      if (pass !== window.CurryOrders.config.staffPasscode) {
+        alert('Incorrect passcode');
+        return;
+      }
+      sessionStorage.setItem('clStaffLoggedIn', 'true');
+      loginView.style.display = 'none';
+      dashboardView.style.display = 'block';
+      renderOrders();
+    });
+
+    if (sessionStorage.getItem('clStaffLoggedIn') === 'true') {
+      loginView.style.display = 'none';
+      dashboardView.style.display = 'block';
+      renderOrders();
+    }
+
+    document.getElementById('refreshBtn').addEventListener('click', renderOrders);
+
+    document.getElementById('filters').addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-status]');
+      if (!btn) return;
+      document.querySelectorAll('#filters button').forEach(item => item.classList.remove('active'));
+      btn.classList.add('active');
+      activeStatus = btn.dataset.status;
+      renderOrders();
+    });
+
+    ordersList.addEventListener('click', async (e) => {
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const card = btn.closest('.order-card');
+      const id = card.dataset.id;
+      const action = btn.dataset.action;
+      const prep = Number(card.querySelector('input[type="number"]').value || 20);
+      const patch = action === 'accept'
+        ? { status: 'accepted', prep_minutes: prep }
+        : { status: action, ...(action === 'preparing' ? { prep_minutes: prep } : {}) };
+      await window.CurryOrders.updateOrder(id, patch);
+      renderOrders();
+    });
+
+    window.addEventListener('cl-orders-change', renderOrders);
+    setInterval(renderOrders, 8000);
+  </script>
+</body>
+</html>

@@ -4,10 +4,40 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Curry Leaves — AR Menu | Authentic Indian Cuisine</title>
+  <meta name="description" content="Explore Curry Leaves' interactive Indian menu with AR previews, AI dish guidance, vegan and gluten-free filters, locations, directions, and quick ordering links.">
+  <meta name="keywords" content="Curry Leaves, Indian restaurant Poland, Indian food Warszawa, Indian food Gdansk, Indian food Poznan, AR menu, vegan Indian food, gluten free Indian food">
+  <meta name="theme-color" content="#1A0F00">
+  <link rel="canonical" href="https://p4v4npa1.github.io/AR-Food-menu/">
+  <meta property="og:title" content="Curry Leaves — Interactive AR Menu">
+  <meta property="og:description" content="A premium interactive menu experience for Curry Leaves with AR dish previews, AI recommendations, and location guidance.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://curryleaves.pl/wp-content/uploads/2024/10/CurryLeaves-Slider.png">
+  <meta name="twitter:card" content="summary_large_image">
   <script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+  <link rel="preconnect" href="https://unpkg.com">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="logo.png" as="image">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "name": "Curry Leaves",
+      "servesCuisine": "Indian",
+      "url": "https://curryleaves.pl/",
+      "image": "https://curryleaves.pl/wp-content/uploads/2024/10/CurryLeaves-Slider.png",
+      "telephone": "+48577777695",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Koszykowa 63",
+        "addressLocality": "Warszawa",
+        "postalCode": "00-667",
+        "addressCountry": "PL"
+      },
+      "hasMenu": "https://curryleaves.pl/menu/"
+    }
+  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; scroll-padding-top: 72px; }
@@ -48,6 +78,34 @@
     }
 
     nav .nav-links a:hover { color: #C4943A; }
+
+    .language-switcher {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      margin-left: 14px;
+    }
+
+    .language-switcher button {
+      border: 1px solid rgba(196,148,58,0.28);
+      background: rgba(255,248,231,0.06);
+      color: #A89880;
+      border-radius: 999px;
+      padding: 5px 8px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .language-switcher button.active,
+    .language-switcher button:hover {
+      background: #C4943A;
+      border-color: #C4943A;
+      color: #1A0F00;
+    }
 
     .fade-up { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
     .fade-up.visible { opacity: 1; transform: translateY(0); }
@@ -682,12 +740,11 @@
     .delivery-buttons a.uber:hover { box-shadow: 0 4px 16px rgba(6, 193, 103, 0.3); }
     .delivery-buttons a.pyszne { background: #FF5A1F; color: white; }
     .delivery-buttons a.pyszne:hover { box-shadow: 0 4px 16px rgba(255, 90, 31, 0.3); }
-    .delivery-buttons a.reserve {
-      border: 1px solid #C4943A;
-      color: #C4943A;
-      background: transparent;
+    .delivery-buttons a.call-now {
+      background: #1A0F00;
+      color: #FFF8E7;
     }
-    .delivery-buttons a.reserve:hover { background: #C4943A; color: white; }
+    .delivery-buttons a.call-now:hover { box-shadow: 0 4px 16px rgba(26,15,0,0.28); transform: translateY(-1px); }
 
     .locations-section {
       background: #FFF8E7;
@@ -882,6 +939,8 @@
       nav .logo { height: 28px; }
       nav .nav-links { gap: 14px; }
       nav .nav-links a { font-size: 10px; letter-spacing: 0.5px; }
+      .language-switcher { gap: 4px; margin-left: 6px; }
+      .language-switcher button { font-size: 9px; padding: 4px 6px; }
       .hero { padding: 80px 16px 50px; min-height: auto; }
       .hero h1 { font-size: 26px; }
       .hero p { font-size: 14px; }
@@ -1025,6 +1084,25 @@
       font-family: 'Playfair Display', serif;
       color: #A89880;
       margin-top: 8px;
+    }
+    .modal-visual .dish-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .modal-visual .photo-needed-note {
+      max-width: 260px;
+      margin-top: 12px;
+      padding: 10px 12px;
+      border: 1px solid rgba(196,148,58,0.28);
+      border-radius: 999px;
+      background: rgba(255,248,231,0.08);
+      color: #E7C46F;
+      font-size: 11px;
+      line-height: 1.35;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
     }
     .modal-visual .loading-spinner {
       position: absolute;
@@ -1267,6 +1345,88 @@
       transition: all 0.2s;
     }
     .cart-sidebar .btn-order:hover { box-shadow: 0 8px 24px rgba(196,148,58,0.3); }
+
+    /* === Checkout / Order Status === */
+    .checkout-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26,15,0,0.72);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 360;
+      opacity: 0;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      transition: opacity 0.28s ease;
+    }
+    .checkout-overlay.active { opacity: 1; pointer-events: all; }
+    .checkout-modal {
+      width: min(720px, 100%);
+      max-height: 92vh;
+      overflow-y: auto;
+      background: #FFF8E7;
+      border-radius: 24px;
+      box-shadow: 0 34px 90px rgba(0,0,0,0.34);
+      border: 1px solid rgba(196,148,58,0.26);
+    }
+    .checkout-head {
+      padding: 20px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      background: linear-gradient(135deg, #1A0F00, #3A2108);
+      color: #FFF8E7;
+      border-radius: 24px 24px 0 0;
+    }
+    .checkout-head h3 { font-family: 'Playfair Display', serif; font-size: 24px; margin-bottom: 4px; }
+    .checkout-head p { font-size: 12px; color: #CDBB9B; line-height: 1.45; }
+    .checkout-close { width: 34px; height: 34px; border: none; border-radius: 50%; background: rgba(255,255,255,0.1); color: #FFF8E7; font-size: 20px; cursor: pointer; }
+    .checkout-body { padding: 20px 22px 22px; }
+    .checkout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .checkout-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .checkout-field.full { grid-column: 1 / -1; }
+    .checkout-field label { font-size: 11px; font-weight: 700; color: #8B7D6B; text-transform: uppercase; letter-spacing: 0.7px; }
+    .checkout-field input, .checkout-field textarea {
+      border: 1px solid #E8DCC8;
+      border-radius: 12px;
+      background: white;
+      padding: 12px 13px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: #2b1608;
+      outline: none;
+    }
+    .checkout-field textarea { min-height: 78px; resize: vertical; }
+    .checkout-choice-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    .checkout-choice {
+      border: 1px solid #E8DCC8;
+      background: white;
+      border-radius: 14px;
+      padding: 12px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      color: #3D2B1A;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+    }
+    .checkout-choice span { display: block; margin-top: 3px; font-size: 11px; font-weight: 500; color: #8B7D6B; }
+    .checkout-choice.active { border-color: #C4943A; background: rgba(196,148,58,0.1); box-shadow: 0 8px 20px rgba(196,148,58,0.12); }
+    .payment-note { margin: -6px 0 14px; color: #8B7D6B; font-size: 12px; line-height: 1.5; }
+    .checkout-summary { border: 1px solid #F0E4D0; border-radius: 16px; padding: 14px; background: white; margin: 8px 0 16px; }
+    .checkout-summary-row { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; padding: 6px 0; border-bottom: 1px solid #F8EEDC; }
+    .checkout-summary-row:last-child { border-bottom: none; font-weight: 800; color: #C4943A; font-size: 16px; }
+    .checkout-submit { width: 100%; border: none; border-radius: 14px; padding: 15px; background: linear-gradient(135deg, #C4943A, #A0762E); color: white; font-size: 15px; font-weight: 800; cursor: pointer; font-family: 'Inter', sans-serif; }
+    .checkout-submit:disabled { opacity: 0.55; cursor: not-allowed; }
+    .order-status-card { display: none; margin-top: 16px; border: 1px solid rgba(196,148,58,0.28); border-radius: 18px; padding: 16px; background: linear-gradient(135deg, rgba(255,255,255,0.82), rgba(196,148,58,0.08)); }
+    .order-status-card.active { display: block; }
+    .order-status-card .order-id { font-size: 11px; letter-spacing: 0.8px; color: #8B7D6B; text-transform: uppercase; }
+    .order-status-card .status-main { font-family: 'Playfair Display', serif; font-size: 24px; color: #1A0F00; margin-top: 4px; }
+    .order-status-card .status-sub { font-size: 13px; color: #5A4A38; line-height: 1.55; margin-top: 8px; }
 
     /* === AI Menu Assistant === */
     .ai-assistant {
@@ -1589,6 +1749,9 @@
       .ai-title { font-size: 20px; }
       .ai-msg { font-size: 12.5px; max-width: 92%; }
       .ai-form input { font-size: 16px; padding: 11px 12px; }
+      .checkout-grid { grid-template-columns: 1fr; }
+      .checkout-choice-row { grid-template-columns: 1fr; }
+      .checkout-head h3 { font-size: 21px; }
     }
   </style>
 </head>
@@ -1602,6 +1765,11 @@
       <li><a href="#ar-menu">AR</a></li>
       <li><a href="#locations">Locations</a></li>
     </ul>
+    <div class="language-switcher" id="languageSwitcher" aria-label="Language selector">
+      <button type="button" class="active" data-lang="en">EN</button>
+      <button type="button" data-lang="pl">PL</button>
+      <button type="button" data-lang="uk">UA</button>
+    </div>
     <div class="nav-cart" id="cartToggle">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A89880" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
@@ -1993,6 +2161,7 @@
             exposure="1.2"
             ar-scale="fixed"
             scale="0.05 0.05 0.05"
+            loading="lazy"
             reveal="auto">
           </model-viewer>
         </div>
@@ -2032,6 +2201,7 @@
             scale="0.07 0.07 0.07"
             ar-scale="fixed"
             ar-placement="floor"
+            loading="lazy"
             reveal="auto"
             flat-shading>
           </model-viewer>
@@ -2076,8 +2246,8 @@
   </div>
 
   <div class="delivery-section">
-    <h3>Order Online or Reserve a Table</h3>
-    <p>Enjoy Curry Leaves at home or book a table at your nearest location</p>
+    <h3>Order Online or Call the Main Branch</h3>
+    <p>Enjoy Curry Leaves at home or call the Koszykowa branch for quick help</p>
     <div class="delivery-buttons">
       <a class="uber" href="https://www.ubereats.com/pl-en/store/curry-leaves/1yNb8I3zTHGvuzMll67PYA" target="_blank">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
@@ -2086,8 +2256,8 @@
       <a class="pyszne" href="https://www.pyszne.pl/menu/curry-leaves-koszykowa" target="_blank">
         Order on Pyszne.pl
       </a>
-      <a class="reserve" href="https://curryleaves.pl/locations/" target="_blank">
-        Reserve a Table
+      <a class="call-now" href="tel:+48577777695">
+        Call Now: +48 577 777 695
       </a>
     </div>
   </div>
@@ -2248,6 +2418,60 @@
     </div>
   </div>
 
+  <!-- Checkout Modal -->
+  <div class="checkout-overlay" id="checkoutOverlay">
+    <div class="checkout-modal">
+      <div class="checkout-head">
+        <div>
+          <h3>Complete Your Order</h3>
+          <p>Orders are sent to the restaurant dashboard. Staff can accept the order and set the preparation time.</p>
+        </div>
+        <button class="checkout-close" id="checkoutClose" type="button" aria-label="Close checkout">&times;</button>
+      </div>
+      <form class="checkout-body" id="checkoutForm">
+        <div class="checkout-summary" id="checkoutSummary"></div>
+
+        <div class="checkout-grid">
+          <div class="checkout-field">
+            <label for="customerName">Name</label>
+            <input id="customerName" name="customerName" type="text" required placeholder="Your name">
+          </div>
+          <div class="checkout-field">
+            <label for="customerPhone">Phone</label>
+            <input id="customerPhone" name="customerPhone" type="tel" required placeholder="+48 ...">
+          </div>
+          <div class="checkout-field full">
+            <label for="orderNotes">Notes</label>
+            <textarea id="orderNotes" name="orderNotes" placeholder="Allergies, spice preference, pickup note..."></textarea>
+          </div>
+        </div>
+
+        <label class="checkout-field"><span style="font-size:11px;font-weight:700;color:#8B7D6B;text-transform:uppercase;letter-spacing:0.7px;">Order type</span></label>
+        <div class="checkout-choice-row" id="orderTypeChoices">
+          <button class="checkout-choice active" type="button" data-value="takeaway">Takeaway<span>Customer picks up from the branch</span></button>
+          <button class="checkout-choice" type="button" data-value="dine_in">Dine in<span>Customer eats at the restaurant if available</span></button>
+        </div>
+
+        <label class="checkout-field"><span style="font-size:11px;font-weight:700;color:#8B7D6B;text-transform:uppercase;letter-spacing:0.7px;">Payment method</span></label>
+        <div class="checkout-choice-row" id="paymentChoices">
+          <button class="checkout-choice active" type="button" data-value="cod">COD / Pay at restaurant<span>Works now</span></button>
+          <button class="checkout-choice" type="button" data-value="apple_pay">Apple Pay<span>Needs Stripe/PayU setup</span></button>
+          <button class="checkout-choice" type="button" data-value="google_pay">Google Pay<span>Needs Stripe/PayU setup</span></button>
+          <button class="checkout-choice" type="button" data-value="blik">BLIK<span>Needs PayU/Przelewy24/Tpay setup</span></button>
+        </div>
+        <div class="payment-note" id="paymentNote">COD is active now. Online payments are ready in the UI, but need a verified payment provider before taking real money.</div>
+
+        <button class="checkout-submit" id="submitOrderBtn" type="submit">Send Order to Restaurant</button>
+
+        <div class="order-status-card" id="orderStatusCard">
+          <div class="order-id" id="orderStatusId"></div>
+          <div class="status-main" id="orderStatusMain"></div>
+          <div class="status-sub" id="orderStatusSub"></div>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- AI Menu Assistant -->
   <div class="ai-assistant" id="aiAssistant">
     <div class="ai-panel" role="dialog" aria-label="Curry Leaves AI menu assistant">
@@ -2264,7 +2488,9 @@
       </div>
       <div class="ai-chips" id="aiChips">
         <button class="ai-chip" type="button">vegan options</button>
+        <button class="ai-chip" type="button">mild dishes for kids</button>
         <button class="ai-chip" type="button">recommend something spicy</button>
+        <button class="ai-chip" type="button">allergen information</button>
         <button class="ai-chip" type="button">where are you located?</button>
         <button class="ai-chip" type="button">gluten free dishes</button>
       </div>
@@ -2280,8 +2506,29 @@
     </button>
   </div>
 
+  <script src="order-system.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      const GA_MEASUREMENT_ID = ''; // Add owner's Google Analytics ID here, e.g. G-XXXXXXXXXX.
+
+      if (GA_MEASUREMENT_ID) {
+        const gaScript = document.createElement('script');
+        gaScript.async = true;
+        gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+        document.head.appendChild(gaScript);
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function(){ dataLayer.push(arguments); };
+        window.gtag('js', new Date());
+        window.gtag('config', GA_MEASUREMENT_ID);
+      }
+
+      function trackEvent(name, params = {}) {
+        if (window.gtag) window.gtag('event', name, params);
+        const localEvents = JSON.parse(localStorage.getItem('clAnalyticsPreview') || '[]');
+        localEvents.push({ name, params, time: new Date().toISOString() });
+        localStorage.setItem('clAnalyticsPreview', JSON.stringify(localEvents.slice(-80)));
+      }
+
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
@@ -2292,6 +2539,14 @@
 
       document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
+      document.querySelectorAll('.btn-dir').forEach(link => {
+        link.addEventListener('click', () => trackEvent('directions_click', { destination: link.href }));
+      });
+
+      document.querySelectorAll('.delivery-buttons a').forEach(link => {
+        link.addEventListener('click', () => trackEvent('cta_click', { label: link.textContent.trim(), href: link.href }));
+      });
+
       const filterButtons = document.querySelectorAll('.menu-filter button');
       const menuItems = document.querySelectorAll('.menu-item');
       const menuCategories = document.querySelectorAll('.menu-category');
@@ -2301,6 +2556,7 @@
           filterButtons.forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           const filter = btn.dataset.filter;
+          trackEvent('menu_filter', { filter });
 
           menuItems.forEach(item => {
             if (filter === 'all' || item.dataset.cat === filter) {
@@ -2394,6 +2650,65 @@
       const aiForm = document.getElementById('aiForm');
       const aiInput = document.getElementById('aiInput');
       const aiMessages = document.getElementById('aiMessages');
+      let currentLang = 'en';
+
+      const translations = {
+        en: {
+          home: 'Home', menu: 'Menu', locations: 'Locations',
+          heroTitle: "Experience India's Finest Flavors in Augmented Reality",
+          heroText: 'Point your phone at the table and see every dish in real size before you order. Authentic Indian cuisine, reimagined through technology.',
+          viewAr: 'View in AR', exploreMenu: 'Explore Menu', menuTitle: 'Our Menu', menuSub: 'Traditional Indian dishes crafted with passion',
+          deliveryTitle: 'Order Online or Call the Main Branch', deliverySub: 'Enjoy Curry Leaves at home or call the Koszykowa branch for quick help',
+          aiTitle: 'Ask about dishes', aiSub: 'Vegan options, ingredients, spice levels, pairings, prices, and locations.', aiInput: 'Ask about food, ingredients, locations...'
+        },
+        pl: {
+          home: 'Start', menu: 'Menu', locations: 'Lokalizacje',
+          heroTitle: 'Poznaj najlepsze smaki Indii w rozszerzonej rzeczywistości',
+          heroText: 'Otwórz menu w telefonie, poznaj dania, poziom ostrości i lokalizacje Curry Leaves.',
+          viewAr: 'Zobacz w AR', exploreMenu: 'Zobacz menu', menuTitle: 'Nasze Menu', menuSub: 'Tradycyjne indyjskie dania przygotowane z pasją',
+          deliveryTitle: 'Zamów online lub zadzwoń do głównej lokalizacji', deliverySub: 'Zamów Curry Leaves do domu albo zadzwoń do lokalu przy Koszykowej',
+          aiTitle: 'Zapytaj o dania', aiSub: 'Opcje wegańskie, składniki, ostrość, ceny i lokalizacje.', aiInput: 'Zapytaj o jedzenie, składniki, lokalizacje...'
+        },
+        uk: {
+          home: 'Головна', menu: 'Меню', locations: 'Локації',
+          heroTitle: 'Відкрийте найкращі смаки Індії в доповненій реальності',
+          heroText: 'Відкрийте меню на телефоні, перегляньте страви, гостроту та локації Curry Leaves.',
+          viewAr: 'Дивитись в AR', exploreMenu: 'Переглянути меню', menuTitle: 'Наше Меню', menuSub: 'Традиційні індійські страви, створені з пристрастю',
+          deliveryTitle: 'Замовте онлайн або зателефонуйте до головного закладу', deliverySub: 'Замовляйте Curry Leaves додому або телефонуйте до закладу на Koszykowa',
+          aiTitle: 'Запитайте про страви', aiSub: 'Веганські опції, інгредієнти, гострота, ціни та локації.', aiInput: 'Запитайте про їжу, інгредієнти, локації...'
+        }
+      };
+
+      function applyLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('clLang', lang);
+        document.documentElement.lang = lang === 'uk' ? 'uk' : lang;
+        document.querySelectorAll('#languageSwitcher button').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
+        const t = translations[lang];
+        const navLinks = document.querySelectorAll('nav .nav-links a');
+        if (navLinks[0]) navLinks[0].textContent = t.home;
+        if (navLinks[1]) navLinks[1].textContent = t.menu;
+        if (navLinks[3]) navLinks[3].textContent = t.locations;
+        document.querySelector('.hero h1').innerHTML = t.heroTitle.replace('Augmented Reality', '<em>Augmented Reality</em>').replace('rozszerzonej rzeczywistości', '<em>rozszerzonej rzeczywistości</em>').replace('доповненій реальності', '<em>доповненій реальності</em>');
+        document.querySelector('.hero p').textContent = t.heroText;
+        document.querySelector('.hero .cta').textContent = t.viewAr;
+        document.querySelector('.hero .cta-outline').textContent = t.exploreMenu;
+        document.querySelector('#menu-full h2').innerHTML = t.menuTitle.includes(' ') ? t.menuTitle.replace('Menu', '<span>Menu</span>') : t.menuTitle;
+        document.querySelector('#menu-full p').textContent = t.menuSub;
+        document.querySelector('.delivery-section h3').textContent = t.deliveryTitle;
+        document.querySelector('.delivery-section p').textContent = t.deliverySub;
+        document.querySelector('.ai-title').textContent = t.aiTitle;
+        document.querySelector('.ai-subtitle').textContent = t.aiSub;
+        aiInput.placeholder = t.aiInput;
+      }
+
+      document.querySelectorAll('#languageSwitcher button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          applyLanguage(btn.dataset.lang);
+          trackEvent('language_change', { language: btn.dataset.lang });
+        });
+      });
+      applyLanguage(localStorage.getItem('clLang') || 'en');
 
       const cleanName = (name) => name.replace(/\s*(Bestseller|#1)\s*$/i, '').trim();
       const menuData = Array.from(menuItems).map(item => {
@@ -2453,6 +2768,40 @@
         const q = question.toLowerCase();
         const dish = findDish(q);
 
+        if (/allergen|allergy|nut|nuts|cashew|dairy|milk|cream|yogurt|lactose/.test(q)) {
+          return 'Allergen note: many Indian dishes can contain dairy, nuts/cashews, gluten, or shared-kitchen cross-contact. The website can guide from menu tags, but customers with allergies should call the main branch before ordering: +48 577 777 695.';
+        }
+
+        if (/table|reserve|reservation|book/.test(q)) {
+          return 'This Curry Leaves experience is focused on ordering, directions, and branch information. For availability or branch-specific questions, call the main branch: +48 577 777 695.';
+        }
+
+        if (/call|contact|main branch|koszykowa/.test(q)) {
+          return 'Main branch: Warszawa — Centrum, Koszykowa 63, 00-667 Warszawa. Phone: +48 577 777 695.';
+        }
+
+        if (/delivery|ubereats|uber eats|pyszne|takeaway|take away|order online/.test(q)) {
+          return 'You can order online using the Uber Eats or Pyszne.pl buttons on this page. You can also add items to the cart here and use the WhatsApp order flow.';
+        }
+
+        if (/mild|not spicy|kids|children|child/.test(q)) {
+          const mild = menuData.filter(item => (item.spice.match(/🌶️/g) || []).length <= 1).slice(0, 5);
+          return `Good milder choices from this menu:\n${mild.map(formatDish).join('\n\n')}`;
+        }
+
+        if (/creamy|buttery|rich/.test(q)) {
+          const creamy = ['Butter Chicken', 'Palak Paneer', 'Malai Tikka', 'Butter Naan'].map(name => menuData.find(item => item.name === name)).filter(Boolean);
+          return `For creamy/rich flavors, try:\n${creamy.map(formatDish).join('\n\n')}`;
+        }
+
+        if (/ar|augmented|3d|model/.test(q)) {
+          return 'The AR preview currently works best for Samosa because that 3D model is available. More 3D dish models should be added later for a full owner-ready AR menu.';
+        }
+
+        if (/photo|picture|image/.test(q)) {
+          return 'Official dish photos are still needed for most menu items. I only use restaurant-owned website images when there is a clear dish match, otherwise the modal marks the dish as needing an official photo.';
+        }
+
         if (/location|address|where|phone|hours|open|warszawa|warsaw|gda|poznan|pozna/.test(q)) {
           return `Curry Leaves locations:\n${locationData.map(loc => `• ${loc.name}: ${loc.address}${loc.phone ? `, ${loc.phone}` : ''}\n  ${loc.hours}`).join('\n')}`;
         }
@@ -2490,6 +2839,7 @@
       function submitAiQuestion(question) {
         const text = question.trim();
         if (!text) return;
+        trackEvent('ai_question', { question: text });
         addAiMessage(text, 'user');
         aiInput.value = '';
         setTimeout(() => addAiMessage(answerQuestion(text)), 180);
@@ -2514,6 +2864,118 @@
 
       document.querySelectorAll('.ai-chip').forEach(chip => {
         chip.addEventListener('click', () => submitAiQuestion(chip.textContent));
+      });
+
+      // ===== Order Checkout =====
+      const checkoutOverlay = document.getElementById('checkoutOverlay');
+      const checkoutClose = document.getElementById('checkoutClose');
+      const checkoutForm = document.getElementById('checkoutForm');
+      const checkoutSummary = document.getElementById('checkoutSummary');
+      const submitOrderBtn = document.getElementById('submitOrderBtn');
+      const orderStatusCard = document.getElementById('orderStatusCard');
+      const orderStatusId = document.getElementById('orderStatusId');
+      const orderStatusMain = document.getElementById('orderStatusMain');
+      const orderStatusSub = document.getElementById('orderStatusSub');
+      const paymentNote = document.getElementById('paymentNote');
+      let selectedOrderType = 'takeaway';
+      let selectedPayment = 'cod';
+      let activeOrderPoll = null;
+
+      function cartTotalValue() {
+        return cart.reduce((sum, item) => sum + parseFloat(item.price.replace(/[^0-9.]/g, '')) * item.qty, 0);
+      }
+
+      function renderCheckoutSummary() {
+        const rows = cart.map(item => `<div class="checkout-summary-row"><span>${item.name} x${item.qty}</span><strong>${item.price}</strong></div>`).join('');
+        checkoutSummary.innerHTML = `${rows}<div class="checkout-summary-row"><span>Total</span><strong>${cartTotalValue().toFixed(0)} PLN</strong></div>`;
+      }
+
+      function openCheckout() {
+        if (cart.length === 0) return;
+        renderCheckoutSummary();
+        checkoutOverlay.classList.add('active');
+        closeCart();
+        document.body.style.overflow = 'hidden';
+        trackEvent('checkout_open', { total: cartTotalValue().toFixed(0) });
+      }
+
+      function closeCheckout() {
+        checkoutOverlay.classList.remove('active');
+        if (!modal.classList.contains('active') && !cartSidebar.classList.contains('active')) document.body.style.overflow = '';
+      }
+
+      function bindChoiceGroup(containerId, onSelect) {
+        document.querySelectorAll(`#${containerId} .checkout-choice`).forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll(`#${containerId} .checkout-choice`).forEach(choice => choice.classList.remove('active'));
+            btn.classList.add('active');
+            onSelect(btn.dataset.value);
+          });
+        });
+      }
+
+      bindChoiceGroup('orderTypeChoices', value => {
+        selectedOrderType = value;
+        trackEvent('order_type_select', { type: value });
+      });
+
+      bindChoiceGroup('paymentChoices', value => {
+        selectedPayment = value;
+        paymentNote.textContent = value === 'cod'
+          ? 'COD is active now. The customer pays at pickup/restaurant.'
+          : 'This payment method is ready in the UI but needs a verified payment provider before taking real money.';
+        trackEvent('payment_method_select', { method: value });
+      });
+
+      async function refreshOrderStatus(orderId) {
+        const order = await window.CurryOrders.getOrder(orderId);
+        if (!order) return;
+        orderStatusCard.classList.add('active');
+        orderStatusId.textContent = `Order ${order.id}`;
+        orderStatusMain.textContent = window.CurryOrders.statusLabel(order);
+        orderStatusSub.textContent = order.status === 'sent'
+          ? 'Waiting for the restaurant to accept the order and set a preparation time.'
+          : `Payment: ${window.CurryOrders.paymentLabel(order.payment_method)} · ${order.payment_status.replace(/_/g, ' ')}`;
+      }
+
+      function startOrderPolling(orderId) {
+        if (activeOrderPoll) clearInterval(activeOrderPoll);
+        refreshOrderStatus(orderId);
+        activeOrderPoll = setInterval(() => refreshOrderStatus(orderId), 5000);
+      }
+
+      checkoutClose.addEventListener('click', closeCheckout);
+      checkoutOverlay.addEventListener('click', (e) => { if (e.target === checkoutOverlay) closeCheckout(); });
+
+      checkoutForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (cart.length === 0) return;
+        submitOrderBtn.disabled = true;
+        submitOrderBtn.textContent = 'Sending order...';
+        try {
+          const order = await window.CurryOrders.createOrder({
+            customer_name: document.getElementById('customerName').value.trim(),
+            phone: document.getElementById('customerPhone').value.trim(),
+            notes: document.getElementById('orderNotes').value.trim(),
+            order_type: selectedOrderType,
+            payment_method: selectedPayment,
+            items: cart,
+            total: cartTotalValue()
+          });
+          trackEvent('order_submit', { order_id: order.id, total: order.total, payment_method: selectedPayment, order_type: selectedOrderType });
+          cart = [];
+          saveCart();
+          renderCart();
+          checkoutForm.reset();
+          submitOrderBtn.textContent = 'Order Sent';
+          startOrderPolling(order.id);
+        } catch (error) {
+          console.error(error);
+          alert('Could not send order. Check order-system.js configuration or try again.');
+          submitOrderBtn.textContent = 'Send Order to Restaurant';
+        } finally {
+          submitOrderBtn.disabled = false;
+        }
       });
 
       // ===== Cart State =====
@@ -2592,6 +3054,7 @@
         }
         saveCart();
         renderCart();
+        trackEvent('add_to_cart', { item_name: name, price });
       }
 
       // ===== Modal =====
@@ -2618,6 +3081,10 @@
       const modelFiles = {
         'Samosa': { src: 'models/Samosa.glb', scale: '0.05 0.05 0.05' },
       };
+      // TODO: Future upgrade: add real 3D models for top-selling dishes once the owner provides/approves them.
+
+      // Keep this strict: only add URLs here when the official website has a clearly matching dish photo.
+      const officialDishPhotos = {};
 
       function getDishName(h4) {
         let name = h4.textContent.trim();
@@ -2636,6 +3103,7 @@
           const pairing = pairings[name];
 
           currentDish = { name, price };
+          trackEvent('dish_open', { item_name: name, category: this.dataset.cat || '', price });
 
           document.getElementById('modalTitle').textContent = name;
           document.getElementById('modalDesc').textContent = desc;
@@ -2670,7 +3138,9 @@
           const loader = document.getElementById('modalLoader');
           const mv = document.getElementById('modalModelViewer');
           const existingPH = visual.querySelector('.placeholder-dish');
+          const existingPhoto = visual.querySelector('.dish-photo');
           if (existingPH) existingPH.remove();
+          if (existingPhoto) existingPhoto.remove();
 
           const arBtn = document.getElementById('viewArBtn');
           arBtn.disabled = true;
@@ -2688,6 +3158,7 @@
 
             // Enable AR button — try activateAR(), fall back to scrolling to AR section
             arBtn.onclick = async () => {
+              trackEvent('ar_view_attempt', { item_name: name });
               const mv = document.getElementById('modalModelViewer');
               if (mv && mv.canActivateAR) {
                 try {
@@ -2756,6 +3227,17 @@
       });
 
       function showPlaceholder(visual, name) {
+        if (officialDishPhotos[name]) {
+          const img = document.createElement('img');
+          img.className = 'dish-photo';
+          img.src = officialDishPhotos[name];
+          img.alt = name;
+          img.loading = 'lazy';
+          img.decoding = 'async';
+          visual.appendChild(img);
+          return;
+        }
+
         const ph = document.createElement('div');
         ph.className = 'placeholder-dish';
         const emojiMap = {
@@ -2770,7 +3252,7 @@
           'Vegetable Biryani': '\ud83c\udf5a', 'Garlic Naan': '\ud83e\uded1',
           'Butter Naan': '\ud83e\uded1', 'Roti': '\ud83e\uded1',
         };
-        ph.innerHTML = `<span>${emojiMap[name] || '\ud83c\udf7d\ufe0f'}</span><span>${name}</span>`;
+        ph.innerHTML = `<span>${emojiMap[name] || '🍽️'}</span><span>${name}</span><div class="photo-needed-note">Need to take an official photo of this dish for the website.</div>`;
         visual.appendChild(ph);
       }
 
@@ -2798,10 +3280,7 @@
 
       document.getElementById('checkoutBtn').addEventListener('click', function() {
         if (cart.length === 0) return;
-        const items = cart.map(i => `${i.name} x${i.qty}`).join('\n');
-        const total = document.getElementById('cartTotal').textContent;
-        const msg = encodeURIComponent(`Hi! I'd like to order:\n${items}\n\nTotal: ${total} PLN`);
-        window.open(`https://wa.me/?text=${msg}`, '_blank');
+        openCheckout();
       });
 
       // ===== Letter-scale hover on text =====
