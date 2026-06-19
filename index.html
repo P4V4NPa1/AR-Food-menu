@@ -1696,6 +1696,54 @@
       will-change: transform, opacity;
     }
 
+    .active-dish-photo {
+      position: fixed;
+      right: clamp(18px, 5vw, 72px);
+      top: 50%;
+      width: min(230px, 18vw);
+      aspect-ratio: 4 / 3;
+      border-radius: 24px;
+      overflow: hidden;
+      z-index: 4;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(-50%) translateX(18px) scale(0.94) rotateY(-10deg);
+      transition: opacity 0.32s ease, transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 28px 70px rgba(26,15,0,0.22), 0 0 0 1px rgba(255,255,255,0.45) inset;
+      background: linear-gradient(135deg, #2D1A05, #1A0F00);
+    }
+
+    .active-dish-photo.visible {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0) scale(1) rotateY(-4deg);
+    }
+
+    .active-dish-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: saturate(1.08) contrast(1.03);
+    }
+
+    .active-dish-photo .photo-caption {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(26,15,0,0.72);
+      color: #FFF8E7;
+      font-size: 11px;
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .about-section, .section-title, .menu-filter, .menu-section, .delivery-section, .locations-section, .contact-bar, .testimonials, .social-bar, footer {
       position: relative;
       z-index: 2;
@@ -1709,12 +1757,25 @@
       .nav-cart { margin-left: 8px; }
       .btn-ar-modal { font-size: 13px; padding: 12px; }
       .spice-field {
-        opacity: 0.42;
-        mask-image: radial-gradient(ellipse 58% 82% at 50% 50%, transparent 0 54%, #000 78%);
-        -webkit-mask-image: radial-gradient(ellipse 58% 82% at 50% 50%, transparent 0 54%, #000 78%);
+        opacity: 0.55;
+        mix-blend-mode: normal;
+        mask-image: radial-gradient(ellipse 46% 74% at 50% 50%, transparent 0 34%, #000 72%);
+        -webkit-mask-image: radial-gradient(ellipse 46% 74% at 50% 50%, transparent 0 34%, #000 72%);
       }
+      .spice-field::before { opacity: 0.55; filter: blur(38px) saturate(1.5); }
+      .spice-field::after { opacity: 0.85; filter: blur(24px); }
       .spice-ring { width: 68vmax; height: 68vmax; }
       .spice-spark { width: 6px; height: 6px; }
+      .active-dish-photo {
+        top: auto;
+        right: 14px;
+        bottom: 82px;
+        width: 118px;
+        border-radius: 18px;
+        transform: translateY(12px) scale(0.92);
+      }
+      .active-dish-photo.visible { transform: translateY(0) scale(1); }
+      .active-dish-photo .photo-caption { font-size: 9px; padding: 6px 8px; }
       .menu-item h4:hover,
       .menu-item h4.active {
         transform: perspective(560px) translateY(-1px) translateZ(12px) rotateX(4deg) scale(1.1);
@@ -1794,6 +1855,11 @@
     <span class="spice-spark"></span>
     <span class="spice-spark"></span>
     <span class="spice-spark"></span>
+  </div>
+
+  <div class="active-dish-photo" id="activeDishPhoto" aria-hidden="true">
+    <img id="activeDishPhotoImg" alt="">
+    <div class="photo-caption" id="activeDishPhotoCaption"></div>
   </div>
 
   <section class="hero" id="hero">
@@ -2679,12 +2745,144 @@
         }
       };
 
+      const menuTranslation = {
+        pl: {
+          categories: { appetizers: '● Przystawki', soups: '● Zupy', vegetarian: '● Klasyczne dania wegetariańskie', curries: '● Najlepsze curry', breads: '● Indyjskie pieczywo' },
+          filters: { all: 'Wszystko', appetizers: 'Przystawki', soups: 'Zupy', vegetarian: 'Wegetariańskie', curries: 'Curry', breads: 'Pieczywo' },
+          desc: {
+            'Samosa': 'Chrupiące trójkątne pierożki nadziewane przyprawionymi ziemniakami, groszkiem i kurczakiem',
+            'Vegetable Pakora (8pcs)': 'Mieszane warzywa w cieście z mąki z ciecierzycy, smażone na złoto i chrupiąco',
+            'Fry 65 — Chicken (8pcs)': 'Marynowany i chrupiący smażony kurczak z mieszanką indyjskich przypraw',
+            'Fry 65 — Paneer (8pcs)': 'Chrupiący indyjski ser paneer, marynowany i smażony z aromatycznymi przyprawami',
+            'Tandoori Grill Chicken (6pcs)': 'Kurczak z grilla węglowego marynowany w jogurcie i tradycyjnych przyprawach',
+            'Malai Tikka': 'Kurczak marynowany w śmietance i orzechach nerkowca, grillowany w piecu tandoor',
+            'Tomato Rasam': 'Kwaśna południowoindyjska zupa z tamaryndowca i pomidorów z aromatycznymi przyprawami',
+            'Dal Soup': 'Rozgrzewająca zupa z żółtej soczewicy z tradycyjnym indyjskim temperowaniem',
+            'Palak Paneer': 'Indyjski ser paneer w bogatym, kremowym sosie szpinakowym',
+            'Chana Masala': 'Ciecierzyca gotowana w przyprawionym sosie cebulowo-pomidorowym',
+            'Dal Tadka': 'Żółta i czerwona soczewica gotowana z indyjskimi przyprawami, wykończona temperowaniem ghee',
+            'Aloo Gobi Methi': 'Ziemniaki i kalafior gotowane z kozieradką oraz aromatycznymi przyprawami',
+            'Butter Chicken': 'Delikatny kurczak w bogatym, kremowym sosie pomidorowo-maślanym. Nasze najpopularniejsze danie.',
+            'Chicken Tikka Masala': 'Marynowane i grillowane kawałki tikka w średnio ostrym sosie cebulowo-pomidorowym',
+            'Dum Biryani': 'Warstwowy ryż basmati z marynowanym kurczakiem, wolno gotowany z aromatycznymi przyprawami',
+            'Bhuna Mutton': 'Delikatna jagnięcina wolno gotowana z suchą masalą w bogatym, średnio ostrym sosie',
+            'Vegetable Biryani': 'Aromatyczny ryż basmati warstwowo ułożony z mieszanymi warzywami i szafranem',
+            'Garlic Naan': 'Miękkie pieczywo drożdżowe z czosnkiem i masłem, wypiekane w piecu tandoor',
+            'Butter Naan': 'Miękkie pieczywo naan posmarowane masłem, wypiekane w piecu tandoor',
+            'Roti': 'Tradycyjny pełnoziarnisty indyjski placek wypiekany w piecu tandoor'
+          }
+        },
+        uk: {
+          categories: { appetizers: '● Закуски', soups: '● Супи', vegetarian: '● Класичні вегетаріанські страви', curries: '● Найкращі карі', breads: '● Індійський хліб' },
+          filters: { all: 'Усе', appetizers: 'Закуски', soups: 'Супи', vegetarian: 'Вегетаріанське', curries: 'Карі', breads: 'Хліб' },
+          desc: {
+            'Samosa': 'Хрусткі трикутні пиріжки з пряною картоплею, горошком і куркою',
+            'Vegetable Pakora (8pcs)': 'Овочі в клярі з нутового борошна, обсмажені до золотистої скоринки',
+            'Fry 65 — Chicken (8pcs)': 'Маринована та хрустко обсмажена курка з індійськими спеціями',
+            'Fry 65 — Paneer (8pcs)': 'Хрусткий індійський сир панір, маринований і обсмажений з ароматними спеціями',
+            'Tandoori Grill Chicken (6pcs)': 'Курка на грилі, маринована в йогурті та традиційних спеціях',
+            'Malai Tikka': 'Курка, маринована у вершках і кеш’ю, запечена в печі тандур',
+            'Tomato Rasam': 'Кислуватий південноіндійський суп з тамариндом, томатами й ароматними спеціями',
+            'Dal Soup': 'Зігріваючий суп із жовтої сочевиці з традиційною індійською заправкою',
+            'Palak Paneer': 'Індійський сир панір у насиченому вершковому шпинатному соусі',
+            'Chana Masala': 'Нут у пряному цибульно-томатному соусі, класика Північної Індії',
+            'Dal Tadka': 'Жовта й червона сочевиця з індійськими спеціями та заправкою гхі',
+            'Aloo Gobi Methi': 'Картопля та цвітна капуста з пажитником і ароматними спеціями',
+            'Butter Chicken': 'Ніжна курка в насиченому вершково-томатному масляному соусі. Найпопулярніша страва.',
+            'Chicken Tikka Masala': 'Мариновані шматочки тікка на грилі в середньо-гострому цибульно-томатному соусі',
+            'Dum Biryani': 'Шаруватий рис басматі з маринованою куркою, повільно приготований зі спеціями',
+            'Bhuna Mutton': 'Ніжна баранина, повільно тушкована з сухою масалою в насиченому соусі',
+            'Vegetable Biryani': 'Ароматний рис басматі з овочами та шафраном',
+            'Garlic Naan': 'М’який хліб наан з часником і маслом, випечений у тандурі',
+            'Butter Naan': 'М’який наан з маслом, випечений у тандурі',
+            'Roti': 'Традиційний індійський цільнозерновий хліб, випечений у тандурі'
+          }
+        }
+      };
+
+      const uiTranslation = {
+        pl: {
+          'Featured in Forbes': 'Wyróżnione w Forbes', 'View in AR': 'Zobacz w AR', 'Explore Menu': 'Zobacz menu',
+          'Founded': 'Założono', 'Locations': 'Lokalizacje', 'Rating': 'Ocena', 'Forbes Featured': 'Forbes',
+          'About': 'O', 'Curry Leaves': 'Curry Leaves', 'AR Experience': 'Doświadczenie AR', 'What Our Guests Say': 'Opinie gości',
+          'Order on Uber Eats': 'Zamów przez Uber Eats', 'Order on Pyszne.pl': 'Zamów przez Pyszne.pl', 'Call Now: +48 577 777 695': 'Zadzwoń: +48 577 777 695',
+          'Our Locations': 'Nasze lokalizacje', 'Find us in four cities across Poland': 'Znajdź nas w czterech lokalizacjach w Polsce', 'Get Directions': 'Wyznacz trasę',
+          'Your Cart': 'Twój koszyk', 'Your cart is empty': 'Koszyk jest pusty', 'Total:': 'Suma:', 'Place Order': 'Złóż zamówienie',
+          'Complete Your Order': 'Dokończ zamówienie', 'Orders are sent to the restaurant dashboard. Staff can accept the order and set the preparation time.': 'Zamówienia trafiają do panelu restauracji. Obsługa może zaakceptować zamówienie i ustawić czas przygotowania.',
+          'Name': 'Imię', 'Phone': 'Telefon', 'Notes': 'Uwagi', 'Order type': 'Typ zamówienia', 'Payment method': 'Metoda płatności',
+          'Takeaway': 'Na wynos', 'Customer picks up from the branch': 'Klient odbiera w lokalu', 'Dine in': 'Na miejscu', 'Customer eats at the restaurant if available': 'Klient je w restauracji, jeśli jest dostępne miejsce',
+          'COD / Pay at restaurant': 'Gotówka / płatność w lokalu', 'Works now': 'Działa teraz', 'Needs Stripe/PayU setup': 'Wymaga Stripe/PayU', 'Needs PayU/Przelewy24/Tpay setup': 'Wymaga PayU/Przelewy24/Tpay',
+          'Send Order to Restaurant': 'Wyślij zamówienie do restauracji', 'Add to Cart': 'Dodaj do koszyka', 'See in AR': 'Zobacz w AR'
+        },
+        uk: {
+          'Featured in Forbes': 'Відзначено Forbes', 'View in AR': 'Дивитись в AR', 'Explore Menu': 'Переглянути меню',
+          'Founded': 'Засновано', 'Locations': 'Локації', 'Rating': 'Рейтинг', 'Forbes Featured': 'Forbes',
+          'About': 'Про', 'Curry Leaves': 'Curry Leaves', 'AR Experience': 'AR досвід', 'What Our Guests Say': 'Відгуки гостей',
+          'Order on Uber Eats': 'Замовити через Uber Eats', 'Order on Pyszne.pl': 'Замовити через Pyszne.pl', 'Call Now: +48 577 777 695': 'Подзвонити: +48 577 777 695',
+          'Our Locations': 'Наші локації', 'Find us in four cities across Poland': 'Знайдіть нас у чотирьох локаціях у Польщі', 'Get Directions': 'Маршрут',
+          'Your Cart': 'Ваш кошик', 'Your cart is empty': 'Кошик порожній', 'Total:': 'Разом:', 'Place Order': 'Оформити замовлення',
+          'Complete Your Order': 'Завершіть замовлення', 'Orders are sent to the restaurant dashboard. Staff can accept the order and set the preparation time.': 'Замовлення надходять у панель ресторану. Персонал може прийняти замовлення й указати час приготування.',
+          'Name': 'Ім’я', 'Phone': 'Телефон', 'Notes': 'Примітки', 'Order type': 'Тип замовлення', 'Payment method': 'Спосіб оплати',
+          'Takeaway': 'З собою', 'Customer picks up from the branch': 'Клієнт забирає в закладі', 'Dine in': 'У закладі', 'Customer eats at the restaurant if available': 'Клієнт їсть у ресторані, якщо є місце',
+          'COD / Pay at restaurant': 'Готівка / оплата в закладі', 'Works now': 'Працює зараз', 'Needs Stripe/PayU setup': 'Потрібне налаштування Stripe/PayU', 'Needs PayU/Przelewy24/Tpay setup': 'Потрібне PayU/Przelewy24/Tpay',
+          'Send Order to Restaurant': 'Надіслати замовлення в ресторан', 'Add to Cart': 'Додати в кошик', 'See in AR': 'Дивитись в AR'
+        }
+      };
+
+      function rememberOriginal(el) {
+        if (!el.dataset.originalText) el.dataset.originalText = el.textContent.trim();
+        return el.dataset.originalText;
+      }
+
+      function translateStaticText(lang) {
+        const map = uiTranslation[lang] || {};
+        document.querySelectorAll('.section-title p, .delivery-section h3, .delivery-section p, .cart-header h3, .cart-empty, .checkout-head h3, .checkout-head p, .checkout-choice span, .checkout-field label, .checkout-field > span, .btn-dir, .cta, .cta-outline, .btn-order, .stat-item .label').forEach(el => {
+          if (el.closest('.menu-item h4')) return;
+          const original = rememberOriginal(el);
+          el.textContent = lang === 'en' ? original : (map[original] || original);
+        });
+        document.querySelectorAll('.checkout-choice').forEach(btn => {
+          const firstText = Array.from(btn.childNodes).find(node => node.nodeType === Node.TEXT_NODE && node.textContent.trim());
+          if (!firstText) return;
+          if (!btn.dataset.originalLabel) btn.dataset.originalLabel = firstText.textContent.trim();
+          firstText.textContent = lang === 'en' ? btn.dataset.originalLabel : (map[btn.dataset.originalLabel] || btn.dataset.originalLabel);
+        });
+      }
+
+      function translateMenu(lang) {
+        const data = menuTranslation[lang];
+        document.querySelectorAll('.menu-category').forEach(cat => {
+          const original = cat.dataset.originalCategory || cat.textContent.trim();
+          cat.dataset.originalCategory = original;
+          cat.textContent = data ? (data.categories[cat.dataset.cat] || original) : original;
+        });
+        document.querySelectorAll('.menu-filter button').forEach(btn => {
+          const original = btn.dataset.originalText || btn.textContent.trim();
+          btn.dataset.originalText = original;
+          btn.textContent = data ? (data.filters[btn.dataset.filter] || original) : original;
+        });
+        document.querySelectorAll('.menu-item').forEach(item => {
+          const name = (item.querySelector('h4')?.textContent || '').replace(/\s*(Bestseller|#1)\s*$/i, '').trim();
+          const desc = item.querySelector('.desc');
+          if (!desc) return;
+          if (!desc.dataset.originalText) desc.dataset.originalText = desc.textContent.trim();
+          desc.textContent = data ? (data.desc[name] || desc.dataset.originalText) : desc.dataset.originalText;
+        });
+        document.querySelectorAll('.menu-item .pair').forEach(pair => {
+          const original = pair.dataset.originalText || pair.textContent.trim();
+          pair.dataset.originalText = original;
+          const pairingName = original.replace('Recommended with ', '');
+          pair.textContent = lang === 'pl' ? `Polecane z ${pairingName}` : lang === 'uk' ? `Рекомендується з ${pairingName}` : original;
+        });
+      }
+
       function applyLanguage(lang) {
         currentLang = lang;
         localStorage.setItem('clLang', lang);
         document.documentElement.lang = lang === 'uk' ? 'uk' : lang;
         document.querySelectorAll('#languageSwitcher button').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
         const t = translations[lang];
+        translateStaticText(lang);
         const navLinks = document.querySelectorAll('nav .nav-links a');
         if (navLinks[0]) navLinks[0].textContent = t.home;
         if (navLinks[1]) navLinks[1].textContent = t.menu;
@@ -2700,6 +2898,7 @@
         document.querySelector('.ai-title').textContent = t.aiTitle;
         document.querySelector('.ai-subtitle').textContent = t.aiSub;
         aiInput.placeholder = t.aiInput;
+        translateMenu(lang);
       }
 
       document.querySelectorAll('#languageSwitcher button').forEach(btn => {
@@ -3085,6 +3284,32 @@
 
       // Keep this strict: only add URLs here when the official website has a clearly matching dish photo.
       const officialDishPhotos = {};
+      const onlineDishPhotos = {
+        'Samosa': 'https://loremflickr.com/640/480/samosa,indian-food?lock=101',
+        'Vegetable Pakora (8pcs)': 'https://loremflickr.com/640/480/pakora,indian-food?lock=102',
+        'Fry 65 — Chicken (8pcs)': 'https://loremflickr.com/640/480/chicken-65,indian-food?lock=103',
+        'Fry 65 — Paneer (8pcs)': 'https://loremflickr.com/640/480/paneer,indian-food?lock=104',
+        'Tandoori Grill Chicken (6pcs)': 'https://loremflickr.com/640/480/tandoori-chicken,indian-food?lock=105',
+        'Malai Tikka': 'https://loremflickr.com/640/480/chicken-tikka,indian-food?lock=106',
+        'Tomato Rasam': 'https://loremflickr.com/640/480/rasam,soup,indian-food?lock=107',
+        'Dal Soup': 'https://loremflickr.com/640/480/dal,soup,indian-food?lock=108',
+        'Palak Paneer': 'https://loremflickr.com/640/480/palak-paneer,indian-food?lock=109',
+        'Chana Masala': 'https://loremflickr.com/640/480/chana-masala,indian-food?lock=110',
+        'Dal Tadka': 'https://loremflickr.com/640/480/dal-tadka,indian-food?lock=111',
+        'Aloo Gobi Methi': 'https://loremflickr.com/640/480/aloo-gobi,indian-food?lock=112',
+        'Butter Chicken': 'https://loremflickr.com/640/480/butter-chicken,indian-food?lock=113',
+        'Chicken Tikka Masala': 'https://loremflickr.com/640/480/chicken-tikka-masala,indian-food?lock=114',
+        'Dum Biryani': 'https://loremflickr.com/640/480/biryani,indian-food?lock=115',
+        'Bhuna Mutton': 'https://loremflickr.com/640/480/mutton-curry,indian-food?lock=116',
+        'Vegetable Biryani': 'https://loremflickr.com/640/480/vegetable-biryani,indian-food?lock=117',
+        'Garlic Naan': 'https://loremflickr.com/640/480/garlic-naan,indian-food?lock=118',
+        'Butter Naan': 'https://loremflickr.com/640/480/naan,indian-food?lock=119',
+        'Roti': 'https://loremflickr.com/640/480/roti,indian-food?lock=120'
+      };
+
+      function dishPhotoFor(name) {
+        return officialDishPhotos[name] || onlineDishPhotos[name] || '';
+      }
 
       function getDishName(h4) {
         let name = h4.textContent.trim();
@@ -3227,10 +3452,11 @@
       });
 
       function showPlaceholder(visual, name) {
-        if (officialDishPhotos[name]) {
+        const photo = dishPhotoFor(name);
+        if (photo) {
           const img = document.createElement('img');
           img.className = 'dish-photo';
-          img.src = officialDishPhotos[name];
+          img.src = photo;
           img.alt = name;
           img.loading = 'lazy';
           img.decoding = 'async';
@@ -3345,6 +3571,24 @@
 
       // ===== Scroll-center 3D item =====
       let lastActive = null;
+      const activeDishPhoto = document.getElementById('activeDishPhoto');
+      const activeDishPhotoImg = document.getElementById('activeDishPhotoImg');
+      const activeDishPhotoCaption = document.getElementById('activeDishPhotoCaption');
+
+      function updateActiveDishPhoto(h4) {
+        if (!h4 || !activeDishPhoto) return;
+        const name = getDishName(h4);
+        const photo = dishPhotoFor(name);
+        if (!photo) {
+          activeDishPhoto.classList.remove('visible');
+          return;
+        }
+        if (activeDishPhotoImg.src !== photo) activeDishPhotoImg.src = photo;
+        activeDishPhotoImg.alt = name;
+        activeDishPhotoCaption.textContent = name;
+        activeDishPhoto.classList.add('visible');
+      }
+
       function updateCenterItem() {
         const viewCenter = window.innerHeight / 2;
         let closest = null;
@@ -3362,6 +3606,7 @@
           if (lastActive) lastActive.classList.remove('active');
           if (closest) closest.classList.add('active');
           lastActive = closest;
+          updateActiveDishPhoto(closest);
         }
       }
 
