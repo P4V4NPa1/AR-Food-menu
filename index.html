@@ -1698,24 +1698,25 @@
 
     .active-dish-photo {
       position: fixed;
-      right: clamp(18px, 5vw, 72px);
-      top: 50%;
-      width: min(230px, 18vw);
+      left: 0;
+      top: 0;
+      width: clamp(112px, 15vw, 190px);
       aspect-ratio: 4 / 3;
-      border-radius: 24px;
+      border-radius: 20px;
       overflow: hidden;
       z-index: 4;
       pointer-events: none;
       opacity: 0;
-      transform: translateY(-50%) translateX(18px) scale(0.94) rotateY(-10deg);
-      transition: opacity 0.32s ease, transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 28px 70px rgba(26,15,0,0.22), 0 0 0 1px rgba(255,255,255,0.45) inset;
+      transform: translate3d(var(--photo-x, 0px), var(--photo-y, 0px), 0) scale(0.88) rotateZ(-2deg);
+      transform-origin: left center;
+      transition: opacity 0.22s ease, transform 0.34s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 18px 42px rgba(26,15,0,0.24), 0 0 0 1px rgba(255,255,255,0.5) inset;
       background: linear-gradient(135deg, #2D1A05, #1A0F00);
     }
 
     .active-dish-photo.visible {
       opacity: 1;
-      transform: translateY(-50%) translateX(0) scale(1) rotateY(-4deg);
+      transform: translate3d(var(--photo-x, 0px), var(--photo-y, 0px), 0) scale(1) rotateZ(-1deg);
     }
 
     .active-dish-photo img {
@@ -1767,14 +1768,11 @@
       .spice-ring { width: 68vmax; height: 68vmax; }
       .spice-spark { width: 6px; height: 6px; }
       .active-dish-photo {
-        top: auto;
-        right: 14px;
-        bottom: 82px;
-        width: 118px;
-        border-radius: 18px;
-        transform: translateY(12px) scale(0.92);
+        width: 98px;
+        border-radius: 16px;
+        transform: translate3d(var(--photo-x, 0px), var(--photo-y, 0px), 0) scale(0.86);
       }
-      .active-dish-photo.visible { transform: translateY(0) scale(1); }
+      .active-dish-photo.visible { transform: translate3d(var(--photo-x, 0px), var(--photo-y, 0px), 0) scale(1); }
       .active-dish-photo .photo-caption { font-size: 9px; padding: 6px 8px; }
       .menu-item h4:hover,
       .menu-item h4.active {
@@ -3575,6 +3573,30 @@
       const activeDishPhotoImg = document.getElementById('activeDishPhotoImg');
       const activeDishPhotoCaption = document.getElementById('activeDishPhotoCaption');
 
+      function positionActiveDishPhoto(h4) {
+        if (!h4 || !activeDishPhoto) return;
+        const rect = h4.getBoundingClientRect();
+        const photoW = activeDishPhoto.offsetWidth || 150;
+        const photoH = photoW * 0.75;
+        const gap = window.innerWidth <= 640 ? 10 : 18;
+        let x;
+        let y;
+
+        if (window.innerWidth <= 640) {
+          x = Math.min(Math.max(rect.left, 12), window.innerWidth - photoW - 12);
+          y = rect.bottom + gap;
+          if (y + photoH > window.innerHeight - 18) y = rect.top - photoH - gap;
+        } else {
+          x = rect.right + gap;
+          if (x + photoW > window.innerWidth - 18) x = rect.left - photoW - gap;
+          y = rect.top + rect.height / 2 - photoH / 2;
+          y = Math.min(Math.max(y, 82), window.innerHeight - photoH - 24);
+        }
+
+        activeDishPhoto.style.setProperty('--photo-x', `${x.toFixed(1)}px`);
+        activeDishPhoto.style.setProperty('--photo-y', `${y.toFixed(1)}px`);
+      }
+
       function updateActiveDishPhoto(h4) {
         if (!h4 || !activeDishPhoto) return;
         const name = getDishName(h4);
@@ -3586,6 +3608,7 @@
         if (activeDishPhotoImg.src !== photo) activeDishPhotoImg.src = photo;
         activeDishPhotoImg.alt = name;
         activeDishPhotoCaption.textContent = name;
+        positionActiveDishPhoto(h4);
         activeDishPhoto.classList.add('visible');
       }
 
@@ -3607,6 +3630,8 @@
           if (closest) closest.classList.add('active');
           lastActive = closest;
           updateActiveDishPhoto(closest);
+        } else if (closest) {
+          positionActiveDishPhoto(closest);
         }
       }
 
