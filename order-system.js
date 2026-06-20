@@ -10,6 +10,7 @@ window.CurryOrderConfig = window.CurryOrderConfig || {
   const config = window.CurryOrderConfig;
   const localKey = 'clOrders';
   const availabilityLocalKey = 'clMenuAvailability';
+  const clearedAtKey = 'clOrdersClearedAt';
 
   function hasSupabase() {
     return Boolean(config.supabaseUrl && config.supabaseAnonKey && config.ordersTable);
@@ -99,12 +100,14 @@ window.CurryOrderConfig = window.CurryOrderConfig || {
   }
 
   async function listOrders() {
+    const clearedAt = localStorage.getItem(clearedAtKey);
+    const visibleAfterReset = order => !clearedAt || new Date(order.created_at) > new Date(clearedAt);
     if (hasSupabase()) {
       const res = await fetch(tableUrl('select=*&order=created_at.desc'), { headers: orderHeaders() });
       if (!res.ok) throw new Error(await res.text());
-      return await res.json();
+      return (await res.json()).filter(visibleAfterReset);
     }
-    return localOrders().sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    return localOrders().filter(visibleAfterReset).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   }
 
   async function getOrder(id) {
@@ -133,6 +136,26 @@ window.CurryOrderConfig = window.CurryOrderConfig || {
     orders[idx] = { ...orders[idx], ...update };
     saveLocalOrders(orders);
     return orders[idx];
+  }
+
+  async function clearOrders() {
+    localStorage.setItem(clearedAtKey, new Date().toISOString());
+    localStorage.setItem(localKey, '[]');
+    if (hasSupabase()) {
+      try {
+        const res = await fetch(tableUrl('id=not.is.null'), {
+          method: 'DELETE',
+          headers: orderHeaders()
+        });
+        if (!res.ok) console.warn('Supabase delete blocked, hiding old orders locally:', await res.text());
+      } catch (error) {
+        console.warn('Supabase delete failed, hiding old orders locally:', error);
+      }
+      window.dispatchEvent(new CustomEvent('cl-orders-change'));
+      return true;
+    }
+    window.dispatchEvent(new CustomEvent('cl-orders-change'));
+    return true;
   }
 
   async function listAvailability() {
@@ -202,6 +225,7 @@ window.CurryOrderConfig = window.CurryOrderConfig || {
     listOrders,
     getOrder,
     updateOrder,
+    clearOrders,
     listAvailability,
     updateAvailability,
     paymentLabel,

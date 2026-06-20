@@ -34,6 +34,9 @@
     .dash-head h2 { font-family: 'Playfair Display', serif; font-size: 26px; }
     .dash-head p { color: #8B7D6B; font-size: 13px; margin-top: 3px; }
     .head-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .dash-tabs { max-width: 1180px; margin: 0 auto 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .dash-tabs button { background: rgba(255,248,231,0.08); color: #FFF8E7; border: 1px solid rgba(196,148,58,0.28); }
+    .dash-tabs button.active { background: #C4943A; color: white; border-color: #C4943A; }
     .stats { padding: 18px 22px 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
     .stat { background: white; border: 1px solid #F0E4D0; border-radius: 16px; padding: 14px; box-shadow: 0 10px 26px rgba(139,26,26,0.05); }
     .stat strong { display: block; font-size: 25px; color: #8B1A1A; }
@@ -53,13 +56,34 @@
     .actions { min-width: 260px; display: grid; gap: 8px; align-content: start; }
     .prep-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
     .empty { text-align: center; color: #8B7D6B; padding: 36px; }
-    .availability { margin-top: 18px; }
+    .availability { display: none; }
+    .availability.active { display: block; }
     .availability .dash-head { border-top: 1px solid #F0E4D0; }
     .availability-list { padding: 18px 22px 24px; display: grid; gap: 10px; max-height: 560px; overflow: auto; }
     .availability-row { display: grid; grid-template-columns: 1.2fr 160px 1fr 150px; gap: 10px; align-items: center; background: white; border: 1px solid #F0E4D0; border-radius: 16px; padding: 12px; }
     .availability-row h4 { font-size: 14px; margin-bottom: 3px; }
     .availability-row .muted { font-size: 11px; }
     .saved { color: #2E7D32; font-size: 12px; font-weight: 800; }
+    .kitchen-panel { display: none; }
+    .kitchen-panel.active { display: block; }
+    .normal-panel { display: none; }
+    .normal-panel.active { display: block; }
+    .kitchen-grid { padding: 22px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .kitchen-card { border: 2px solid #F0E4D0; border-radius: 22px; background: white; overflow: hidden; cursor: pointer; box-shadow: 0 18px 42px rgba(139,26,26,0.08); transition: transform 0.18s, box-shadow 0.18s; }
+    .kitchen-card:hover { transform: translateY(-2px); box-shadow: 0 22px 50px rgba(139,26,26,0.13); }
+    .kitchen-card.sent { border-color: #C4943A; }
+    .kitchen-card.accepted { border-color: #1565C0; }
+    .kitchen-card.preparing { border-color: #A65F00; }
+    .kitchen-card.ready { border-color: #2E7D32; }
+    .kitchen-card-head { padding: 16px; background: linear-gradient(135deg, #1A0F00, #3D2B1A); color: #FFF8E7; }
+    .kitchen-card-head h3 { font-family: 'Playfair Display', serif; font-size: 24px; margin-bottom: 5px; }
+    .kitchen-card-body { padding: 16px; display: grid; gap: 10px; }
+    .kitchen-summary { font-size: 14px; color: #3D2B1A; font-weight: 800; line-height: 1.45; }
+    .kitchen-details { display: none; border-top: 1px solid #F0E4D0; padding-top: 12px; }
+    .kitchen-card.expanded .kitchen-details { display: grid; gap: 8px; }
+    .kitchen-prep { display: grid; grid-template-columns: 1fr 92px; gap: 8px; align-items: center; }
+    .kitchen-prep label { color: #8B7D6B; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+    .kitchen-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 10px; }
     @media (max-width: 760px) {
       .shell { padding: 16px; }
       .topbar { align-items: flex-start; flex-direction: column; }
@@ -67,8 +91,10 @@
       .actions { min-width: 0; }
       .dash-head { align-items: flex-start; flex-direction: column; }
       .head-actions { width: 100%; }
+      .dash-tabs { margin-bottom: 10px; }
       .stats { grid-template-columns: 1fr 1fr; }
       .availability-row { grid-template-columns: 1fr; }
+      .kitchen-grid { grid-template-columns: 1fr; padding: 14px; }
     }
   </style>
 </head>
@@ -95,7 +121,13 @@
     </section>
 
     <section class="dashboard" id="dashboardView" style="display:none;">
-      <div class="panel">
+      <div class="dash-tabs" id="dashTabs">
+        <button class="active" type="button" data-tab="orders">Orders</button>
+        <button type="button" data-tab="kitchen">Kitchen Mode</button>
+        <button type="button" data-tab="availability">Menu Availability</button>
+      </div>
+
+      <div class="panel normal-panel active" id="normalPanel">
         <div class="dash-head">
           <div>
             <h2>Incoming Orders</h2>
@@ -103,6 +135,7 @@
           </div>
           <div class="head-actions">
             <button class="light" id="soundBtn" type="button">Enable Bell</button>
+            <button class="danger" id="clearOrdersBtn" type="button">Reset Orders & Stats</button>
             <button class="secondary" id="refreshBtn" type="button">Refresh</button>
           </div>
         </div>
@@ -124,7 +157,18 @@
         <div class="orders" id="ordersList"></div>
       </div>
 
-      <div class="panel availability">
+      <div class="panel kitchen-panel" id="kitchenPanel">
+        <div class="dash-head">
+          <div>
+            <h2>Kitchen Mode</h2>
+            <p>Only active orders are shown. Tap a block to expand exact order details.</p>
+          </div>
+          <button class="secondary" id="normalModeBtn" type="button">Back to Orders</button>
+        </div>
+        <div class="kitchen-grid" id="kitchenGrid"></div>
+      </div>
+
+      <div class="panel availability" id="availabilityPanel">
         <div class="dash-head">
           <div>
             <h2>Menu Availability</h2>
@@ -141,6 +185,10 @@
     const loginView = document.getElementById('loginView');
     const dashboardView = document.getElementById('dashboardView');
     const ordersList = document.getElementById('ordersList');
+    const kitchenGrid = document.getElementById('kitchenGrid');
+    const normalPanel = document.getElementById('normalPanel');
+    const kitchenPanel = document.getElementById('kitchenPanel');
+    const availabilityPanel = document.getElementById('availabilityPanel');
     const availabilityList = document.getElementById('availabilityList');
     const orderCount = document.getElementById('orderCount');
     const modePill = document.getElementById('modePill');
@@ -148,6 +196,7 @@
     let soundEnabled = false;
     let knownOrderIds = new Set();
     let firstOrderRender = true;
+    let kitchenMode = false;
 
     const menuItems = [
       'Samosa', 'Vegetable Pakora (8pcs)', 'Fry 65 — Chicken (8pcs)', 'Fry 65 — Paneer (8pcs)',
@@ -210,9 +259,57 @@
       setTimeout(() => ctx.close(), 1000);
     }
 
+    function activeOrdersOnly(orders) {
+      return orders.filter(order => !['completed', 'rejected'].includes(order.status));
+    }
+
+    function renderKitchenMode(orders) {
+      const activeOrders = activeOrdersOnly(orders);
+      if (!activeOrders.length) {
+        kitchenGrid.innerHTML = '<div class="empty">No active kitchen orders right now.</div>';
+        return;
+      }
+
+      kitchenGrid.innerHTML = activeOrders.map(order => {
+        const items = order.items || [];
+        const summary = items.slice(0, 3).map(item => `${escapeHtml(item.name)} x${item.qty}`).join(' · ');
+        const more = items.length > 3 ? ` · +${items.length - 3} more` : '';
+        return `
+          <article class="kitchen-card ${escapeHtml(order.status)}" data-id="${escapeHtml(order.id)}">
+            <div class="kitchen-card-head">
+              <h3>${escapeHtml(order.customer_name || 'Customer')}</h3>
+              <div>${window.CurryOrders.statusLabel(order)} · ${money(order.total)}</div>
+            </div>
+            <div class="kitchen-card-body">
+              <div class="kitchen-summary">${summary}${more}</div>
+              <div class="muted">${escapeHtml(order.order_type || '').replace('_', ' ')} · ${shortDate(order.created_at)}</div>
+              <div class="kitchen-details">
+                <div class="muted"><strong>Phone:</strong> ${escapeHtml(order.phone || '')}</div>
+                ${order.notes ? `<div class="muted"><strong>Notes:</strong> ${escapeHtml(order.notes)}</div>` : ''}
+                <div class="items">
+                  ${items.map(item => `<div><span>${escapeHtml(item.name)} x${item.qty}</span><strong>${escapeHtml(item.price)}</strong></div>`).join('')}
+                </div>
+                <div class="kitchen-prep">
+                  <label for="kitchen-prep-${escapeHtml(order.id)}">Prep time required</label>
+                  <input id="kitchen-prep-${escapeHtml(order.id)}" type="number" min="1" max="180" value="${order.prep_minutes || 20}" aria-label="Preparation minutes">
+                </div>
+                <div class="kitchen-actions">
+                  <button class="secondary" data-kitchen-action="accepted">Set Time</button>
+                  <button class="light" data-kitchen-action="preparing">Preparing</button>
+                  <button class="light" data-kitchen-action="ready">Ready</button>
+                  <button class="secondary" data-kitchen-action="completed">Complete</button>
+                  <button class="danger" data-kitchen-action="rejected">Reject</button>
+                </div>
+              </div>
+            </div>
+          </article>`;
+      }).join('');
+    }
+
     async function renderOrders() {
       const orders = await window.CurryOrders.listOrders();
       renderStats(orders);
+      if (kitchenMode) renderKitchenMode(orders);
 
       const newSentOrders = orders.filter(order => order.status === 'sent' && !knownOrderIds.has(order.id));
       if (!firstOrderRender && newSentOrders.length) playBell();
@@ -308,6 +405,42 @@
       if (soundEnabled) playBell();
     });
 
+    async function switchTab(tab) {
+      document.querySelectorAll('#dashTabs button').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
+      normalPanel.classList.toggle('active', tab === 'orders');
+      kitchenPanel.classList.toggle('active', tab === 'kitchen');
+      availabilityPanel.classList.toggle('active', tab === 'availability');
+      kitchenMode = tab === 'kitchen';
+      if (tab === 'kitchen') renderKitchenMode(await window.CurryOrders.listOrders());
+      if (tab === 'orders') renderOrders();
+      if (tab === 'availability') renderAvailability();
+    }
+
+    document.getElementById('dashTabs').addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-tab]');
+      if (!btn) return;
+      switchTab(btn.dataset.tab);
+    });
+
+    document.getElementById('normalModeBtn').addEventListener('click', () => {
+      switchTab('orders');
+    });
+
+    document.getElementById('clearOrdersBtn').addEventListener('click', async () => {
+      const confirmed = window.confirm('Are you sure you want to clear all orders and reset the stats? This cannot be undone. Menu availability will not be changed.');
+      if (!confirmed) return;
+      const pass = window.prompt('Enter staff password to confirm reset:');
+      if (pass !== window.CurryOrders.config.staffPasscode) {
+        alert('Incorrect password. Orders and stats were not reset.');
+        return;
+      }
+      await window.CurryOrders.clearOrders();
+      knownOrderIds = new Set();
+      firstOrderRender = true;
+      await renderOrders();
+      if (kitchenMode) renderKitchenMode([]);
+    });
+
     document.getElementById('filters').addEventListener('click', (e) => {
       const btn = e.target.closest('button[data-status]');
       if (!btn) return;
@@ -329,6 +462,25 @@
         : { status: action, ...(action === 'preparing' ? { prep_minutes: prep } : {}) };
       await window.CurryOrders.updateOrder(id, patch);
       renderOrders();
+    });
+
+    kitchenGrid.addEventListener('click', async (e) => {
+      const actionBtn = e.target.closest('button[data-kitchen-action]');
+      const card = e.target.closest('.kitchen-card');
+      if (!card) return;
+
+      if (actionBtn) {
+        const action = actionBtn.dataset.kitchenAction;
+        const prep = Number(card.querySelector('input[type="number"]')?.value || 20);
+        await window.CurryOrders.updateOrder(card.dataset.id, {
+          status: action,
+          ...(action === 'accepted' || action === 'preparing' ? { prep_minutes: prep } : {})
+        });
+        renderOrders();
+        return;
+      }
+
+      card.classList.toggle('expanded');
     });
 
     availabilityList.addEventListener('click', async (e) => {

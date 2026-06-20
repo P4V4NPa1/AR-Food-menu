@@ -1184,6 +1184,26 @@
       color: #C4943A;
       margin-top: 16px;
     }
+    .variant-picker {
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .variant-picker.active { display: grid; }
+    .variant-option {
+      border: 1px solid #E8DCC8;
+      border-radius: 14px;
+      background: white;
+      padding: 12px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      text-align: left;
+      transition: all 0.2s;
+    }
+    .variant-option strong { display: block; color: #1A0F00; font-size: 14px; }
+    .variant-option span { display: block; margin-top: 4px; color: #C4943A; font-size: 13px; font-weight: 800; }
+    .variant-option.active { border-color: #C4943A; background: rgba(196,148,58,0.1); box-shadow: 0 8px 20px rgba(196,148,58,0.12); }
     .btn-add-cart {
       width: 100%;
       padding: 16px;
@@ -1443,31 +1463,39 @@
     .order-status-card .order-id { font-size: 11px; letter-spacing: 0.8px; color: #8B7D6B; text-transform: uppercase; }
     .order-status-card .status-main { font-family: 'Playfair Display', serif; font-size: 24px; color: #1A0F00; margin-top: 4px; }
     .order-status-card .status-sub { font-size: 13px; color: #5A4A38; line-height: 1.55; margin-top: 8px; }
-    .order-guide { display: grid; grid-template-columns: 86px 1fr; gap: 14px; align-items: center; margin-top: 12px; }
+    .order-guide { display: grid; grid-template-columns: 104px 1fr; gap: 14px; align-items: center; margin-top: 12px; overflow: hidden; }
     .order-person {
-      width: 86px;
-      height: 86px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      font-size: 46px;
-      background: radial-gradient(circle at 40% 30%, #FFE0B2, #C4943A 66%, #8B1A1A);
-      box-shadow: 0 18px 36px rgba(139,26,26,0.16);
-      animation: personWait 1.4s ease-in-out infinite;
+      width: 96px;
+      height: 150px;
+      transform: translateX(-118px);
+      animation: personWalkIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards, personBreathe 1.8s ease-in-out 0.9s infinite;
     }
-    .order-person.accepted { animation-name: personNod; }
-    .order-person.preparing { animation-name: personCook; }
-    .order-person.ready { animation-name: personWave; }
-    .order-person.completed { animation: none; }
-    .order-person.rejected { animation-name: personSorry; background: radial-gradient(circle at 40% 30%, #FFE0B2, #BCAAA4 66%, #6D4C41); }
+    .order-person svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 10px 14px rgba(26,15,0,0.14)); }
+    .host-arm-left, .host-arm-right { transform-box: fill-box; transform-origin: 50% 10%; transition: transform 0.25s ease; }
+    .host-head { transform-box: fill-box; transform-origin: 50% 90%; transition: transform 0.25s ease; }
+    .host-food { opacity: 0; transform: translateY(8px); transition: opacity 0.25s ease, transform 0.25s ease; }
+    .host-watch { opacity: 0; transition: opacity 0.2s ease; }
+    .host-mouth-sad { opacity: 0; }
+    .order-person.sent .host-arm-left { animation: checkWatch 1.25s ease-in-out infinite; }
+    .order-person.sent .host-watch { opacity: 1; }
+    .order-person.accepted .host-head { animation: hostNod 1.2s ease-in-out infinite; }
+    .order-person.accepted .host-arm-right { animation: happyWave 1.1s ease-in-out infinite; }
+    .order-person.preparing .host-arm-right { animation: happyWave 0.9s ease-in-out infinite; }
+    .order-person.ready .host-arm-right { animation: readyPoint 1s ease-in-out infinite; }
+    .order-person.ready .host-food { opacity: 1; transform: translateY(0); }
+    .order-person.rejected .host-mouth-smile { opacity: 0; }
+    .order-person.rejected .host-mouth-sad { opacity: 1; }
+    .order-person.rejected .host-arm-left, .order-person.rejected .host-arm-right { animation: sorryHands 1.1s ease-in-out infinite; }
     .branch-call-list { display: none; margin-top: 12px; gap: 8px; }
     .branch-call-list.active { display: grid; }
     .branch-call-list a { display: flex; justify-content: space-between; gap: 10px; padding: 10px 12px; border-radius: 12px; border: 1px solid #E8DCC8; background: white; color: #2b1608; text-decoration: none; font-size: 12px; font-weight: 800; }
-    @keyframes personWait { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-    @keyframes personNod { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(7deg); } }
-    @keyframes personCook { 0%,100% { transform: translateX(-2px) rotate(-4deg); } 50% { transform: translateX(3px) rotate(5deg); } }
-    @keyframes personWave { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08) rotate(-5deg); } }
-    @keyframes personSorry { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
+    @keyframes personWalkIn { to { transform: translateX(0); } }
+    @keyframes personBreathe { 0%,100% { translate: 0 0; } 50% { translate: 0 -4px; } }
+    @keyframes checkWatch { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(42deg) translate(4px, -2px); } }
+    @keyframes happyWave { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-28deg) translateY(-3px); } }
+    @keyframes readyPoint { 0%,100% { transform: rotate(-12deg); } 50% { transform: rotate(-42deg) translateY(-5px); } }
+    @keyframes hostNod { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(5deg); } }
+    @keyframes sorryHands { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(18deg); } }
 
     .recommend-overlay { position: fixed; inset: 0; background: rgba(26,15,0,0.62); backdrop-filter: blur(10px); z-index: 2100; display: flex; align-items: center; justify-content: center; padding: 18px; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
     .recommend-overlay.active { opacity: 1; pointer-events: all; }
@@ -1967,7 +1995,7 @@
       <div class="menu-item" data-cat="appetizers">
         <div class="info">
           <h4>Samosa <span class="badge" style="font-size:9px;">Bestseller</span></h4>
-          <div class="desc">Crispy triangular pastry stuffed with spiced potatoes, peas &amp; chicken</div>
+          <div class="desc">Crispy triangular pastry with your choice of spiced vegetable or chicken filling</div>
           <div class="meta">
             <span class="spice">🌶️🌶️🌶️</span>
           </div>
@@ -2479,6 +2507,16 @@
           <div class="modal-desc" id="modalDesc"></div>
           <div class="modal-pairing" id="modalPairing"></div>
           <div class="modal-price" id="modalPrice"></div>
+          <div class="variant-picker" id="variantPicker" aria-label="Choose Samosa option">
+            <button class="variant-option active" type="button" data-name="Samosa - Veg" data-price="18 PLN">
+              <strong>Veg Samosa</strong>
+              <span>18 PLN</span>
+            </button>
+            <button class="variant-option" type="button" data-name="Samosa - Chicken" data-price="20 PLN">
+              <strong>Chicken Samosa</strong>
+              <span>20 PLN</span>
+            </button>
+          </div>
           <div class="modal-actions">
             <button class="btn-ar-modal" id="viewArBtn">
               <svg viewBox="0 0 24 24"><path d="M21 3H3v18h18V3zm-2 16H5V5h14v14zm-5-7l-4 5h8l-4-5z"/></svg>
@@ -2560,7 +2598,53 @@
           <div class="status-main" id="orderStatusMain"></div>
           <div class="status-sub" id="orderStatusSub"></div>
           <div class="order-guide">
-            <div class="order-person" id="orderPerson" aria-hidden="true">👳🏽‍♂️</div>
+            <div class="order-person sent" id="orderPerson" aria-hidden="true">
+              <svg viewBox="0 0 130 210" role="img">
+                <ellipse cx="65" cy="201" rx="42" ry="8" fill="rgba(26,15,0,0.16)"/>
+                <g class="host-legs">
+                  <path d="M45 112 L62 112 L61 190 L43 190 Z" fill="#FFF8E7" stroke="#2D1A05" stroke-width="2"/>
+                  <path d="M68 112 L85 112 L88 190 L69 190 Z" fill="#FFF8E7" stroke="#2D1A05" stroke-width="2"/>
+                  <path d="M61 112 L68 112 L68 189 L61 189 Z" fill="#E0B358"/>
+                  <path d="M37 194 C48 185 60 190 62 199 C53 204 39 205 29 203 C27 199 30 196 37 194 Z" fill="#D97932" stroke="#2D1A05" stroke-width="2"/>
+                  <path d="M72 197 C83 188 96 190 102 198 C96 204 78 205 67 202 C65 199 67 197 72 197 Z" fill="#D97932" stroke="#2D1A05" stroke-width="2"/>
+                </g>
+                <path d="M39 72 C36 90 37 112 43 126 L85 126 C92 108 91 88 87 72 C74 65 54 65 39 72 Z" fill="#FFF8E7" stroke="#2D1A05" stroke-width="2"/>
+                <path d="M78 72 L96 82 L88 132 L76 127 Z" fill="#D89A3A" stroke="#2D1A05" stroke-width="2"/>
+                <path d="M43 78 L39 125" stroke="#2D1A05" stroke-width="1.4" opacity="0.5"/>
+                <path d="M62 80 L62 124" stroke="#2D1A05" stroke-width="1.4" opacity="0.5"/>
+                <g class="host-arm-left">
+                  <path d="M39 78 C24 88 23 107 43 111" fill="none" stroke="#9F5F32" stroke-width="12" stroke-linecap="round"/>
+                  <path d="M38 106 C47 102 54 107 52 116 C44 120 35 116 38 106 Z" fill="#9F5F32" stroke="#2D1A05" stroke-width="1.5"/>
+                  <circle class="host-watch" cx="31" cy="97" r="6" fill="#1A0F00" stroke="#FFF8E7" stroke-width="2"/>
+                </g>
+                <g class="host-arm-right">
+                  <path d="M86 78 C105 88 105 108 84 112" fill="none" stroke="#9F5F32" stroke-width="12" stroke-linecap="round"/>
+                  <path d="M79 106 C88 102 96 107 94 116 C86 120 77 116 79 106 Z" fill="#9F5F32" stroke="#2D1A05" stroke-width="1.5"/>
+                </g>
+                <g class="host-food">
+                  <rect x="91" y="82" width="27" height="20" rx="5" fill="#FFF3C4" stroke="#8B1A1A" stroke-width="2"/>
+                  <path d="M96 82 C99 73 111 73 114 82" fill="none" stroke="#8B1A1A" stroke-width="2"/>
+                </g>
+                <g class="host-head">
+                  <ellipse cx="36" cy="42" rx="8" ry="11" fill="#B96B35" stroke="#2D1A05" stroke-width="2"/>
+                  <ellipse cx="86" cy="42" rx="8" ry="11" fill="#B96B35" stroke="#2D1A05" stroke-width="2"/>
+                  <path d="M37 30 C40 12 83 12 87 31 C91 55 79 70 62 70 C45 70 33 55 37 30 Z" fill="#B96B35" stroke="#2D1A05" stroke-width="2"/>
+                  <path d="M32 28 C45 2 80 0 95 20 C82 16 56 16 32 36 Z" fill="#FFF8E7" stroke="#2D1A05" stroke-width="2"/>
+                  <path d="M35 21 C50 12 70 8 89 14" fill="none" stroke="#2D1A05" stroke-width="1.7"/>
+                  <path d="M31 31 C48 20 74 17 96 24" fill="none" stroke="#2D1A05" stroke-width="1.7"/>
+                  <circle cx="51" cy="43" r="6" fill="#FFF8E7" stroke="#2D1A05" stroke-width="1.5"/>
+                  <circle cx="74" cy="43" r="6" fill="#FFF8E7" stroke="#2D1A05" stroke-width="1.5"/>
+                  <circle cx="51" cy="43" r="2.5" fill="#1A0F00"/>
+                  <circle cx="74" cy="43" r="2.5" fill="#1A0F00"/>
+                  <path d="M56 34 C51 31 46 32 43 35" fill="none" stroke="#2D1A05" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M69 34 C75 31 80 32 83 35" fill="none" stroke="#2D1A05" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M61 43 L57 54 L65 54" fill="none" stroke="#7A3B1D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path class="host-mouth-smile" d="M50 57 C58 66 70 66 78 57" fill="none" stroke="#2D1A05" stroke-width="2.8" stroke-linecap="round"/>
+                  <path class="host-mouth-sad" d="M51 62 C59 55 70 55 78 62" fill="none" stroke="#2D1A05" stroke-width="2.8" stroke-linecap="round"/>
+                  <path d="M45 56 C53 61 71 61 80 56" fill="none" stroke="#FFF8E7" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+                </g>
+              </svg>
+            </div>
             <div class="status-sub" id="orderPersonText">Our Curry Leaves host is waiting with your order request.</div>
           </div>
           <div class="branch-call-list" id="branchCallList"></div>
@@ -2803,7 +2887,7 @@
           categories: { appetizers: '● Przystawki', soups: '● Zupy', vegetarian: '● Klasyczne dania wegetariańskie', curries: '● Najlepsze curry', breads: '● Indyjskie pieczywo' },
           filters: { all: 'Wszystko', appetizers: 'Przystawki', soups: 'Zupy', vegetarian: 'Wegetariańskie', curries: 'Curry', breads: 'Pieczywo' },
           desc: {
-            'Samosa': 'Chrupiące trójkątne pierożki nadziewane przyprawionymi ziemniakami, groszkiem i kurczakiem',
+            'Samosa': 'Chrupiące trójkątne pierożki z nadzieniem warzywnym lub kurczakiem do wyboru',
             'Vegetable Pakora (8pcs)': 'Mieszane warzywa w cieście z mąki z ciecierzycy, smażone na złoto i chrupiąco',
             'Fry 65 — Chicken (8pcs)': 'Marynowany i chrupiący smażony kurczak z mieszanką indyjskich przypraw',
             'Fry 65 — Paneer (8pcs)': 'Chrupiący indyjski ser paneer, marynowany i smażony z aromatycznymi przyprawami',
@@ -2829,7 +2913,7 @@
           categories: { appetizers: '● Закуски', soups: '● Супи', vegetarian: '● Класичні вегетаріанські страви', curries: '● Найкращі карі', breads: '● Індійський хліб' },
           filters: { all: 'Усе', appetizers: 'Закуски', soups: 'Супи', vegetarian: 'Вегетаріанське', curries: 'Карі', breads: 'Хліб' },
           desc: {
-            'Samosa': 'Хрусткі трикутні пиріжки з пряною картоплею, горошком і куркою',
+            'Samosa': 'Хрусткі трикутні пиріжки з овочевою або курячою начинкою на вибір',
             'Vegetable Pakora (8pcs)': 'Овочі в клярі з нутового борошна, обсмажені до золотистої скоринки',
             'Fry 65 — Chicken (8pcs)': 'Маринована та хрустко обсмажена курка з індійськими спеціями',
             'Fry 65 — Paneer (8pcs)': 'Хрусткий індійський сир панір, маринований і обсмажений з ароматними спеціями',
@@ -3228,18 +3312,19 @@
         const text = document.getElementById('orderPersonText');
         const callList = document.getElementById('branchCallList');
         const status = order.status || 'sent';
+        const customer = order.customer_name ? order.customer_name.split(/\s+/)[0] : 'there';
+        const prep = order.prep_minutes ? `${order.prep_minutes} minutes` : 'the time set by the kitchen';
         const guide = {
-          sent: { emoji: '👳🏽‍♂️', text: 'Our Curry Leaves host is waiting with your request. The restaurant should respond soon.' },
-          accepted: { emoji: '🙇🏽‍♂️', text: `Accepted. Your host says the kitchen is preparing it${order.prep_minutes ? ` in about ${order.prep_minutes} minutes` : ''}.` },
-          preparing: { emoji: '👨🏽‍🍳', text: `The kitchen is cooking now${order.prep_minutes ? ` · approx. ${order.prep_minutes} minutes` : ''}.` },
-          ready: { emoji: '🙋🏽‍♂️', text: 'Your order is ready. Please come to the counter or pickup point.' },
-          completed: { emoji: '🙏🏽', text: 'Order completed. Thank you for choosing Curry Leaves.' },
-          rejected: { emoji: '🤦🏽‍♂️', text: 'Sorry, the restaurant could not accept this order. Please call a branch directly for help.' }
-        }[status] || { emoji: '👳🏽‍♂️', text: 'Checking order status...' };
+          sent: `Hi ${customer}, your Curry Leaves host just walked in and is checking his watch while the restaurant reviews your request.`,
+          accepted: `Great news ${customer}. Your order was accepted, and your host is happily waiting with you for about ${prep}.`,
+          preparing: `${customer}, the kitchen is cooking now. Your host is staying nearby and watching the timing for you: about ${prep}.`,
+          ready: `${customer}, your food is ready. Please come to the restaurant pickup counter and your host will guide you.`,
+          completed: `Thank you ${customer}. Your Curry Leaves order is completed. We hope you enjoy every bite.`,
+          rejected: `Sorry ${customer}, the restaurant could not accept this order online. Please call a branch directly and the team will help you.`
+        }[status] || `Hi ${customer}, checking your order status now.`;
 
         person.className = `order-person ${status}`;
-        person.textContent = guide.emoji;
-        text.textContent = guide.text;
+        text.textContent = guide;
 
         if (status === 'rejected') {
           const callableLocations = locationData.filter(loc => loc.phone);
@@ -3405,9 +3490,10 @@
       }
 
       function addToCart(name, price, options = {}) {
-        const unavailable = availabilityMessage(menuAvailability[name]);
+        const availabilityName = options.availabilityName || name;
+        const unavailable = availabilityMessage(menuAvailability[availabilityName]);
         if (unavailable) {
-          alert(`${name} is ${unavailable.toLowerCase()}. Please choose another dish for now.`);
+          alert(`${availabilityName} is ${unavailable.toLowerCase()}. Please choose another dish for now.`);
           return;
         }
         const existing = cart.find(i => i.name === name);
@@ -3419,7 +3505,7 @@
         saveCart();
         renderCart();
         trackEvent('add_to_cart', { item_name: name, price });
-        if (!options.skipRecommendation) showRecommendation(name);
+        if (!options.skipRecommendation) showRecommendation(options.recommendationSource || availabilityName);
       }
 
       recommendYes.addEventListener('click', () => {
@@ -3434,7 +3520,23 @@
       // ===== Modal =====
       const modal = document.getElementById('dishModal');
       const modalClose = document.getElementById('modalClose');
+      const variantPicker = document.getElementById('variantPicker');
+      const modalPrice = document.getElementById('modalPrice');
       let currentDish = null;
+
+      variantPicker.addEventListener('click', (e) => {
+        const option = e.target.closest('.variant-option');
+        if (!option || !currentDish) return;
+        variantPicker.querySelectorAll('.variant-option').forEach(btn => btn.classList.remove('active'));
+        option.classList.add('active');
+        currentDish = {
+          ...currentDish,
+          name: option.dataset.name,
+          price: option.dataset.price,
+          baseName: 'Samosa'
+        };
+        modalPrice.textContent = currentDish.price;
+      });
 
       modalClose.addEventListener('click', closeModal);
       modal.addEventListener('click', (e) => {
@@ -3450,6 +3552,7 @@
         const mv = document.getElementById('modalModelViewer');
         mv.style.display = 'none';
         mv.removeAttribute('src');
+        variantPicker.classList.remove('active');
       }
 
       const modelFiles = {
@@ -3527,12 +3630,18 @@
           const dietTags = info.querySelectorAll('.diet-tag');
           const pairing = pairings[name];
 
-          currentDish = { name, price };
+          currentDish = name === 'Samosa'
+            ? { name: 'Samosa - Veg', price: '18 PLN', baseName: 'Samosa' }
+            : { name, price, baseName: name };
           trackEvent('dish_open', { item_name: name, category: this.dataset.cat || '', price });
 
           document.getElementById('modalTitle').textContent = name;
           document.getElementById('modalDesc').textContent = desc;
-          document.getElementById('modalPrice').textContent = price;
+          modalPrice.textContent = currentDish.price;
+          variantPicker.classList.toggle('active', name === 'Samosa');
+          if (name === 'Samosa') {
+            variantPicker.querySelectorAll('.variant-option').forEach((option, index) => option.classList.toggle('active', index === 0));
+          }
 
           // Meta (spice + tags)
           let metaHtml = '';
@@ -3636,7 +3745,10 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
             Add to Cart`;
           btn.onclick = function() {
-            addToCart(currentDish.name, currentDish.price);
+            addToCart(currentDish.name, currentDish.price, {
+              availabilityName: currentDish.baseName,
+              recommendationSource: currentDish.baseName
+            });
             this.className = 'btn-add-cart added';
             this.innerHTML = `
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
