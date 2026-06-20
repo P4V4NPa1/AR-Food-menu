@@ -33,6 +33,11 @@
     .dash-head { padding: 20px 22px; display: flex; justify-content: space-between; gap: 14px; align-items: center; border-bottom: 1px solid #F0E4D0; }
     .dash-head h2 { font-family: 'Playfair Display', serif; font-size: 26px; }
     .dash-head p { color: #8B7D6B; font-size: 13px; margin-top: 3px; }
+    .head-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .stats { padding: 18px 22px 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .stat { background: white; border: 1px solid #F0E4D0; border-radius: 16px; padding: 14px; box-shadow: 0 10px 26px rgba(139,26,26,0.05); }
+    .stat strong { display: block; font-size: 25px; color: #8B1A1A; }
+    .stat span { display: block; margin-top: 3px; color: #8B7D6B; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
     .filters { display: flex; gap: 8px; flex-wrap: wrap; padding: 16px 22px; background: rgba(255,255,255,0.45); border-bottom: 1px solid #F0E4D0; }
     .filters button.active { background: #C4943A; color: white; border-color: #C4943A; }
     .orders { padding: 18px 22px 24px; display: grid; gap: 14px; }
@@ -48,12 +53,22 @@
     .actions { min-width: 260px; display: grid; gap: 8px; align-content: start; }
     .prep-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
     .empty { text-align: center; color: #8B7D6B; padding: 36px; }
+    .availability { margin-top: 18px; }
+    .availability .dash-head { border-top: 1px solid #F0E4D0; }
+    .availability-list { padding: 18px 22px 24px; display: grid; gap: 10px; max-height: 560px; overflow: auto; }
+    .availability-row { display: grid; grid-template-columns: 1.2fr 160px 1fr 150px; gap: 10px; align-items: center; background: white; border: 1px solid #F0E4D0; border-radius: 16px; padding: 12px; }
+    .availability-row h4 { font-size: 14px; margin-bottom: 3px; }
+    .availability-row .muted { font-size: 11px; }
+    .saved { color: #2E7D32; font-size: 12px; font-weight: 800; }
     @media (max-width: 760px) {
       .shell { padding: 16px; }
       .topbar { align-items: flex-start; flex-direction: column; }
       .order-card { grid-template-columns: 1fr; }
       .actions { min-width: 0; }
       .dash-head { align-items: flex-start; flex-direction: column; }
+      .head-actions { width: 100%; }
+      .stats { grid-template-columns: 1fr 1fr; }
+      .availability-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -86,7 +101,16 @@
             <h2>Incoming Orders</h2>
             <p id="orderCount">Loading orders...</p>
           </div>
-          <button class="secondary" id="refreshBtn">Refresh</button>
+          <div class="head-actions">
+            <button class="light" id="soundBtn" type="button">Enable Bell</button>
+            <button class="secondary" id="refreshBtn" type="button">Refresh</button>
+          </div>
+        </div>
+        <div class="stats" id="statsGrid">
+          <div class="stat"><strong id="todayOrders">0</strong><span>Orders today</span></div>
+          <div class="stat"><strong id="todayRevenue">0 PLN</strong><span>Revenue today</span></div>
+          <div class="stat"><strong id="weekOrders">0</strong><span>Orders this week</span></div>
+          <div class="stat"><strong id="weekRevenue">0 PLN</strong><span>Revenue this week</span></div>
         </div>
         <div class="filters" id="filters">
           <button class="light active" data-status="all">All</button>
@@ -95,8 +119,19 @@
           <button class="light" data-status="preparing">Preparing</button>
           <button class="light" data-status="ready">Ready</button>
           <button class="light" data-status="completed">Completed</button>
+          <button class="light" data-status="rejected">Rejected</button>
         </div>
         <div class="orders" id="ordersList"></div>
+      </div>
+
+      <div class="panel availability">
+        <div class="dash-head">
+          <div>
+            <h2>Menu Availability</h2>
+            <p>Owner can pause items only. Dish names, prices, and descriptions stay controlled by the website.</p>
+          </div>
+        </div>
+        <div class="availability-list" id="availabilityList"></div>
       </div>
     </section>
   </div>
@@ -106,17 +141,84 @@
     const loginView = document.getElementById('loginView');
     const dashboardView = document.getElementById('dashboardView');
     const ordersList = document.getElementById('ordersList');
+    const availabilityList = document.getElementById('availabilityList');
     const orderCount = document.getElementById('orderCount');
     const modePill = document.getElementById('modePill');
     let activeStatus = 'all';
+    let soundEnabled = false;
+    let knownOrderIds = new Set();
+    let firstOrderRender = true;
+
+    const menuItems = [
+      'Samosa', 'Vegetable Pakora (8pcs)', 'Fry 65 — Chicken (8pcs)', 'Fry 65 — Paneer (8pcs)',
+      'Tandoori Grill Chicken (6pcs)', 'Malai Tikka', 'Tomato Rasam', 'Dal Soup', 'Palak Paneer',
+      'Chana Masala', 'Dal Tadka', 'Aloo Gobi Methi', 'Butter Chicken', 'Chicken Tikka Masala',
+      'Dum Biryani', 'Bhuna Mutton', 'Vegetable Biryani', 'Garlic Naan', 'Butter Naan', 'Roti'
+    ];
 
     modePill.textContent = window.CurryOrders.hasSupabase() ? 'Supabase live mode' : 'Demo mode: local browser orders only';
 
     function money(total) { return `${Number(total || 0).toFixed(0)} PLN`; }
     function shortDate(value) { return new Date(value).toLocaleString(); }
 
+    function escapeHtml(value) {
+      return String(value || '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
+    }
+
+    function startOfToday() {
+      const date = new Date();
+      date.setHours(0, 0, 0, 0);
+      return date;
+    }
+
+    function startOfWeek() {
+      const date = startOfToday();
+      const day = date.getDay() || 7;
+      date.setDate(date.getDate() - day + 1);
+      return date;
+    }
+
+    function renderStats(orders) {
+      const today = startOfToday();
+      const week = startOfWeek();
+      const todayOrders = orders.filter(order => new Date(order.created_at) >= today);
+      const weekOrders = orders.filter(order => new Date(order.created_at) >= week);
+      document.getElementById('todayOrders').textContent = todayOrders.length;
+      document.getElementById('todayRevenue').textContent = money(todayOrders.reduce((sum, order) => sum + Number(order.total || 0), 0));
+      document.getElementById('weekOrders').textContent = weekOrders.length;
+      document.getElementById('weekRevenue').textContent = money(weekOrders.reduce((sum, order) => sum + Number(order.total || 0), 0));
+    }
+
+    function playBell() {
+      if (!soundEnabled) return;
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      const now = ctx.currentTime;
+      [880, 1175, 1568].forEach((freq, index) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + index * 0.08);
+        gain.gain.setValueAtTime(0.0001, now + index * 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.18, now + index * 0.08 + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + index * 0.08 + 0.62);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(now + index * 0.08);
+        osc.stop(now + index * 0.08 + 0.66);
+      });
+      setTimeout(() => ctx.close(), 1000);
+    }
+
     async function renderOrders() {
       const orders = await window.CurryOrders.listOrders();
+      renderStats(orders);
+
+      const newSentOrders = orders.filter(order => order.status === 'sent' && !knownOrderIds.has(order.id));
+      if (!firstOrderRender && newSentOrders.length) playBell();
+      knownOrderIds = new Set(orders.map(order => order.id));
+      firstOrderRender = false;
+
       const filtered = activeStatus === 'all' ? orders : orders.filter(order => order.status === activeStatus);
       orderCount.textContent = `${filtered.length} shown · ${orders.length} total`;
       if (!filtered.length) {
@@ -126,16 +228,16 @@
       ordersList.innerHTML = filtered.map(order => `
         <article class="order-card" data-id="${order.id}">
           <div>
-            <h3>${order.customer_name || 'Customer'} · ${money(order.total)}</h3>
-            <div class="muted">${order.phone || ''} · ${shortDate(order.created_at)}</div>
+            <h3>${escapeHtml(order.customer_name || 'Customer')} · ${money(order.total)}</h3>
+            <div class="muted">${escapeHtml(order.phone || '')} · ${shortDate(order.created_at)}</div>
             <div class="order-meta">
               <span class="tag status">${window.CurryOrders.statusLabel(order)}</span>
               <span class="tag">${(order.order_type || '').replace('_', ' ')}</span>
               <span class="tag pay">${window.CurryOrders.paymentLabel(order.payment_method)}</span>
             </div>
-            ${order.notes ? `<div class="muted"><strong>Notes:</strong> ${order.notes}</div>` : ''}
+            ${order.notes ? `<div class="muted"><strong>Notes:</strong> ${escapeHtml(order.notes)}</div>` : ''}
             <div class="items">
-              ${(order.items || []).map(item => `<div><span>${item.name} x${item.qty}</span><strong>${item.price}</strong></div>`).join('')}
+              ${(order.items || []).map(item => `<div><span>${escapeHtml(item.name)} x${item.qty}</span><strong>${escapeHtml(item.price)}</strong></div>`).join('')}
             </div>
           </div>
           <div class="actions">
@@ -152,6 +254,27 @@
       `).join('');
     }
 
+    async function renderAvailability() {
+      const availability = await window.CurryOrders.listAvailability();
+      availabilityList.innerHTML = menuItems.map(name => {
+        const state = availability[name] || { status: 'available', note: '', available_at: '' };
+        return `
+          <div class="availability-row" data-name="${escapeHtml(name)}">
+            <div>
+              <h4>${escapeHtml(name)}</h4>
+              <div class="muted">Temporary control only. Menu content cannot be edited here.</div>
+            </div>
+            <select data-field="status">
+              <option value="available" ${state.status === 'available' ? 'selected' : ''}>Available</option>
+              <option value="sold_out" ${state.status === 'sold_out' ? 'selected' : ''}>Sold out</option>
+              <option value="unavailable" ${state.status === 'unavailable' ? 'selected' : ''}>Unavailable for now</option>
+            </select>
+            <input data-field="note" value="${escapeHtml(state.note)}" placeholder="Back for lunch, after 18:00...">
+            <button class="secondary" data-save-availability>Save</button>
+          </div>`;
+      }).join('');
+    }
+
     document.getElementById('loginBtn').addEventListener('click', () => {
       const pass = document.getElementById('passcodeInput').value;
       if (pass !== window.CurryOrders.config.staffPasscode) {
@@ -162,15 +285,28 @@
       loginView.style.display = 'none';
       dashboardView.style.display = 'block';
       renderOrders();
+      renderAvailability();
     });
 
     if (sessionStorage.getItem('clStaffLoggedIn') === 'true') {
       loginView.style.display = 'none';
       dashboardView.style.display = 'block';
       renderOrders();
+      renderAvailability();
     }
 
-    document.getElementById('refreshBtn').addEventListener('click', renderOrders);
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+      renderOrders();
+      renderAvailability();
+    });
+
+    document.getElementById('soundBtn').addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      document.getElementById('soundBtn').textContent = soundEnabled ? 'Bell On' : 'Enable Bell';
+      document.getElementById('soundBtn').classList.toggle('secondary', soundEnabled);
+      document.getElementById('soundBtn').classList.toggle('light', !soundEnabled);
+      if (soundEnabled) playBell();
+    });
 
     document.getElementById('filters').addEventListener('click', (e) => {
       const btn = e.target.closest('button[data-status]');
@@ -195,7 +331,25 @@
       renderOrders();
     });
 
+    availabilityList.addEventListener('click', async (e) => {
+      const btn = e.target.closest('[data-save-availability]');
+      if (!btn) return;
+      const row = btn.closest('.availability-row');
+      const name = row.dataset.name;
+      const status = row.querySelector('[data-field="status"]').value;
+      const note = row.querySelector('[data-field="note"]').value.trim();
+      btn.textContent = 'Saving...';
+      await window.CurryOrders.updateAvailability(name, { status, note, available_at: note });
+      btn.textContent = 'Saved';
+      btn.classList.add('saved');
+      setTimeout(() => {
+        btn.textContent = 'Save';
+        btn.classList.remove('saved');
+      }, 1200);
+    });
+
     window.addEventListener('cl-orders-change', renderOrders);
+    window.addEventListener('cl-availability-change', renderAvailability);
     setInterval(renderOrders, 8000);
   </script>
 </body>

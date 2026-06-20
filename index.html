@@ -529,6 +529,22 @@
       opacity: 0.85;
     }
 
+    .menu-item.unavailable { opacity: 0.62; }
+    .menu-item.unavailable h4 { color: #8B7D6B; }
+    .availability-badge {
+      display: inline-flex;
+      width: fit-content;
+      margin-top: 7px;
+      border-radius: 999px;
+      padding: 4px 9px;
+      background: #FFF3E0;
+      color: #A65F00;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
     .card {
       background: white;
       border-radius: 16px;
@@ -1427,6 +1443,47 @@
     .order-status-card .order-id { font-size: 11px; letter-spacing: 0.8px; color: #8B7D6B; text-transform: uppercase; }
     .order-status-card .status-main { font-family: 'Playfair Display', serif; font-size: 24px; color: #1A0F00; margin-top: 4px; }
     .order-status-card .status-sub { font-size: 13px; color: #5A4A38; line-height: 1.55; margin-top: 8px; }
+    .order-guide { display: grid; grid-template-columns: 86px 1fr; gap: 14px; align-items: center; margin-top: 12px; }
+    .order-person {
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 46px;
+      background: radial-gradient(circle at 40% 30%, #FFE0B2, #C4943A 66%, #8B1A1A);
+      box-shadow: 0 18px 36px rgba(139,26,26,0.16);
+      animation: personWait 1.4s ease-in-out infinite;
+    }
+    .order-person.accepted { animation-name: personNod; }
+    .order-person.preparing { animation-name: personCook; }
+    .order-person.ready { animation-name: personWave; }
+    .order-person.completed { animation: none; }
+    .order-person.rejected { animation-name: personSorry; background: radial-gradient(circle at 40% 30%, #FFE0B2, #BCAAA4 66%, #6D4C41); }
+    .branch-call-list { display: none; margin-top: 12px; gap: 8px; }
+    .branch-call-list.active { display: grid; }
+    .branch-call-list a { display: flex; justify-content: space-between; gap: 10px; padding: 10px 12px; border-radius: 12px; border: 1px solid #E8DCC8; background: white; color: #2b1608; text-decoration: none; font-size: 12px; font-weight: 800; }
+    @keyframes personWait { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+    @keyframes personNod { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(7deg); } }
+    @keyframes personCook { 0%,100% { transform: translateX(-2px) rotate(-4deg); } 50% { transform: translateX(3px) rotate(5deg); } }
+    @keyframes personWave { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08) rotate(-5deg); } }
+    @keyframes personSorry { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
+
+    .recommend-overlay { position: fixed; inset: 0; background: rgba(26,15,0,0.62); backdrop-filter: blur(10px); z-index: 2100; display: flex; align-items: center; justify-content: center; padding: 18px; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+    .recommend-overlay.active { opacity: 1; pointer-events: all; }
+    .recommend-modal { width: min(420px, 100%); border-radius: 26px; overflow: hidden; background: #FFF8E7; box-shadow: 0 28px 90px rgba(0,0,0,0.36); border: 1px solid rgba(196,148,58,0.26); }
+    .recommend-hero { padding: 24px; color: #FFF8E7; background: radial-gradient(circle at 82% 20%, rgba(255,224,130,0.34), transparent 34%), linear-gradient(135deg, #8B1A1A, #1A0F00); }
+    .recommend-hero span { display: inline-flex; border-radius: 999px; padding: 5px 9px; background: rgba(255,255,255,0.12); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; }
+    .recommend-hero h3 { font-family: 'Playfair Display', serif; font-size: 28px; margin-top: 12px; }
+    .recommend-body { padding: 20px 24px 24px; }
+    .recommend-card { display: grid; grid-template-columns: 58px 1fr; gap: 12px; align-items: center; border: 1px solid #F0E4D0; background: white; border-radius: 18px; padding: 12px; margin-bottom: 16px; }
+    .recommend-icon { width: 58px; height: 58px; display: grid; place-items: center; border-radius: 16px; font-size: 28px; background: linear-gradient(135deg, #FFE0B2, #C4943A); }
+    .recommend-card strong { display: block; color: #1A0F00; }
+    .recommend-card small { color: #8B7D6B; line-height: 1.5; }
+    .recommend-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .recommend-actions button { border: none; border-radius: 14px; padding: 13px; font-weight: 900; cursor: pointer; }
+    .recommend-actions .yes { background: linear-gradient(135deg, #C4943A, #A0762E); color: white; }
+    .recommend-actions .no { background: white; color: #3D2B1A; border: 1px solid #E8DCC8; }
 
     /* === AI Menu Assistant === */
     .ai-assistant {
@@ -1696,53 +1753,30 @@
       will-change: transform, opacity;
     }
 
-    .active-dish-photo {
-      position: fixed;
-      left: 0;
-      top: 0;
-      width: clamp(112px, 15vw, 190px);
-      aspect-ratio: 4 / 3;
+    .menu-inline-photo {
+      width: 132px;
+      height: 92px;
+      flex-shrink: 0;
+      margin: -8px 16px -8px 18px;
       border-radius: 20px;
       overflow: hidden;
-      z-index: 4;
-      pointer-events: none;
       opacity: 0;
-      transform: translate3d(var(--photo-x, 0px), var(--photo-y, 0px), 0) scale(0.88) rotateZ(-2deg);
-      transform-origin: left center;
-      transition: opacity 0.22s ease, transform 0.34s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 18px 42px rgba(26,15,0,0.24), 0 0 0 1px rgba(255,255,255,0.5) inset;
+      transform: translateY(8px) scale(0.9) rotateY(-8deg);
+      animation: inlineDishPhotoIn 0.34s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      box-shadow: 0 18px 42px rgba(26,15,0,0.18), 0 0 0 1px rgba(255,255,255,0.7) inset;
       background: linear-gradient(135deg, #2D1A05, #1A0F00);
     }
 
-    .active-dish-photo.visible {
-      opacity: 1;
-      transform: translate3d(var(--photo-x, 0px), var(--photo-y, 0px), 0) scale(1) rotateZ(-1deg);
-    }
-
-    .active-dish-photo img {
+    .menu-inline-photo img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
-      filter: saturate(1.08) contrast(1.03);
+      filter: saturate(1.08) contrast(1.04);
     }
 
-    .active-dish-photo .photo-caption {
-      position: absolute;
-      left: 10px;
-      right: 10px;
-      bottom: 10px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      background: rgba(26,15,0,0.72);
-      color: #FFF8E7;
-      font-size: 11px;
-      font-weight: 700;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    @keyframes inlineDishPhotoIn {
+      to { opacity: 1; transform: translateY(0) scale(1) rotateY(-2deg); }
     }
 
     .about-section, .section-title, .menu-filter, .menu-section, .delivery-section, .locations-section, .contact-bar, .testimonials, .social-bar, footer {
@@ -1767,13 +1801,12 @@
       .spice-field::after { opacity: 0.85; filter: blur(24px); }
       .spice-ring { width: 68vmax; height: 68vmax; }
       .spice-spark { width: 6px; height: 6px; }
-      .active-dish-photo {
-        width: 98px;
-        border-radius: 16px;
-        transform: translate3d(var(--photo-x, 0px), var(--photo-y, 0px), 0) scale(0.86);
+      .menu-inline-photo {
+        width: 78px;
+        height: 58px;
+        margin: 4px 8px 0 10px;
+        border-radius: 14px;
       }
-      .active-dish-photo.visible { transform: translate3d(var(--photo-x, 0px), var(--photo-y, 0px), 0) scale(1); }
-      .active-dish-photo .photo-caption { font-size: 9px; padding: 6px 8px; }
       .menu-item h4:hover,
       .menu-item h4.active {
         transform: perspective(560px) translateY(-1px) translateZ(12px) rotateX(4deg) scale(1.1);
@@ -1853,11 +1886,6 @@
     <span class="spice-spark"></span>
     <span class="spice-spark"></span>
     <span class="spice-spark"></span>
-  </div>
-
-  <div class="active-dish-photo" id="activeDishPhoto" aria-hidden="true">
-    <img id="activeDishPhotoImg" alt="">
-    <div class="photo-caption" id="activeDishPhotoCaption"></div>
   </div>
 
   <section class="hero" id="hero">
@@ -2531,8 +2559,35 @@
           <div class="order-id" id="orderStatusId"></div>
           <div class="status-main" id="orderStatusMain"></div>
           <div class="status-sub" id="orderStatusSub"></div>
+          <div class="order-guide">
+            <div class="order-person" id="orderPerson" aria-hidden="true">👳🏽‍♂️</div>
+            <div class="status-sub" id="orderPersonText">Our Curry Leaves host is waiting with your order request.</div>
+          </div>
+          <div class="branch-call-list" id="branchCallList"></div>
         </div>
       </form>
+    </div>
+  </div>
+
+  <div class="recommend-overlay" id="recommendOverlay">
+    <div class="recommend-modal" role="dialog" aria-label="Recommended pairing">
+      <div class="recommend-hero">
+        <span>Smart pairing</span>
+        <h3>This goes beautifully with your dish</h3>
+      </div>
+      <div class="recommend-body">
+        <div class="recommend-card">
+          <div class="recommend-icon" id="recommendIcon">🌿</div>
+          <div>
+            <strong id="recommendName">Garlic Naan</strong>
+            <small id="recommendText">Add this pairing to complete the order.</small>
+          </div>
+        </div>
+        <div class="recommend-actions">
+          <button class="yes" id="recommendYes" type="button">Add it</button>
+          <button class="no" id="recommendNo" type="button">No thanks</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -2668,7 +2723,7 @@
         'Dal Soup': 'Papadum',
         'Palak Paneer': 'Garlic Naan',
         'Chana Masala': 'Bhatura',
-        'Dal Tadka': 'Jeera Rice',
+        'Dal Tadka': 'Roti',
         'Aloo Gobi Methi': 'Roti',
         'Butter Chicken': 'Butter Naan',
         'Chicken Tikka Masala': 'Garlic Naan',
@@ -2920,9 +2975,35 @@
           price: item.querySelector('.price')?.textContent.trim() || '',
           spice,
           tags,
-          pairing: pairings[name] || ''
+          pairing: pairings[name] || '',
+          element: item
         };
       }).filter(item => item.name);
+
+      const menuByName = Object.fromEntries(menuData.map(item => [item.name, item]));
+      let menuAvailability = {};
+
+      function availabilityMessage(state) {
+        if (!state || state.status === 'available') return '';
+        const label = state.status === 'sold_out' ? 'Sold out' : 'Unavailable for now';
+        return state.note ? `${label} · ${state.note}` : label;
+      }
+
+      async function applyMenuAvailability() {
+        if (!window.CurryOrders?.listAvailability) return;
+        menuAvailability = await window.CurryOrders.listAvailability();
+        menuData.forEach(item => {
+          const message = availabilityMessage(menuAvailability[item.name]);
+          item.element.classList.toggle('unavailable', Boolean(message));
+          item.element.querySelector('.availability-badge')?.remove();
+          if (message) {
+            const badge = document.createElement('div');
+            badge.className = 'availability-badge';
+            badge.textContent = message;
+            item.element.querySelector('.info')?.appendChild(badge);
+          }
+        });
+      }
 
       const locationData = Array.from(document.querySelectorAll('.location-card')).map(card => ({
         name: card.querySelector('h3')?.textContent.trim() || '',
@@ -3089,6 +3170,12 @@
 
       function openCheckout() {
         if (cart.length === 0) return;
+        const blocked = cart.find(item => availabilityMessage(menuAvailability[item.name]));
+        if (blocked) {
+          alert(`${blocked.name} is no longer available. Please remove it from the cart before ordering.`);
+          openCart();
+          return;
+        }
         renderCheckoutSummary();
         checkoutOverlay.classList.add('active');
         closeCart();
@@ -3133,6 +3220,35 @@
         orderStatusSub.textContent = order.status === 'sent'
           ? 'Waiting for the restaurant to accept the order and set a preparation time.'
           : `Payment: ${window.CurryOrders.paymentLabel(order.payment_method)} · ${order.payment_status.replace(/_/g, ' ')}`;
+        updateOrderGuide(order);
+      }
+
+      function updateOrderGuide(order) {
+        const person = document.getElementById('orderPerson');
+        const text = document.getElementById('orderPersonText');
+        const callList = document.getElementById('branchCallList');
+        const status = order.status || 'sent';
+        const guide = {
+          sent: { emoji: '👳🏽‍♂️', text: 'Our Curry Leaves host is waiting with your request. The restaurant should respond soon.' },
+          accepted: { emoji: '🙇🏽‍♂️', text: `Accepted. Your host says the kitchen is preparing it${order.prep_minutes ? ` in about ${order.prep_minutes} minutes` : ''}.` },
+          preparing: { emoji: '👨🏽‍🍳', text: `The kitchen is cooking now${order.prep_minutes ? ` · approx. ${order.prep_minutes} minutes` : ''}.` },
+          ready: { emoji: '🙋🏽‍♂️', text: 'Your order is ready. Please come to the counter or pickup point.' },
+          completed: { emoji: '🙏🏽', text: 'Order completed. Thank you for choosing Curry Leaves.' },
+          rejected: { emoji: '🤦🏽‍♂️', text: 'Sorry, the restaurant could not accept this order. Please call a branch directly for help.' }
+        }[status] || { emoji: '👳🏽‍♂️', text: 'Checking order status...' };
+
+        person.className = `order-person ${status}`;
+        person.textContent = guide.emoji;
+        text.textContent = guide.text;
+
+        if (status === 'rejected') {
+          const callableLocations = locationData.filter(loc => loc.phone);
+          callList.innerHTML = callableLocations.map(loc => `<a href="tel:${loc.phone.replace(/\s/g, '')}"><span>${loc.name}</span><strong>${loc.phone}</strong></a>`).join('');
+          callList.classList.add('active');
+        } else {
+          callList.classList.remove('active');
+          callList.innerHTML = '';
+        }
       }
 
       function startOrderPolling(orderId) {
@@ -3177,6 +3293,36 @@
 
       // ===== Cart State =====
       let cart = JSON.parse(localStorage.getItem('clCart') || '[]');
+      let pendingRecommendation = null;
+      const smartRecommendations = {
+        'Samosa': 'Garlic Naan',
+        'Vegetable Pakora (8pcs)': 'Dal Tadka',
+        'Fry 65 — Chicken (8pcs)': 'Butter Naan',
+        'Fry 65 — Paneer (8pcs)': 'Garlic Naan',
+        'Tandoori Grill Chicken (6pcs)': 'Butter Naan',
+        'Malai Tikka': 'Garlic Naan',
+        'Tomato Rasam': 'Roti',
+        'Dal Soup': 'Roti',
+        'Palak Paneer': 'Garlic Naan',
+        'Chana Masala': 'Roti',
+        'Dal Tadka': 'Jeera Rice',
+        'Aloo Gobi Methi': 'Roti',
+        'Butter Chicken': 'Butter Naan',
+        'Chicken Tikka Masala': 'Garlic Naan',
+        'Dum Biryani': 'Roti',
+        'Bhuna Mutton': 'Garlic Naan',
+        'Vegetable Biryani': 'Roti',
+        'Garlic Naan': 'Butter Chicken',
+        'Butter Naan': 'Butter Chicken',
+        'Roti': 'Dal Tadka'
+      };
+
+      const recommendOverlay = document.getElementById('recommendOverlay');
+      const recommendName = document.getElementById('recommendName');
+      const recommendText = document.getElementById('recommendText');
+      const recommendIcon = document.getElementById('recommendIcon');
+      const recommendYes = document.getElementById('recommendYes');
+      const recommendNo = document.getElementById('recommendNo');
 
       function saveCart() {
         localStorage.setItem('clCart', JSON.stringify(cart));
@@ -3242,7 +3388,28 @@
         renderCart();
       };
 
-      function addToCart(name, price) {
+      function showRecommendation(sourceName) {
+        const recName = smartRecommendations[sourceName];
+        const rec = menuByName[recName];
+        if (!rec || availabilityMessage(menuAvailability[recName])) return;
+        pendingRecommendation = rec;
+        recommendName.textContent = `${rec.name} · ${rec.price}`;
+        recommendText.textContent = `${sourceName} pairs well with ${rec.name}. Add it now to complete the meal.`;
+        recommendIcon.textContent = rec.tags.includes('V') || rec.tags.includes('VG') ? '🌿' : '🍛';
+        recommendOverlay.classList.add('active');
+      }
+
+      function closeRecommendation() {
+        pendingRecommendation = null;
+        recommendOverlay.classList.remove('active');
+      }
+
+      function addToCart(name, price, options = {}) {
+        const unavailable = availabilityMessage(menuAvailability[name]);
+        if (unavailable) {
+          alert(`${name} is ${unavailable.toLowerCase()}. Please choose another dish for now.`);
+          return;
+        }
         const existing = cart.find(i => i.name === name);
         if (existing) {
           existing.qty++;
@@ -3252,7 +3419,17 @@
         saveCart();
         renderCart();
         trackEvent('add_to_cart', { item_name: name, price });
+        if (!options.skipRecommendation) showRecommendation(name);
       }
+
+      recommendYes.addEventListener('click', () => {
+        if (pendingRecommendation) addToCart(pendingRecommendation.name, pendingRecommendation.price, { skipRecommendation: true });
+        closeRecommendation();
+        openCart();
+      });
+
+      recommendNo.addEventListener('click', closeRecommendation);
+      recommendOverlay.addEventListener('click', (e) => { if (e.target === recommendOverlay) closeRecommendation(); });
 
       // ===== Modal =====
       const modal = document.getElementById('dishModal');
@@ -3281,9 +3458,12 @@
       // TODO: Future upgrade: add real 3D models for top-selling dishes once the owner provides/approves them.
 
       // Keep this strict: only add URLs here when the official website has a clearly matching dish photo.
-      const officialDishPhotos = {};
+      const officialDishPhotos = {
+        'Samosa': 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=85',
+        'Vegetable Pakora (8pcs)': 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&w=900&q=85'
+      };
       const onlineDishPhotos = {
-        'Samosa': 'https://loremflickr.com/640/480/samosa,indian-food?lock=101',
+        'Samosa': 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=85',
         'Vegetable Pakora (8pcs)': 'https://loremflickr.com/640/480/pakora,indian-food?lock=102',
         'Fry 65 — Chicken (8pcs)': 'https://loremflickr.com/640/480/chicken-65,indian-food?lock=103',
         'Fry 65 — Paneer (8pcs)': 'https://loremflickr.com/640/480/paneer,indian-food?lock=104',
@@ -3315,10 +3495,32 @@
       }
 
       document.querySelectorAll('.menu-item').forEach(item => {
+        const h4 = item.querySelector('.info h4');
+        if (h4) {
+          item.addEventListener('pointerenter', () => {
+            if (lastActive && lastActive !== h4) lastActive.classList.remove('active');
+            h4.classList.add('active');
+            lastActive = h4;
+            updateActiveDishPhoto(h4);
+          });
+
+          h4.addEventListener('focus', () => {
+            if (lastActive && lastActive !== h4) lastActive.classList.remove('active');
+            h4.classList.add('active');
+            lastActive = h4;
+            updateActiveDishPhoto(h4);
+          });
+        }
+
         item.addEventListener('click', function() {
           const info = this.querySelector('.info');
           const h4 = info.querySelector('h4');
           const name = getDishName(h4);
+          const unavailable = availabilityMessage(menuAvailability[name]);
+          if (unavailable) {
+            alert(`${name} is ${unavailable.toLowerCase()}. Please choose another dish for now.`);
+            return;
+          }
           const desc = info.querySelector('.desc').textContent;
           const price = this.querySelector('.price').textContent;
           const spice = info.querySelector('.spice');
@@ -3569,55 +3771,48 @@
 
       // ===== Scroll-center 3D item =====
       let lastActive = null;
-      const activeDishPhoto = document.getElementById('activeDishPhoto');
-      const activeDishPhotoImg = document.getElementById('activeDishPhotoImg');
-      const activeDishPhotoCaption = document.getElementById('activeDishPhotoCaption');
-
-      function positionActiveDishPhoto(h4) {
-        if (!h4 || !activeDishPhoto) return;
-        const rect = h4.getBoundingClientRect();
-        const photoW = activeDishPhoto.offsetWidth || 150;
-        const photoH = photoW * 0.75;
-        const gap = window.innerWidth <= 640 ? 10 : 18;
-        let x;
-        let y;
-
-        if (window.innerWidth <= 640) {
-          x = Math.min(Math.max(rect.left, 12), window.innerWidth - photoW - 12);
-          y = rect.bottom + gap;
-          if (y + photoH > window.innerHeight - 18) y = rect.top - photoH - gap;
-        } else {
-          x = rect.right + gap;
-          if (x + photoW > window.innerWidth - 18) x = rect.left - photoW - gap;
-          y = rect.top + rect.height / 2 - photoH / 2;
-          y = Math.min(Math.max(y, 82), window.innerHeight - photoH - 24);
-        }
-
-        activeDishPhoto.style.setProperty('--photo-x', `${x.toFixed(1)}px`);
-        activeDishPhoto.style.setProperty('--photo-y', `${y.toFixed(1)}px`);
-      }
 
       function updateActiveDishPhoto(h4) {
-        if (!h4 || !activeDishPhoto) return;
+        document.querySelectorAll('.menu-inline-photo').forEach(photo => photo.remove());
+        if (!h4) return;
         const name = getDishName(h4);
         const photo = dishPhotoFor(name);
-        if (!photo) {
-          activeDishPhoto.classList.remove('visible');
-          return;
-        }
-        if (activeDishPhotoImg.src !== photo) activeDishPhotoImg.src = photo;
-        activeDishPhotoImg.alt = name;
-        activeDishPhotoCaption.textContent = name;
-        positionActiveDishPhoto(h4);
-        activeDishPhoto.classList.add('visible');
+        if (!photo) return;
+
+        const item = h4.closest('.menu-item');
+        const price = item?.querySelector('.price');
+        if (!item || !price) return;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'menu-inline-photo';
+        wrapper.setAttribute('aria-hidden', 'true');
+
+        const img = document.createElement('img');
+        img.src = photo;
+        img.alt = '';
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.onerror = () => {
+          wrapper.remove();
+          console.warn(`Dish photo failed to load: ${name}`);
+        };
+        wrapper.appendChild(img);
+
+        item.insertBefore(wrapper, price);
+      }
+
+      function hideActiveDishPhoto() {
+        document.querySelectorAll('.menu-inline-photo').forEach(photo => photo.remove());
       }
 
       function updateCenterItem() {
         const viewCenter = window.innerHeight / 2;
+        const activationZone = Math.min(170, window.innerHeight * 0.24);
         let closest = null;
         let closestDist = Infinity;
         document.querySelectorAll('.menu-item h4').forEach(h4 => {
           const rect = h4.getBoundingClientRect();
+          if (rect.bottom < 0 || rect.top > window.innerHeight) return;
           const mid = rect.top + rect.height / 2;
           const dist = Math.abs(mid - viewCenter);
           if (dist < closestDist) {
@@ -3625,17 +3820,25 @@
             closest = h4;
           }
         });
+
+        if (!closest || closestDist > activationZone) {
+          if (lastActive) lastActive.classList.remove('active');
+          lastActive = null;
+          hideActiveDishPhoto();
+          return;
+        }
+
         if (closest !== lastActive) {
           if (lastActive) lastActive.classList.remove('active');
           if (closest) closest.classList.add('active');
           lastActive = closest;
           updateActiveDishPhoto(closest);
-        } else if (closest) {
-          positionActiveDishPhoto(closest);
         }
       }
 
       updateCenterItem();
+      applyMenuAvailability();
+      window.addEventListener('cl-availability-change', applyMenuAvailability);
 
       // Init cart
       renderCart();
