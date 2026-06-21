@@ -11,6 +11,7 @@ window.CurryOrderConfig = window.CurryOrderConfig || {
   const localKey = 'clOrders';
   const availabilityLocalKey = 'clMenuAvailability';
   const clearedAtKey = 'clOrdersClearedAt';
+  const clearedAtMetaKey = '__orders_cleared_at';
 
   function hasSupabase() {
     return Boolean(config.supabaseUrl && config.supabaseAnonKey && config.ordersTable);
@@ -64,13 +65,58 @@ window.CurryOrderConfig = window.CurryOrderConfig || {
     };
   }
 
+  function availabilityKey(itemName, branchId = '') {
+    return branchId ? `${branchId}::${itemName}` : itemName;
+  }
+
+  function splitAvailabilityKey(key) {
+    const parts = String(key || '').split('::');
+    return parts.length > 1 ? { branchId: parts[0], itemName: parts.slice(1).join('::') } : { branchId: '', itemName: key };
+  }
+
+  async function remoteResetTime() {
+    if (!hasSupabase() || !config.availabilityTable) return '';
+    try {
+      const res = await fetch(availabilityTableUrl(`item_name=eq.${encodeURIComponent(clearedAtMetaKey)}&select=*&limit=1`), { headers: orderHeaders() });
+      if (!res.ok) return '';
+      const row = (await res.json())[0];
+      return row?.available_at || row?.note || '';
+    } catch (error) {
+      console.warn('Could not load shared reset timestamp:', error);
+      return '';
+    }
+  }
+
+  async function saveResetTime(value) {
+    localStorage.setItem(clearedAtKey, value);
+    if (!hasSupabase() || !config.availabilityTable) return;
+    try {
+      const marker = normalizeAvailability({ item_name: clearedAtMetaKey, status: 'meta', note: value, available_at: value });
+      const res = await fetch(availabilityTableUrl('on_conflict=item_name'), {
+        method: 'POST',
+        headers: { ...orderHeaders(), Prefer: 'resolution=merge-duplicates,return=representation' },
+        body: JSON.stringify(marker)
+      });
+      if (!res.ok) console.warn('Could not save shared reset timestamp:', await res.text());
+    } catch (error) {
+      console.warn('Could not save shared reset timestamp:', error);
+    }
+  }
+
   function normalizeOrder(order) {
+    const branchLabel = order.branch_name ? `${order.branch_name}${order.branch_address ? `, ${order.branch_address}` : ''}` : '';
+    const notes = order.notes || '';
     return {
       id: order.id || `CL-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
       customer_name: order.customer_name,
       phone: order.phone,
-      notes: order.notes || '',
+      notes,
       order_type: order.order_type,
+      branch_id: order.branch_id || '',
+      branch_name: order.branch_name || '',
+      branch_address: order.branch_address || '',
+      branch_phone: order.branch_phone || '',
+      branch_label: branchLabel,
       payment_method: order.payment_method,
       payment_status: order.payment_status || (order.payment_method === 'cod' ? 'cash_on_delivery' : 'provider_setup_required'),
       items: order.items || [],
@@ -85,11 +131,25 @@ window.CurryOrderConfig = window.CurryOrderConfig || {
   async function createOrder(order) {
     const normalized = normalizeOrder(order);
     if (hasSupabase()) {
-      const res = await fetch(tableUrl(), {
+      let res = await fetch(tableUrl(), {
         method: 'POST',
         headers: orderHeaders(),
         body: JSON.stringify(normalized)
       });
+      if (!res.ok) {
+        const message = await res.text();
+        if (/branch_|schema cache|column/i.test(message)) {
+          const { branch_id, branch_name, branch_address, branch_phone, branch_label, ...legacyOrder } = normalized;
+          legacyOrder.notes = [branch_label ? `Branch: ${branch_label}` : '', normalized.branch_phone ? `Branch phone: ${normalized.branch_phone}` : '', normalized.notes].filter(Boolean).join('\n');
+          res = await fetch(tableUrl(), {
+            method: 'POST',
+            headers: orderHeaders(),
+            body: JSON.stringify(legacyOrder)
+          });
+        } else {
+          throw new Error(message);
+        }
+      }
       if (!res.ok) throw new Error(await res.text());
       return (await res.json())[0];
     }
@@ -100,7 +160,7 @@ window.CurryOrderConfig = window.CurryOrderConfig || {
   }
 
   async function listOrders() {
-    const clearedAt = localStorage.getItem(clearedAtKey);
+    const clearedAt = await remoteResetTime() || localStorage.getItem(clearedAtKey);
     const visibleAfterReset = order => !clearedAt || new Date(order.created_at) > new Date(clearedAt);
     if (hasSupabase()) {
       const res = await fetch(tableUrl('select=*&order=created_at.desc'), { headers: orderHeaders() });
@@ -111,12 +171,16 @@ window.CurryOrderConfig = window.CurryOrderConfig || {
   }
 
   async function getOrder(id) {
+    const clearedAt = await remoteResetTime() || localStorage.getItem(clearedAtKey);
+    const visibleAfterReset = order => !order || !clearedAt || new Date(order.created_at) > new Date(clearedAt);
     if (hasSupabase()) {
       const res = await fetch(tableUrl(`id=eq.${encodeURIComponent(id)}&select=*&limit=1`), { headers: orderHeaders() });
       if (!res.ok) throw new Error(await res.text());
-      return (await res.json())[0] || null;
+      const order = (await res.json())[0] || null;
+      return visibleAfterReset(order) ? order : null;
     }
-    return localOrders().find(order => order.id === id) || null;
+    const order = localOrders().find(order => order.id === id) || null;
+    return visibleAfterReset(order) ? order : null;
   }
 
   async function updateOrder(id, patch) {
@@ -139,7 +203,8 @@ window.CurryOrderConfig = window.CurryOrderConfig || {
   }
 
   async function clearOrders() {
-    localStorage.setItem(clearedAtKey, new Date().toISOString());
+    const clearedAt = new Date().toISOString();
+    await saveResetTime(clearedAt);
     localStorage.setItem(localKey, '[]');
     if (hasSupabase()) {
       try {
@@ -158,24 +223,36 @@ window.CurryOrderConfig = window.CurryOrderConfig || {
     return true;
   }
 
-  async function listAvailability() {
+  async function listAvailability(branchId = '') {
     if (hasSupabase() && config.availabilityTable) {
       try {
         const res = await fetch(availabilityTableUrl('select=*'), { headers: orderHeaders() });
         if (!res.ok) throw new Error(await res.text());
         return (await res.json()).reduce((map, item) => {
-          map[item.item_name] = normalizeAvailability(item);
+          if (item.item_name === clearedAtMetaKey) return map;
+          const key = splitAvailabilityKey(item.item_name);
+          if (key.branchId === branchId || (!key.branchId && !map[key.itemName])) {
+            map[key.itemName] = normalizeAvailability({ ...item, item_name: key.itemName });
+          }
           return map;
         }, {});
       } catch (error) {
         console.warn('Using local menu availability fallback:', error);
       }
     }
-    return localAvailability();
+    const availability = localAvailability();
+    return Object.keys(availability).reduce((map, keyName) => {
+      const key = splitAvailabilityKey(keyName);
+      if (key.branchId === branchId || (!key.branchId && !map[key.itemName])) {
+        map[key.itemName] = normalizeAvailability({ ...availability[keyName], item_name: key.itemName });
+      }
+      return map;
+    }, {});
   }
 
-  async function updateAvailability(itemName, patch) {
-    const normalized = normalizeAvailability({ item_name: itemName, ...patch });
+  async function updateAvailability(itemName, patch, branchId = '') {
+    const storageKey = availabilityKey(itemName, branchId);
+    const normalized = normalizeAvailability({ item_name: storageKey, ...patch });
     if (hasSupabase() && config.availabilityTable) {
       try {
         const res = await fetch(availabilityTableUrl('on_conflict=item_name'), {
@@ -191,7 +268,7 @@ window.CurryOrderConfig = window.CurryOrderConfig || {
       }
     }
     const availability = localAvailability();
-    availability[itemName] = normalized;
+    availability[storageKey] = normalized;
     saveLocalAvailability(availability);
     return normalized;
   }

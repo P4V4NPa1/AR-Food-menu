@@ -21,6 +21,11 @@ create table orders (
   phone text not null,
   notes text,
   order_type text not null,
+  branch_id text,
+  branch_name text,
+  branch_address text,
+  branch_phone text,
+  branch_label text,
   payment_method text not null,
   payment_status text not null,
   items jsonb not null,
@@ -30,6 +35,16 @@ create table orders (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+```
+
+If the `orders` table already exists, add the branch columns:
+
+```sql
+alter table orders add column if not exists branch_id text;
+alter table orders add column if not exists branch_name text;
+alter table orders add column if not exists branch_address text;
+alter table orders add column if not exists branch_phone text;
+alter table orders add column if not exists branch_label text;
 ```
 
 Create a `menu_availability` table so the owner dashboard can temporarily mark existing dishes as available, sold out, or unavailable until a timing note such as lunch or evening service:
@@ -43,6 +58,8 @@ create table menu_availability (
   updated_at timestamptz not null default now()
 );
 ```
+
+Branch-specific availability is stored in `item_name` as `branch_id::Dish Name`, for example `koszykowa::Samosa`. This lets one branch mark Samosa sold out without affecting other branches.
 
 For a quick private prototype, add Row Level Security policies carefully or keep the dashboard behind a protected deployment. For production, use Supabase Auth or a real backend so staff access is secure.
 

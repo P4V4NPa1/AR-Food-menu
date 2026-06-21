@@ -348,6 +348,107 @@
       background: linear-gradient(180deg, #FBF0D9 0%, rgba(251,240,217,0.88) 100%);
     }
 
+    .menu-branch-picker {
+      max-width: 720px;
+      margin: 0 auto 18px;
+      padding: 0 16px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .menu-branch-card {
+      position: relative;
+      padding: 14px;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(255,248,231,0.95), transparent 34%),
+        linear-gradient(135deg, rgba(255,255,255,0.92), rgba(255,243,218,0.86));
+      border: 1px solid rgba(196,148,58,0.26);
+      box-shadow: 0 18px 45px rgba(139,26,26,0.09), inset 0 1px 0 rgba(255,255,255,0.8);
+      overflow: hidden;
+    }
+
+    .menu-branch-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(110deg, transparent, rgba(196,148,58,0.09), transparent);
+      pointer-events: none;
+    }
+
+    .menu-branch-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .branch-pin {
+      width: 34px;
+      height: 34px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #8B1A1A, #C4943A);
+      color: #FFF8E7;
+      font-size: 18px;
+      box-shadow: 0 10px 22px rgba(139,26,26,0.18);
+      flex: 0 0 auto;
+    }
+
+    .menu-branch-picker label {
+      display: block;
+      color: #8B7D6B;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.9px;
+      text-transform: uppercase;
+    }
+
+    .menu-branch-picker .branch-selected-text {
+      margin-top: 2px;
+      color: #1A0F00;
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .branch-select-wrap {
+      position: relative;
+      z-index: 1;
+    }
+
+    .menu-branch-picker select {
+      width: 100%;
+      appearance: none;
+      -webkit-appearance: none;
+      border: 1px solid rgba(196,148,58,0.34);
+      border-radius: 18px;
+      background: linear-gradient(135deg, #1A0F00, #3D2B1A);
+      color: #2b1608;
+      color: #FFF8E7;
+      padding: 15px 44px 15px 15px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      outline: none;
+      box-shadow: 0 14px 32px rgba(26,15,0,0.18);
+    }
+
+    .branch-select-wrap::after {
+      content: '⌄';
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-56%);
+      color: #E7C46F;
+      font-size: 22px;
+      pointer-events: none;
+    }
+
     .menu-filter button {
       padding: 8px 18px;
       border: 1px solid #E8DCC8;
@@ -992,6 +1093,13 @@
       .stat-item .num { font-size: 22px; }
       .menu-filter { gap: 6px; }
       .menu-filter button { font-size: 11px; padding: 6px 14px; }
+      .menu-branch-picker { margin: -4px auto 12px; padding: 0 14px; }
+      .menu-branch-card { border-radius: 20px; padding: 12px; }
+      .menu-branch-top { margin-bottom: 8px; gap: 9px; }
+      .branch-pin { width: 30px; height: 30px; border-radius: 11px; font-size: 16px; }
+      .menu-branch-picker label { font-size: 9px; }
+      .menu-branch-picker .branch-selected-text { font-size: 16px; }
+      .menu-branch-picker select { font-size: 13px; padding: 13px 40px 13px 13px; border-radius: 16px; }
     }
 
     @media (max-width: 400px) {
@@ -1426,7 +1534,7 @@
     .checkout-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
     .checkout-field.full { grid-column: 1 / -1; }
     .checkout-field label { font-size: 11px; font-weight: 700; color: #8B7D6B; text-transform: uppercase; letter-spacing: 0.7px; }
-    .checkout-field input, .checkout-field textarea {
+    .checkout-field input, .checkout-field textarea, .checkout-field select {
       border: 1px solid #E8DCC8;
       border-radius: 12px;
       background: white;
@@ -1436,6 +1544,7 @@
       color: #2b1608;
       outline: none;
     }
+    .checkout-field input:focus, .checkout-field textarea:focus, .checkout-field select:focus { border-color: #C4943A; box-shadow: 0 0 0 3px rgba(196,148,58,0.12); }
     .checkout-field textarea { min-height: 78px; resize: vertical; }
     .checkout-choice-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
     .checkout-choice {
@@ -1985,6 +2094,26 @@
     <p>Traditional Indian dishes crafted with passion</p>
   </div>
 
+  <div class="menu-branch-picker">
+    <div class="menu-branch-card">
+      <div class="menu-branch-top">
+        <div class="branch-pin">⌖</div>
+        <div>
+          <label for="menuBranch">Showing availability for</label>
+          <div class="branch-selected-text" id="menuBranchLabel">Warszawa — Centrum</div>
+        </div>
+      </div>
+      <div class="branch-select-wrap">
+        <select id="menuBranch">
+          <option value="koszykowa" data-name="Warszawa — Centrum">Warszawa — Centrum · Koszykowa 63</option>
+          <option value="zlote-tarasy" data-name="Warszawa — Złote Tarasy">Warszawa — Złote Tarasy · Złota 59</option>
+          <option value="gdansk" data-name="Gdańsk">Gdańsk · Chmielna 10</option>
+          <option value="poznan" data-name="Poznań">Poznań · Pleszewska 1</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
   <div class="menu-filter" id="menu-filter">
     <button class="active" data-filter="all">All</button>
     <button data-filter="appetizers">Appetizers</button>
@@ -2301,47 +2430,6 @@
         </div>
       </div>
 
-      <div class="card fade-up" id="pizza">
-        <div class="card-header">
-          <div class="info">
-            <h3>Margherita Pizza</h3>
-            <div class="desc">Tomato sauce, fresh mozzarella, basil on a thin crispy crust. Baked in a wood-fired oven.</div>
-          </div>
-          <div class="price">32 PLN</div>
-        </div>
-        <div class="viewer-wrap">
-          <div class="loading" id="load-pizza">
-            <div class="spinner"></div>
-            <span>Loading 3D model...</span>
-          </div>
-          <model-viewer
-            id="pizza-viewer"
-            src="models/Pizza.glb"
-            ios-src="models/Pizzaios.usdz"
-            ar
-            ar-modes="webxr scene-viewer quick-look"
-            camera-controls
-            auto-rotate
-            rotation-per-second="30deg"
-            shadow-intensity="0.8"
-            exposure="1.2"
-            scale="0.07 0.07 0.07"
-            ar-scale="fixed"
-            ar-placement="floor"
-            loading="lazy"
-            reveal="auto"
-            flat-shading>
-          </model-viewer>
-        </div>
-        <div class="divider-line"></div>
-        <div class="card-actions">
-          <button class="btn-ar" onclick="document.getElementById('pizza-viewer').activateAR()">
-            <svg viewBox="0 0 24 24"><path d="M21 3H3v18h18V3zm-2 16H5V5h14v14zm-5-7l-4 5h8l-4-5z"/></svg>
-            View in AR
-          </button>
-        </div>
-      </div>
-
     </div>
   </div>
 
@@ -2581,6 +2669,15 @@
             <label for="orderNotes">Notes</label>
             <textarea id="orderNotes" name="orderNotes" placeholder="Allergies, spice preference, pickup note..."></textarea>
           </div>
+          <div class="checkout-field full">
+            <label for="orderBranch">Pickup / restaurant branch</label>
+            <select id="orderBranch" name="orderBranch" required>
+              <option value="koszykowa" data-name="Warszawa — Centrum" data-address="Koszykowa 63, 00-667 Warszawa" data-phone="+48 577 777 695">Warszawa — Centrum · Koszykowa 63</option>
+              <option value="zlote-tarasy" data-name="Warszawa — Złote Tarasy" data-address="Złota 59, 00-120 Warszawa" data-phone="+48 729 633 166">Warszawa — Złote Tarasy · Złota 59</option>
+              <option value="gdansk" data-name="Gdańsk" data-address="Chmielna 10, 80-748 Gdańsk" data-phone="">Gdańsk · Chmielna 10</option>
+              <option value="poznan" data-name="Poznań" data-address="Pleszewska 1, 61-136 Poznań" data-phone="">Poznań · Pleszewska 1</option>
+            </select>
+          </div>
         </div>
 
         <label class="checkout-field"><span style="font-size:11px;font-weight:700;color:#8B7D6B;text-transform:uppercase;letter-spacing:0.7px;">Order type</span></label>
@@ -2745,17 +2842,10 @@
       });
 
       const samosaViewer = document.getElementById('samosa-viewer');
-      const pizzaViewer = document.getElementById('pizza-viewer');
 
       if (samosaViewer) {
         samosaViewer.addEventListener('load', () => {
           document.getElementById('load-samosa').style.display = 'none';
-        });
-      }
-
-      if (pizzaViewer) {
-        pizzaViewer.addEventListener('load', () => {
-          document.getElementById('load-pizza').style.display = 'none';
         });
       }
 
@@ -3030,6 +3120,18 @@
 
       const menuByName = Object.fromEntries(menuData.map(item => [item.name, item]));
       let menuAvailability = {};
+      const branchStorageKey = 'clSelectedBranch';
+
+      function activeMenuBranchId() {
+        return document.getElementById('menuBranch')?.value || localStorage.getItem(branchStorageKey) || 'koszykowa';
+      }
+
+      function updateMenuBranchLabel() {
+        const select = document.getElementById('menuBranch');
+        const label = document.getElementById('menuBranchLabel');
+        if (!select || !label) return;
+        label.textContent = select.options[select.selectedIndex]?.dataset.name || select.options[select.selectedIndex]?.textContent.split('·')[0].trim() || 'Selected branch';
+      }
 
       function availabilityMessage(state) {
         if (!state || state.status === 'available') return '';
@@ -3039,7 +3141,7 @@
 
       async function applyMenuAvailability() {
         if (!window.CurryOrders?.listAvailability) return;
-        menuAvailability = await window.CurryOrders.listAvailability();
+        menuAvailability = await window.CurryOrders.listAvailability(activeMenuBranchId());
         menuData.forEach(item => {
           const message = availabilityMessage(menuAvailability[item.name]);
           item.element.classList.toggle('unavailable', Boolean(message));
@@ -3206,21 +3308,43 @@
       let selectedOrderType = 'takeaway';
       let selectedPayment = 'cod';
       let activeOrderPoll = null;
+      const activeOrderStorageKey = 'clActiveOrderId';
+
+      function escapeHtml(value) {
+        return String(value || '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
+      }
 
       function cartTotalValue() {
         return cart.reduce((sum, item) => sum + parseFloat(item.price.replace(/[^0-9.]/g, '')) * item.qty, 0);
       }
 
+      function selectedBranch() {
+        const select = document.getElementById('orderBranch');
+        const option = select.options[select.selectedIndex];
+        return {
+          id: select.value,
+          name: option.dataset.name || option.textContent.trim(),
+          address: option.dataset.address || '',
+          phone: option.dataset.phone || '',
+          label: option.textContent.trim()
+        };
+      }
+
+      function availabilityNameForCartItem(item) {
+        return item.availabilityName || (item.name && item.name.startsWith('Samosa - ') ? 'Samosa' : item.name);
+      }
+
       function renderCheckoutSummary() {
+        const branch = selectedBranch();
         const rows = cart.map(item => `<div class="checkout-summary-row"><span>${item.name} x${item.qty}</span><strong>${item.price}</strong></div>`).join('');
-        checkoutSummary.innerHTML = `${rows}<div class="checkout-summary-row"><span>Total</span><strong>${cartTotalValue().toFixed(0)} PLN</strong></div>`;
+        checkoutSummary.innerHTML = `<div class="checkout-summary-row"><span>Branch</span><strong>${escapeHtml(branch.label)}</strong></div>${rows}<div class="checkout-summary-row"><span>Total</span><strong>${cartTotalValue().toFixed(0)} PLN</strong></div>`;
       }
 
       function openCheckout() {
         if (cart.length === 0) return;
-        const blocked = cart.find(item => availabilityMessage(menuAvailability[item.name]));
+        const blocked = cart.find(item => availabilityMessage(menuAvailability[availabilityNameForCartItem(item)]));
         if (blocked) {
-          alert(`${blocked.name} is no longer available. Please remove it from the cart before ordering.`);
+          alert(`${availabilityNameForCartItem(blocked)} is no longer available. Please remove it from the cart before ordering.`);
           openCart();
           return;
         }
@@ -3259,9 +3383,36 @@
         trackEvent('payment_method_select', { method: value });
       });
 
+      const savedBranch = localStorage.getItem(branchStorageKey) || 'koszykowa';
+      document.getElementById('menuBranch').value = savedBranch;
+      document.getElementById('orderBranch').value = savedBranch;
+      updateMenuBranchLabel();
+
+      document.getElementById('menuBranch').addEventListener('change', () => {
+        const branch = activeMenuBranchId();
+        localStorage.setItem(branchStorageKey, branch);
+        document.getElementById('orderBranch').value = branch;
+        updateMenuBranchLabel();
+        applyMenuAvailability();
+        trackEvent('menu_branch_select', { branch });
+      });
+
+      document.getElementById('orderBranch').addEventListener('change', () => {
+        localStorage.setItem(branchStorageKey, selectedBranch().id);
+        document.getElementById('menuBranch').value = selectedBranch().id;
+        updateMenuBranchLabel();
+        applyMenuAvailability();
+        if (checkoutOverlay.classList.contains('active')) renderCheckoutSummary();
+        trackEvent('branch_select', { branch: selectedBranch().id });
+      });
+
       async function refreshOrderStatus(orderId) {
         const order = await window.CurryOrders.getOrder(orderId);
-        if (!order) return;
+        if (!order) {
+          localStorage.removeItem(activeOrderStorageKey);
+          if (activeOrderPoll) clearInterval(activeOrderPoll);
+          return;
+        }
         orderStatusCard.classList.add('active');
         orderStatusId.textContent = `Order ${order.id}`;
         orderStatusMain.textContent = window.CurryOrders.statusLabel(order);
@@ -3269,6 +3420,11 @@
           ? 'Waiting for the restaurant to accept the order and set a preparation time.'
           : `Payment: ${window.CurryOrders.paymentLabel(order.payment_method)} · ${order.payment_status.replace(/_/g, ' ')}`;
         updateOrderGuide(order);
+
+        if (['completed', 'rejected'].includes(order.status)) {
+          localStorage.removeItem(activeOrderStorageKey);
+          if (activeOrderPoll) clearInterval(activeOrderPoll);
+        }
       }
 
       function updateOrderGuide(order) {
@@ -3280,11 +3436,13 @@
         const status = order.status || 'sent';
         const customer = order.customer_name ? order.customer_name.split(/\s+/)[0] : 'there';
         const prep = order.prep_minutes ? `${order.prep_minutes} minutes` : 'the time set by the kitchen';
+        const branch = order.branch_name || 'the selected Curry Leaves branch';
+        const branchAddress = order.branch_address ? ` at ${order.branch_address}` : '';
         const guide = {
           sent: `Hi ${customer}, your Curry Leaves host just walked in and is checking his watch while the restaurant reviews your request.`,
-          accepted: `Great news ${customer}. Your order was accepted, and your host is happily waiting with you for about ${prep}.`,
-          preparing: `${customer}, the kitchen is cooking now. Your host is staying nearby and watching the timing for you: about ${prep}.`,
-          ready: `${customer}, your food is ready. Please come to the restaurant pickup counter and your host will guide you.`,
+          accepted: `Great news ${customer}. ${branch} accepted your order, and your host is happily waiting with you for about ${prep}.`,
+          preparing: `${customer}, the kitchen at ${branch} is cooking now. Your host is staying nearby and watching the timing for you: about ${prep}.`,
+          ready: `${customer}, your food is ready. Please come to ${branch}${branchAddress} and your host will guide you at pickup.`,
           completed: `Thank you ${customer}. Your Curry Leaves order is completed. We hope you enjoy every bite.`,
           rejected: `Sorry ${customer}, the restaurant could not accept this order online. Please call a branch directly and the team will help you.`
         }[status] || `Hi ${customer}, checking your order status now.`;
@@ -3299,7 +3457,8 @@
         text.textContent = guide;
 
         if (status === 'rejected') {
-          const callableLocations = locationData.filter(loc => loc.phone);
+          const selectedBranch = order.branch_phone ? [{ name: order.branch_name || 'Selected branch', phone: order.branch_phone }] : [];
+          const callableLocations = [...selectedBranch, ...locationData.filter(loc => loc.phone && loc.phone !== order.branch_phone)];
           callList.innerHTML = callableLocations.map(loc => `<a href="tel:${loc.phone.replace(/\s/g, '')}"><span>${loc.name}</span><strong>${loc.phone}</strong></a>`).join('');
           callList.classList.add('active');
         } else {
@@ -3310,8 +3469,18 @@
 
       function startOrderPolling(orderId) {
         if (activeOrderPoll) clearInterval(activeOrderPoll);
+        localStorage.setItem(activeOrderStorageKey, orderId);
         refreshOrderStatus(orderId);
         activeOrderPoll = setInterval(() => refreshOrderStatus(orderId), 5000);
+      }
+
+      function restoreActiveOrder() {
+        const orderId = localStorage.getItem(activeOrderStorageKey);
+        if (!orderId) return;
+        checkoutOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        submitOrderBtn.textContent = 'Send Order to Restaurant';
+        startOrderPolling(orderId);
       }
 
       checkoutClose.addEventListener('click', closeCheckout);
@@ -3324,6 +3493,10 @@
         submitOrderBtn.textContent = 'Sending order...';
         try {
           const order = await window.CurryOrders.createOrder({
+            branch_id: selectedBranch().id,
+            branch_name: selectedBranch().name,
+            branch_address: selectedBranch().address,
+            branch_phone: selectedBranch().phone,
             customer_name: document.getElementById('customerName').value.trim(),
             phone: document.getElementById('customerPhone').value.trim(),
             notes: document.getElementById('orderNotes').value.trim(),
@@ -3337,6 +3510,12 @@
           saveCart();
           renderCart();
           checkoutForm.reset();
+          selectedOrderType = 'takeaway';
+          selectedPayment = 'cod';
+          document.getElementById('orderBranch').value = activeMenuBranchId();
+          document.querySelectorAll('#orderTypeChoices .checkout-choice').forEach(btn => btn.classList.toggle('active', btn.dataset.value === selectedOrderType));
+          document.querySelectorAll('#paymentChoices .checkout-choice').forEach(btn => btn.classList.toggle('active', btn.dataset.value === selectedPayment));
+          paymentNote.textContent = 'COD is active now. Online payments are ready in the UI, but need a verified payment provider before taking real money.';
           submitOrderBtn.textContent = 'Order Sent';
           startOrderPolling(order.id);
         } catch (error) {
@@ -3362,7 +3541,7 @@
         'Dal Soup': 'Roti',
         'Palak Paneer': 'Garlic Naan',
         'Chana Masala': 'Roti',
-        'Dal Tadka': 'Jeera Rice',
+        'Dal Tadka': 'Roti',
         'Aloo Gobi Methi': 'Roti',
         'Butter Chicken': 'Butter Naan',
         'Chicken Tikka Masala': 'Garlic Naan',
@@ -3408,8 +3587,8 @@
           html += `
             <div class="cart-item">
               <div class="ci-info">
-                <div class="ci-name">${item.name}</div>
-                <div class="ci-price">${item.price}</div>
+                <div class="ci-name">${escapeHtml(item.name)}</div>
+                <div class="ci-price">${escapeHtml(item.price)}</div>
                 <div class="ci-qty">
                   <button onclick="window.cartDec(${idx})">\u2212</button>
                   <span class="qty-num">${item.qty}</span>
@@ -3472,7 +3651,7 @@
         if (existing) {
           existing.qty++;
         } else {
-          cart.push({ name, price, qty: 1 });
+          cart.push({ name, price, qty: 1, availabilityName });
         }
         saveCart();
         renderCart();
@@ -3537,31 +3716,9 @@
         'Samosa': 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=85',
         'Vegetable Pakora (8pcs)': 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&w=900&q=85'
       };
-      const onlineDishPhotos = {
-        'Samosa': 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=85',
-        'Vegetable Pakora (8pcs)': 'https://loremflickr.com/640/480/pakora,indian-food?lock=102',
-        'Fry 65 — Chicken (8pcs)': 'https://loremflickr.com/640/480/chicken-65,indian-food?lock=103',
-        'Fry 65 — Paneer (8pcs)': 'https://loremflickr.com/640/480/paneer,indian-food?lock=104',
-        'Tandoori Grill Chicken (6pcs)': 'https://loremflickr.com/640/480/tandoori-chicken,indian-food?lock=105',
-        'Malai Tikka': 'https://loremflickr.com/640/480/chicken-tikka,indian-food?lock=106',
-        'Tomato Rasam': 'https://loremflickr.com/640/480/rasam,soup,indian-food?lock=107',
-        'Dal Soup': 'https://loremflickr.com/640/480/dal,soup,indian-food?lock=108',
-        'Palak Paneer': 'https://loremflickr.com/640/480/palak-paneer,indian-food?lock=109',
-        'Chana Masala': 'https://loremflickr.com/640/480/chana-masala,indian-food?lock=110',
-        'Dal Tadka': 'https://loremflickr.com/640/480/dal-tadka,indian-food?lock=111',
-        'Aloo Gobi Methi': 'https://loremflickr.com/640/480/aloo-gobi,indian-food?lock=112',
-        'Butter Chicken': 'https://loremflickr.com/640/480/butter-chicken,indian-food?lock=113',
-        'Chicken Tikka Masala': 'https://loremflickr.com/640/480/chicken-tikka-masala,indian-food?lock=114',
-        'Dum Biryani': 'https://loremflickr.com/640/480/biryani,indian-food?lock=115',
-        'Bhuna Mutton': 'https://loremflickr.com/640/480/mutton-curry,indian-food?lock=116',
-        'Vegetable Biryani': 'https://loremflickr.com/640/480/vegetable-biryani,indian-food?lock=117',
-        'Garlic Naan': 'https://loremflickr.com/640/480/garlic-naan,indian-food?lock=118',
-        'Butter Naan': 'https://loremflickr.com/640/480/naan,indian-food?lock=119',
-        'Roti': 'https://loremflickr.com/640/480/roti,indian-food?lock=120'
-      };
 
       function dishPhotoFor(name) {
-        return officialDishPhotos[name] || onlineDishPhotos[name] || '';
+        return officialDishPhotos[name] || `assets/dish-photos/${encodeURIComponent(name)}.jpg`;
       }
 
       function getDishName(h4) {
@@ -3744,6 +3901,13 @@
           img.alt = name;
           img.loading = 'lazy';
           img.decoding = 'async';
+          img.onerror = () => {
+            img.remove();
+            const ph = document.createElement('div');
+            ph.className = 'placeholder-dish';
+            ph.innerHTML = `<span>🍽️</span><span>${name}</span><div class="photo-needed-note">Need to take an official photo of this dish for the website.</div>`;
+            visual.appendChild(ph);
+          };
           visual.appendChild(img);
           return;
         }
@@ -3923,6 +4087,7 @@
       updateCenterItem();
       applyMenuAvailability();
       window.addEventListener('cl-availability-change', applyMenuAvailability);
+      restoreActiveOrder();
 
       // Init cart
       renderCart();

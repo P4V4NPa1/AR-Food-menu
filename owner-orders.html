@@ -34,6 +34,7 @@
     .dash-head h2 { font-family: 'Playfair Display', serif; font-size: 26px; }
     .dash-head p { color: #8B7D6B; font-size: 13px; margin-top: 3px; }
     .head-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .branch-filter { width: auto; min-width: 220px; }
     .dash-tabs { max-width: 1180px; margin: 0 auto 14px; display: flex; gap: 8px; flex-wrap: wrap; }
     .dash-tabs button { background: rgba(255,248,231,0.08); color: #FFF8E7; border: 1px solid rgba(196,148,58,0.28); }
     .dash-tabs button.active { background: #C4943A; color: white; border-color: #C4943A; }
@@ -125,6 +126,13 @@
         <button class="active" type="button" data-tab="orders">Orders</button>
         <button type="button" data-tab="kitchen">Kitchen Mode</button>
         <button type="button" data-tab="availability">Menu Availability</button>
+        <select class="branch-filter" id="branchFilter" aria-label="Filter by branch">
+          <option value="all">All branches</option>
+          <option value="koszykowa">Warszawa — Centrum</option>
+          <option value="zlote-tarasy">Warszawa — Złote Tarasy</option>
+          <option value="gdansk">Gdańsk</option>
+          <option value="poznan">Poznań</option>
+        </select>
       </div>
 
       <div class="panel normal-panel active" id="normalPanel">
@@ -172,7 +180,7 @@
         <div class="dash-head">
           <div>
             <h2>Menu Availability</h2>
-            <p>Owner can pause items only. Dish names, prices, and descriptions stay controlled by the website.</p>
+            <p id="availabilityHelp">Choose one branch above. Changes here affect only that branch; dish names, prices, and descriptions stay controlled by the website.</p>
           </div>
         </div>
         <div class="availability-list" id="availabilityList"></div>
@@ -197,6 +205,7 @@
     let knownOrderIds = new Set();
     let firstOrderRender = true;
     let kitchenMode = false;
+    let activeBranch = 'all';
 
     const menuItems = [
       'Samosa', 'Vegetable Pakora (8pcs)', 'Fry 65 — Chicken (8pcs)', 'Fry 65 — Paneer (8pcs)',
@@ -212,6 +221,26 @@
 
     function escapeHtml(value) {
       return String(value || '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
+    }
+
+    function branchInfo(order) {
+      const notes = order.notes || '';
+      const legacyBranch = (notes.match(/^Branch:\s*(.+)$/m) || [])[1] || '';
+      const inferredId = /Złote|Zlote/i.test(legacyBranch) ? 'zlote-tarasy'
+        : /Gdańsk|Gdansk/i.test(legacyBranch) ? 'gdansk'
+        : /Poznań|Poznan/i.test(legacyBranch) ? 'poznan'
+        : /Koszykowa|Centrum/i.test(legacyBranch) ? 'koszykowa'
+        : 'legacy';
+      const label = order.branch_label || [order.branch_name, order.branch_address].filter(Boolean).join(', ') || legacyBranch || 'Branch not selected';
+      return {
+        id: order.branch_id || inferredId,
+        label,
+        phone: order.branch_phone || (notes.match(/^Branch phone:\s*(.+)$/m) || [])[1] || ''
+      };
+    }
+
+    function branchMatches(order) {
+      return activeBranch === 'all' || branchInfo(order).id === activeBranch;
     }
 
     function startOfToday() {
@@ -264,7 +293,7 @@
     }
 
     function renderKitchenMode(orders) {
-      const activeOrders = activeOrdersOnly(orders);
+      const activeOrders = activeOrdersOnly(orders).filter(branchMatches);
       if (!activeOrders.length) {
         kitchenGrid.innerHTML = '<div class="empty">No active kitchen orders right now.</div>';
         return;
@@ -272,6 +301,7 @@
 
       kitchenGrid.innerHTML = activeOrders.map(order => {
         const items = order.items || [];
+        const branch = branchInfo(order);
         const summary = items.slice(0, 3).map(item => `${escapeHtml(item.name)} x${item.qty}`).join(' · ');
         const more = items.length > 3 ? ` · +${items.length - 3} more` : '';
         return `
@@ -279,6 +309,7 @@
             <div class="kitchen-card-head">
               <h3>${escapeHtml(order.customer_name || 'Customer')}</h3>
               <div>${window.CurryOrders.statusLabel(order)} · ${money(order.total)}</div>
+              <div>${escapeHtml(branch.label)}</div>
             </div>
             <div class="kitchen-card-body">
               <div class="kitchen-summary">${summary}${more}</div>
@@ -299,6 +330,7 @@
                   <button class="light" data-kitchen-action="ready">Ready</button>
                   <button class="secondary" data-kitchen-action="completed">Complete</button>
                   <button class="danger" data-kitchen-action="rejected">Reject</button>
+                  <button class="light" data-print-ticket="${escapeHtml(order.id)}">Print Ticket</button>
                 </div>
               </div>
             </div>
@@ -308,16 +340,17 @@
 
     async function renderOrders() {
       const orders = await window.CurryOrders.listOrders();
-      renderStats(orders);
+      const branchOrders = orders.filter(branchMatches);
+      renderStats(branchOrders);
       if (kitchenMode) renderKitchenMode(orders);
 
-      const newSentOrders = orders.filter(order => order.status === 'sent' && !knownOrderIds.has(order.id));
+      const newSentOrders = orders.filter(order => order.status === 'sent' && branchMatches(order) && !knownOrderIds.has(order.id));
       if (!firstOrderRender && newSentOrders.length) playBell();
       knownOrderIds = new Set(orders.map(order => order.id));
       firstOrderRender = false;
 
-      const filtered = activeStatus === 'all' ? orders : orders.filter(order => order.status === activeStatus);
-      orderCount.textContent = `${filtered.length} shown · ${orders.length} total`;
+      const filtered = activeStatus === 'all' ? branchOrders : branchOrders.filter(order => order.status === activeStatus);
+      orderCount.textContent = `${filtered.length} shown · ${branchOrders.length} in selected branch · ${orders.length} total`;
       if (!filtered.length) {
         ordersList.innerHTML = '<div class="empty">No orders in this view yet.</div>';
         return;
@@ -327,6 +360,7 @@
           <div>
             <h3>${escapeHtml(order.customer_name || 'Customer')} · ${money(order.total)}</h3>
             <div class="muted">${escapeHtml(order.phone || '')} · ${shortDate(order.created_at)}</div>
+            <div class="muted"><strong>Branch:</strong> ${escapeHtml(branchInfo(order).label)}</div>
             <div class="order-meta">
               <span class="tag status">${window.CurryOrders.statusLabel(order)}</span>
               <span class="tag">${(order.order_type || '').replace('_', ' ')}</span>
@@ -351,8 +385,26 @@
       `).join('');
     }
 
+    async function printTicket(orderId) {
+      const order = (await window.CurryOrders.listOrders()).find(item => item.id === orderId);
+      if (!order) return;
+      const branch = branchInfo(order);
+      const items = (order.items || []).map(item => `<tr><td>${escapeHtml(item.name)} x${item.qty}</td><td>${escapeHtml(item.price)}</td></tr>`).join('');
+      const win = window.open('', 'printTicket', 'width=420,height=640');
+      if (!win) return;
+      win.document.write(`<!doctype html><html><head><title>Kitchen Ticket ${escapeHtml(order.id)}</title><style>body{font-family:Arial,sans-serif;padding:18px;color:#111}h1{font-size:20px;margin:0 0 8px}.muted{color:#555;font-size:12px;margin-bottom:10px}table{width:100%;border-collapse:collapse;margin-top:12px}td{border-bottom:1px solid #ddd;padding:8px 0;font-size:14px}td:last-child{text-align:right;font-weight:700}.total{font-size:18px;font-weight:800;margin-top:14px}.notes{border:1px solid #ddd;padding:10px;margin-top:12px;white-space:pre-wrap}</style></head><body><h1>Curry Leaves Kitchen Ticket</h1><div class="muted">${escapeHtml(order.id)} · ${new Date(order.created_at).toLocaleString()}</div><div><strong>Branch:</strong> ${escapeHtml(branch.label)}</div><div><strong>Customer:</strong> ${escapeHtml(order.customer_name || 'Customer')}</div><div><strong>Phone:</strong> ${escapeHtml(order.phone || '')}</div><div><strong>Status:</strong> ${escapeHtml(window.CurryOrders.statusLabel(order))}</div><table>${items}</table><div class="total">Total: ${money(order.total)}</div>${order.notes ? `<div class="notes"><strong>Notes:</strong><br>${escapeHtml(order.notes)}</div>` : ''}<script>window.print();<\/script></body></html>`);
+      win.document.close();
+    }
+
     async function renderAvailability() {
-      const availability = await window.CurryOrders.listAvailability();
+      if (activeBranch === 'all') {
+        document.getElementById('availabilityHelp').textContent = 'Choose one branch above before editing availability. “All branches” is view-only.';
+        availabilityList.innerHTML = '<div class="empty">Choose one branch above to edit its menu availability.</div>';
+        return;
+      }
+      const branchLabel = document.querySelector(`#branchFilter option[value="${activeBranch}"]`)?.textContent || activeBranch;
+      document.getElementById('availabilityHelp').textContent = `Editing availability for ${branchLabel} only. Other branches are not affected.`;
+      const availability = await window.CurryOrders.listAvailability(activeBranch);
       availabilityList.innerHTML = menuItems.map(name => {
         const state = availability[name] || { status: 'available', note: '', available_at: '' };
         return `
@@ -403,6 +455,12 @@
       document.getElementById('soundBtn').classList.toggle('secondary', soundEnabled);
       document.getElementById('soundBtn').classList.toggle('light', !soundEnabled);
       if (soundEnabled) playBell();
+    });
+
+    document.getElementById('branchFilter').addEventListener('change', (e) => {
+      activeBranch = e.target.value;
+      renderOrders();
+      if (availabilityPanel.classList.contains('active')) renderAvailability();
     });
 
     async function switchTab(tab) {
@@ -465,9 +523,15 @@
     });
 
     kitchenGrid.addEventListener('click', async (e) => {
+      const printBtn = e.target.closest('button[data-print-ticket]');
       const actionBtn = e.target.closest('button[data-kitchen-action]');
       const card = e.target.closest('.kitchen-card');
       if (!card) return;
+
+      if (printBtn) {
+        await printTicket(printBtn.dataset.printTicket);
+        return;
+      }
 
       if (actionBtn) {
         const action = actionBtn.dataset.kitchenAction;
@@ -480,6 +544,8 @@
         return;
       }
 
+      if (e.target.closest('input, select, label')) return;
+
       card.classList.toggle('expanded');
     });
 
@@ -487,11 +553,15 @@
       const btn = e.target.closest('[data-save-availability]');
       if (!btn) return;
       const row = btn.closest('.availability-row');
+      if (activeBranch === 'all') {
+        alert('Choose one branch before changing menu availability.');
+        return;
+      }
       const name = row.dataset.name;
       const status = row.querySelector('[data-field="status"]').value;
       const note = row.querySelector('[data-field="note"]').value.trim();
       btn.textContent = 'Saving...';
-      await window.CurryOrders.updateAvailability(name, { status, note, available_at: note });
+      await window.CurryOrders.updateAvailability(name, { status, note, available_at: note }, activeBranch);
       btn.textContent = 'Saved';
       btn.classList.add('saved');
       setTimeout(() => {
