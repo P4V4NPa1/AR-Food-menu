@@ -2688,12 +2688,12 @@
 
         <label class="checkout-field"><span style="font-size:11px;font-weight:700;color:#8B7D6B;text-transform:uppercase;letter-spacing:0.7px;">Payment method</span></label>
         <div class="checkout-choice-row" id="paymentChoices">
-          <button class="checkout-choice active" type="button" data-value="cod">COD / Pay at restaurant<span>Works now</span></button>
-          <button class="checkout-choice" type="button" data-value="apple_pay">Apple Pay<span>Needs Stripe/PayU setup</span></button>
-          <button class="checkout-choice" type="button" data-value="google_pay">Google Pay<span>Needs Stripe/PayU setup</span></button>
-          <button class="checkout-choice" type="button" data-value="blik">BLIK<span>Needs PayU/Przelewy24/Tpay setup</span></button>
+          <button class="checkout-choice active" type="button" data-value="cod">Pay at restaurant<span>Cash or card at pickup/counter</span></button>
+          <button class="checkout-choice" type="button" data-value="apple_pay">Apple Pay<span>Ask staff for availability</span></button>
+          <button class="checkout-choice" type="button" data-value="google_pay">Google Pay<span>Ask staff for availability</span></button>
+          <button class="checkout-choice" type="button" data-value="blik">BLIK<span>Ask staff for availability</span></button>
         </div>
-        <div class="payment-note" id="paymentNote">COD is active now. Online payments are ready in the UI, but need a verified payment provider before taking real money.</div>
+        <div class="payment-note" id="paymentNote">Payment is confirmed at the selected branch. Staff will guide you at pickup or at the counter.</div>
 
         <button class="checkout-submit" id="submitOrderBtn" type="submit">Send Order to Restaurant</button>
 
@@ -3002,7 +3002,7 @@
           'Complete Your Order': 'Dokończ zamówienie', 'Orders are sent to the restaurant dashboard. Staff can accept the order and set the preparation time.': 'Zamówienia trafiają do panelu restauracji. Obsługa może zaakceptować zamówienie i ustawić czas przygotowania.',
           'Name': 'Imię', 'Phone': 'Telefon', 'Notes': 'Uwagi', 'Order type': 'Typ zamówienia', 'Payment method': 'Metoda płatności',
           'Takeaway': 'Na wynos', 'Customer picks up from the branch': 'Klient odbiera w lokalu', 'Dine in': 'Na miejscu', 'Customer eats at the restaurant if available': 'Klient je w restauracji, jeśli jest dostępne miejsce',
-          'COD / Pay at restaurant': 'Gotówka / płatność w lokalu', 'Works now': 'Działa teraz', 'Needs Stripe/PayU setup': 'Wymaga Stripe/PayU', 'Needs PayU/Przelewy24/Tpay setup': 'Wymaga PayU/Przelewy24/Tpay',
+          'Pay at restaurant': 'Płatność w lokalu', 'Cash or card at pickup/counter': 'Gotówka lub karta przy odbiorze', 'Ask staff for availability': 'Zapytaj obsługę o dostępność',
           'Send Order to Restaurant': 'Wyślij zamówienie do restauracji', 'Add to Cart': 'Dodaj do koszyka', 'See in AR': 'Zobacz w AR'
         },
         uk: {
@@ -3015,7 +3015,7 @@
           'Complete Your Order': 'Завершіть замовлення', 'Orders are sent to the restaurant dashboard. Staff can accept the order and set the preparation time.': 'Замовлення надходять у панель ресторану. Персонал може прийняти замовлення й указати час приготування.',
           'Name': 'Ім’я', 'Phone': 'Телефон', 'Notes': 'Примітки', 'Order type': 'Тип замовлення', 'Payment method': 'Спосіб оплати',
           'Takeaway': 'З собою', 'Customer picks up from the branch': 'Клієнт забирає в закладі', 'Dine in': 'У закладі', 'Customer eats at the restaurant if available': 'Клієнт їсть у ресторані, якщо є місце',
-          'COD / Pay at restaurant': 'Готівка / оплата в закладі', 'Works now': 'Працює зараз', 'Needs Stripe/PayU setup': 'Потрібне налаштування Stripe/PayU', 'Needs PayU/Przelewy24/Tpay setup': 'Потрібне PayU/Przelewy24/Tpay',
+          'Pay at restaurant': 'Оплата в закладі', 'Cash or card at pickup/counter': 'Готівка або картка при отриманні', 'Ask staff for availability': 'Запитайте персонал про доступність',
           'Send Order to Restaurant': 'Надіслати замовлення в ресторан', 'Add to Cart': 'Додати в кошик', 'See in AR': 'Дивитись в AR'
         }
       };
@@ -3378,8 +3378,8 @@
       bindChoiceGroup('paymentChoices', value => {
         selectedPayment = value;
         paymentNote.textContent = value === 'cod'
-          ? 'COD is active now. The customer pays at pickup/restaurant.'
-          : 'This payment method is ready in the UI but needs a verified payment provider before taking real money.';
+          ? 'Payment is confirmed at the selected branch. Staff will guide you at pickup or at the counter.'
+          : 'The selected branch will confirm this payment option with you.';
         trackEvent('payment_method_select', { method: value });
       });
 
@@ -3515,12 +3515,12 @@
           document.getElementById('orderBranch').value = activeMenuBranchId();
           document.querySelectorAll('#orderTypeChoices .checkout-choice').forEach(btn => btn.classList.toggle('active', btn.dataset.value === selectedOrderType));
           document.querySelectorAll('#paymentChoices .checkout-choice').forEach(btn => btn.classList.toggle('active', btn.dataset.value === selectedPayment));
-          paymentNote.textContent = 'COD is active now. Online payments are ready in the UI, but need a verified payment provider before taking real money.';
+          paymentNote.textContent = 'Payment is confirmed at the selected branch. Staff will guide you at pickup or at the counter.';
           submitOrderBtn.textContent = 'Order Sent';
           startOrderPolling(order.id);
         } catch (error) {
           console.error(error);
-          alert('Could not send order. Check order-system.js configuration or try again.');
+          alert('Could not send order right now. Please try again or call the selected branch.');
           submitOrderBtn.textContent = 'Send Order to Restaurant';
         } finally {
           submitOrderBtn.disabled = false;

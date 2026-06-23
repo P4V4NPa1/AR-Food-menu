@@ -109,13 +109,13 @@
           <p>Accept orders, set prep time, and update customer status.</p>
         </div>
       </div>
-      <div class="pill" id="modePill">Demo mode</div>
+      <div class="pill" id="modePill">Live Orders</div>
     </div>
 
     <section class="login" id="loginView">
       <div class="panel">
         <h2>Staff Access</h2>
-        <p>This frontend passcode is for demo/staging. For production, connect Supabase Auth or a real backend login.</p>
+        <p>Enter the staff passcode to manage incoming orders, kitchen status, and branch availability.</p>
         <input id="passcodeInput" type="password" placeholder="Enter staff passcode">
         <button class="primary" id="loginBtn">Open Dashboard</button>
       </div>
@@ -214,7 +214,7 @@
       'Dum Biryani', 'Bhuna Mutton', 'Vegetable Biryani', 'Garlic Naan', 'Butter Naan', 'Roti'
     ];
 
-    modePill.textContent = window.CurryOrders.hasSupabase() ? 'Supabase live mode' : 'Demo mode: local browser orders only';
+    modePill.textContent = 'Live Orders';
 
     function money(total) { return `${Number(total || 0).toFixed(0)} PLN`; }
     function shortDate(value) { return new Date(value).toLocaleString(); }
