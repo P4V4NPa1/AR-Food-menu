@@ -61,9 +61,11 @@
     .availability.active { display: block; }
     .availability .dash-head { border-top: 1px solid #F0E4D0; }
     .availability-list { padding: 18px 22px 24px; display: grid; gap: 10px; max-height: 560px; overflow: auto; }
-    .availability-row { display: grid; grid-template-columns: 1.2fr 160px 1fr 150px; gap: 10px; align-items: center; background: white; border: 1px solid #F0E4D0; border-radius: 16px; padding: 12px; }
+    .availability-row { display: grid; grid-template-columns: 1.2fr 160px 1fr 170px; gap: 10px; align-items: center; background: white; border: 1px solid #F0E4D0; border-radius: 16px; padding: 12px; }
     .availability-row h4 { font-size: 14px; margin-bottom: 3px; }
     .availability-row .muted { font-size: 11px; }
+    .quick-actions { display: grid; grid-template-columns: 1fr; gap: 6px; }
+    .quick-actions button { padding: 9px 10px; font-size: 12px; }
     .saved { color: #2E7D32; font-size: 12px; font-weight: 800; }
     .kitchen-panel { display: none; }
     .kitchen-panel.active { display: block; }
@@ -88,14 +90,23 @@
     @media (max-width: 760px) {
       .shell { padding: 16px; }
       .topbar { align-items: flex-start; flex-direction: column; }
+      .brand h1 { font-size: 23px; }
+      .brand img { width: 96px; }
+      .dash-tabs { display: grid; grid-template-columns: 1fr; }
+      .branch-filter { width: 100%; min-width: 0; }
       .order-card { grid-template-columns: 1fr; }
       .actions { min-width: 0; }
       .dash-head { align-items: flex-start; flex-direction: column; }
       .head-actions { width: 100%; }
+      .head-actions button { flex: 1 1 150px; min-height: 44px; }
       .dash-tabs { margin-bottom: 10px; }
       .stats { grid-template-columns: 1fr 1fr; }
+      .stat { padding: 12px; }
+      .stat strong { font-size: 20px; }
       .availability-row { grid-template-columns: 1fr; }
       .kitchen-grid { grid-template-columns: 1fr; padding: 14px; }
+      .kitchen-actions { grid-template-columns: 1fr; }
+      button, input, select { min-height: 44px; }
     }
   </style>
 </head>
@@ -128,10 +139,13 @@
         <button type="button" data-tab="availability">Menu Availability</button>
         <select class="branch-filter" id="branchFilter" aria-label="Filter by branch">
           <option value="all">All branches</option>
-          <option value="koszykowa">Warszawa — Centrum</option>
-          <option value="zlote-tarasy">Warszawa — Złote Tarasy</option>
-          <option value="gdansk">Gdańsk</option>
-          <option value="poznan">Poznań</option>
+          <option value="koszykowa">Warszawa — Koszykowa</option>
+          <option value="dobra">Warszawa — Dobra</option>
+          <option value="zlote-tarasy">Warszawa — Złota</option>
+          <option value="zelazna">Warszawa — Żelazna</option>
+          <option value="lisia-grobla">Gdańsk — Lisia Grobla</option>
+          <option value="chmielna">Gdańsk — Chmielna</option>
+          <option value="poznan">Poznań — Food Fyrtel</option>
         </select>
       </div>
 
@@ -143,6 +157,7 @@
           </div>
           <div class="head-actions">
             <button class="light" id="soundBtn" type="button">Enable Bell</button>
+            <button class="light" id="printReportBtn" type="button">Print Today</button>
             <button class="danger" id="clearOrdersBtn" type="button">Reset Orders & Stats</button>
             <button class="secondary" id="refreshBtn" type="button">Refresh</button>
           </div>
@@ -152,6 +167,10 @@
           <div class="stat"><strong id="todayRevenue">0 PLN</strong><span>Revenue today</span></div>
           <div class="stat"><strong id="weekOrders">0</strong><span>Orders this week</span></div>
           <div class="stat"><strong id="weekRevenue">0 PLN</strong><span>Revenue this week</span></div>
+          <div class="stat"><strong id="topDish">-</strong><span>Top dish today</span></div>
+          <div class="stat"><strong id="avgPrep">-</strong><span>Avg prep time</span></div>
+          <div class="stat"><strong id="rejectedOrders">0</strong><span>Rejected today</span></div>
+          <div class="stat"><strong id="activeOrdersStat">0</strong><span>Active now</span></div>
         </div>
         <div class="filters" id="filters">
           <button class="light active" data-status="all">All</button>
@@ -226,14 +245,18 @@
     function branchInfo(order) {
       const notes = order.notes || '';
       const legacyBranch = (notes.match(/^Branch:\s*(.+)$/m) || [])[1] || '';
-      const inferredId = /Złote|Zlote/i.test(legacyBranch) ? 'zlote-tarasy'
-        : /Gdańsk|Gdansk/i.test(legacyBranch) ? 'gdansk'
+      const inferredId = /Dobra/i.test(legacyBranch) ? 'dobra'
+        : /Złota|Zlota|Złote|Zlote/i.test(legacyBranch) ? 'zlote-tarasy'
+        : /Żelazna|Zelazna/i.test(legacyBranch) ? 'zelazna'
+        : /Lisia/i.test(legacyBranch) ? 'lisia-grobla'
+        : /Chmielna|Gdańsk|Gdansk/i.test(legacyBranch) ? 'chmielna'
         : /Poznań|Poznan/i.test(legacyBranch) ? 'poznan'
         : /Koszykowa|Centrum/i.test(legacyBranch) ? 'koszykowa'
         : 'legacy';
       const label = order.branch_label || [order.branch_name, order.branch_address].filter(Boolean).join(', ') || legacyBranch || 'Branch not selected';
+      const branchIdAliases = { gdansk: 'chmielna' };
       return {
-        id: order.branch_id || inferredId,
+        id: branchIdAliases[order.branch_id] || order.branch_id || inferredId,
         label,
         phone: order.branch_phone || (notes.match(/^Branch phone:\s*(.+)$/m) || [])[1] || ''
       };
@@ -261,10 +284,35 @@
       const week = startOfWeek();
       const todayOrders = orders.filter(order => new Date(order.created_at) >= today);
       const weekOrders = orders.filter(order => new Date(order.created_at) >= week);
+      const activeOrders = activeOrdersOnly(orders);
+      const rejectedToday = todayOrders.filter(order => order.status === 'rejected').length;
+      const prepValues = todayOrders.map(order => Number(order.prep_minutes || 0)).filter(Boolean);
+      const dishCounts = new Map();
+      todayOrders.forEach(order => (order.items || []).forEach(item => {
+        dishCounts.set(item.name, (dishCounts.get(item.name) || 0) + Number(item.qty || 1));
+      }));
+      const topDish = [...dishCounts.entries()].sort((a, b) => b[1] - a[1])[0];
       document.getElementById('todayOrders').textContent = todayOrders.length;
       document.getElementById('todayRevenue').textContent = money(todayOrders.reduce((sum, order) => sum + Number(order.total || 0), 0));
       document.getElementById('weekOrders').textContent = weekOrders.length;
       document.getElementById('weekRevenue').textContent = money(weekOrders.reduce((sum, order) => sum + Number(order.total || 0), 0));
+      document.getElementById('topDish').textContent = topDish ? `${topDish[0]} x${topDish[1]}` : '-';
+      document.getElementById('avgPrep').textContent = prepValues.length ? `${Math.round(prepValues.reduce((sum, value) => sum + value, 0) / prepValues.length)} min` : '-';
+      document.getElementById('rejectedOrders').textContent = rejectedToday;
+      document.getElementById('activeOrdersStat').textContent = activeOrders.length;
+    }
+
+    async function printDailyReport() {
+      const orders = (await window.CurryOrders.listOrders()).filter(branchMatches);
+      const today = startOfToday();
+      const todayOrders = orders.filter(order => new Date(order.created_at) >= today);
+      const total = todayOrders.reduce((sum, order) => sum + Number(order.total || 0), 0);
+      const rows = todayOrders.map(order => `<tr><td>${escapeHtml(shortDate(order.created_at))}</td><td>${escapeHtml(order.customer_name || 'Customer')}</td><td>${escapeHtml(branchInfo(order).label)}</td><td>${escapeHtml(window.CurryOrders.statusLabel(order))}</td><td>${money(order.total)}</td></tr>`).join('');
+      const branchLabel = document.querySelector(`#branchFilter option[value="${activeBranch}"]`)?.textContent || 'All branches';
+      const win = window.open('', 'dailyReport', 'width=760,height=720');
+      if (!win) return;
+      win.document.write(`<!doctype html><html><head><title>Curry Leaves Daily Report</title><style>body{font-family:Arial,sans-serif;padding:22px;color:#111}h1{font-size:22px;margin:0 0 6px}.muted{color:#555;font-size:12px;margin-bottom:16px}.stats{display:flex;gap:12px;margin-bottom:16px}.stat{border:1px solid #ddd;padding:10px 14px;border-radius:10px}table{width:100%;border-collapse:collapse}th,td{border-bottom:1px solid #ddd;text-align:left;padding:8px;font-size:13px}th{background:#f7f7f7}</style></head><body><h1>Curry Leaves Daily Report</h1><div class="muted">${escapeHtml(new Date().toLocaleDateString())} · ${escapeHtml(branchLabel)}</div><div class="stats"><div class="stat"><strong>${todayOrders.length}</strong><br>Orders</div><div class="stat"><strong>${money(total)}</strong><br>Revenue</div></div><table><thead><tr><th>Time</th><th>Customer</th><th>Branch</th><th>Status</th><th>Total</th></tr></thead><tbody>${rows || '<tr><td colspan="5">No orders today.</td></tr>'}</tbody></table><script>window.print();<\/script></body></html>`);
+      win.document.close();
     }
 
     function playBell() {
@@ -419,7 +467,11 @@
               <option value="unavailable" ${state.status === 'unavailable' ? 'selected' : ''}>Unavailable for now</option>
             </select>
             <input data-field="note" value="${escapeHtml(state.note)}" placeholder="Back for lunch, after 18:00...">
-            <button class="secondary" data-save-availability>Save</button>
+            <div class="quick-actions">
+              <button class="light" type="button" data-quick-note="Back for lunch">Until lunch</button>
+              <button class="light" type="button" data-quick-note="Back after 18:00">Until 18:00</button>
+              <button class="secondary" data-save-availability>Save</button>
+            </div>
           </div>`;
       }).join('');
     }
@@ -456,6 +508,8 @@
       document.getElementById('soundBtn').classList.toggle('light', !soundEnabled);
       if (soundEnabled) playBell();
     });
+
+    document.getElementById('printReportBtn').addEventListener('click', printDailyReport);
 
     document.getElementById('branchFilter').addEventListener('change', (e) => {
       activeBranch = e.target.value;
@@ -550,6 +604,15 @@
     });
 
     availabilityList.addEventListener('click', async (e) => {
+      const quickBtn = e.target.closest('[data-quick-note]');
+      if (quickBtn) {
+        const row = quickBtn.closest('.availability-row');
+        row.querySelector('[data-field="status"]').value = 'sold_out';
+        row.querySelector('[data-field="note"]').value = quickBtn.dataset.quickNote;
+        row.querySelector('[data-save-availability]').click();
+        return;
+      }
+
       const btn = e.target.closest('[data-save-availability]');
       if (!btn) return;
       const row = btn.closest('.availability-row');

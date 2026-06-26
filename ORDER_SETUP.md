@@ -61,6 +61,16 @@ create table menu_availability (
 
 Branch-specific availability is stored in `item_name` as `branch_id::Dish Name`, for example `koszykowa::Samosa`. This lets one branch mark Samosa sold out without affecting other branches.
 
+Current branch IDs:
+
+- `koszykowa` - Warszawa, Koszykowa 63
+- `dobra` - Warszawa, Dobra 42
+- `zlote-tarasy` - Warszawa, Zlota 59
+- `zelazna` - Warszawa, Zelazna 51/53
+- `lisia-grobla` - Gdansk, Lisia Grobla 7/Lok 12
+- `chmielna` - Gdansk, Chmielna 10
+- `poznan` - Poznan, Food Fyrtel, Pleszewska 1
+
 For a quick private prototype, add Row Level Security policies carefully or keep the dashboard behind a protected deployment. For production, use Supabase Auth or a real backend so staff access is secure.
 
 Then edit `order-system.js`:

@@ -1,8 +1,9 @@
 Add owner-approved dish photos here.
 
-Use JPG files named exactly like the menu dish names, for example:
+Use files named exactly like the menu dish names. Supported extensions are `.webp`, `.jpg`, `.jpeg`, and `.png`. WebP is preferred.
 
 - Samosa.jpg
+- Samosa.webp
 - Vegetable Pakora (8pcs).jpg
 - Butter Chicken.jpg
 - Chicken Tikka Masala.jpg
