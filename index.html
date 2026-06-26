@@ -1299,6 +1299,11 @@
       margin-top: 16px;
     }
     .variant-picker.active { display: grid; }
+    .curry-builder { display: none; margin-top: 16px; gap: 14px; }
+    .curry-builder.active { display: grid; }
+    .builder-group { display: grid; gap: 8px; }
+    .builder-group > strong { color: #5A4A38; font-size: 11px; text-transform: uppercase; letter-spacing: 0.7px; }
+    .builder-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .variant-option {
       border: 1px solid #E8DCC8;
       border-radius: 14px;
@@ -1312,6 +1317,7 @@
     .variant-option strong { display: block; color: #1A0F00; font-size: 14px; }
     .variant-option span { display: block; margin-top: 4px; color: #C4943A; font-size: 13px; font-weight: 800; }
     .variant-option.active { border-color: #C4943A; background: rgba(196,148,58,0.1); box-shadow: 0 8px 20px rgba(196,148,58,0.12); }
+    @media (max-width: 520px) { .variant-picker, .builder-options { grid-template-columns: 1fr; } }
     .btn-add-cart {
       width: 100%;
       padding: 16px;
@@ -2134,265 +2140,61 @@
     <button data-filter="soups">Soups</button>
     <button data-filter="vegetarian">Vegetarian</button>
     <button data-filter="curries">Curries</button>
+    <button data-filter="rice">Rice</button>
+    <button data-filter="biryani">Biryani</button>
     <button data-filter="breads">Breads</button>
+    <button data-filter="sides">Sides</button>
+    <button data-filter="drinks">Drinks</button>
   </div>
 
   <div class="menu-section">
     <div class="menu-grid">
 
-      <div class="menu-category" data-cat="appetizers">&#9679; Appetizers</div>
+      <div class="menu-category" data-cat="appetizers">&#9679; Przystawki / Appetizers</div>
+      <div class="menu-item" data-cat="appetizers"><div class="info"><h4>Samosa <span class="badge" style="font-size:9px;">Bestseller</span></h4><div class="desc">Triangular pastries stuffed with vegetables or chicken</div><div class="meta"><span class="spice">🌶️🌶️</span></div></div><div class="price">18/20 PLN</div></div>
+      <div class="menu-item" data-cat="appetizers"><div class="info"><h4>Tandoori Grill Paneer (5pcs)</h4><div class="desc">Paneer marinated in yogurt and Indian spices, grilled in tandoor</div><div class="meta"><span class="spice">🌶️🌶️</span><span class="diet-tag v">V</span></div></div><div class="price">40 PLN</div></div>
+      <div class="menu-item" data-cat="appetizers"><div class="info"><h4>Tandoori Grill Chicken (6pcs)</h4><div class="desc">Chicken marinated in yogurt and Indian spices, grilled in tandoor</div><div class="meta"><span class="spice">🌶️🌶️</span></div></div><div class="price">40 PLN</div></div>
+      <div class="menu-item" data-cat="appetizers"><div class="info"><h4>Tandoori Grill Fish (6pcs)</h4><div class="desc">Fish marinated in yogurt and Indian spices, grilled in tandoor</div><div class="meta"><span class="spice">🌶️🌶️</span></div></div><div class="price">40 PLN</div></div>
+      <div class="menu-item" data-cat="appetizers"><div class="info"><h4>Tandoori Grill Prawns (6pcs)</h4><div class="desc">Prawns marinated in yogurt and Indian spices, grilled in tandoor</div><div class="meta"><span class="spice">🌶️🌶️</span></div></div><div class="price">42 PLN</div></div>
+      <div class="menu-item" data-cat="appetizers"><div class="info"><h4>Fry 65 — Gobi (8pcs)</h4><div class="desc">Marinated crispy cauliflower, deep fried with blended spices</div><div class="meta"><span class="spice">🌶️🌶️🌶️</span><span class="diet-tag v">V</span><span class="diet-tag vg">VG</span></div></div><div class="price">29 PLN</div></div>
+      <div class="menu-item" data-cat="appetizers"><div class="info"><h4>Fry 65 — Paneer (8pcs)</h4><div class="desc">Marinated crispy paneer, deep fried with blended spices</div><div class="meta"><span class="spice">🌶️🌶️🌶️</span><span class="diet-tag v">V</span></div></div><div class="price">39 PLN</div></div>
+      <div class="menu-item" data-cat="appetizers"><div class="info"><h4>Fry 65 — Fish (8pcs)</h4><div class="desc">Marinated crispy fish, deep fried with blended spices</div><div class="meta"><span class="spice">🌶️🌶️🌶️</span></div></div><div class="price">38 PLN</div></div>
+      <div class="menu-item" data-cat="appetizers"><div class="info"><h4>Fry 65 — Chicken (8pcs)</h4><div class="desc">Marinated crispy chicken, deep fried with blended spices</div><div class="meta"><span class="spice">🌶️🌶️🌶️</span></div></div><div class="price">38 PLN</div></div>
+      <div class="menu-item" data-cat="appetizers"><div class="info"><h4>Fry 65 — Prawns (6pcs)</h4><div class="desc">Marinated crispy prawns, deep fried with blended spices</div><div class="meta"><span class="spice">🌶️🌶️🌶️</span></div></div><div class="price">40 PLN</div></div>
 
-      <div class="menu-item" data-cat="appetizers">
-        <div class="info">
-          <h4>Samosa <span class="badge" style="font-size:9px;">Bestseller</span></h4>
-          <div class="desc">Crispy triangular pastry with your choice of spiced vegetable or chicken filling</div>
-          <div class="meta">
-            <span class="spice">🌶️🌶️🌶️</span>
-          </div>
-        </div>
-        <div class="price">18/20 PLN</div>
-      </div>
-
-      <div class="menu-item" data-cat="appetizers">
-        <div class="info">
-          <h4>Vegetable Pakora (8pcs)</h4>
-          <div class="desc">Deep fried gram flour battered mix vegetables, crispy golden</div>
-          <div class="meta">
-            <span class="spice">🌶️🌶️</span>
-            <span class="diet-tag v">V</span>
-            <span class="diet-tag gf">GF</span>
-          </div>
-        </div>
-        <div class="price">32 PLN</div>
-      </div>
-
-      <div class="menu-item" data-cat="appetizers">
-        <div class="info">
-          <h4>Fry 65 &mdash; Chicken (8pcs)</h4>
-          <div class="desc">Marinated and deep fried crispy, stuffed with blended spices</div>
-          <div class="meta">
-            <span class="spice">🌶️🌶️🌶️</span>
-          </div>
-        </div>
-        <div class="price">32 PLN</div>
-      </div>
-
-      <div class="menu-item" data-cat="appetizers">
-        <div class="info">
-          <h4>Fry 65 &mdash; Paneer (8pcs)</h4>
-          <div class="desc">Crispy Indian cottage cheese, marinated &amp; fried with aromatic spices</div>
-          <div class="meta">
-            <span class="spice">🌶️🌶️</span>
-            <span class="diet-tag v">V</span>
-          </div>
-        </div>
-        <div class="price">32 PLN</div>
-      </div>
-
-      <div class="menu-item" data-cat="appetizers">
-        <div class="info">
-          <h4>Tandoori Grill Chicken (6pcs)</h4>
-          <div class="desc">Charcoal-grilled chicken marinated in yogurt &amp; traditional spices</div>
-          <div class="meta">
-            <span class="spice">🌶️🌶️🌶️</span>
-            <span class="diet-tag gf">GF</span>
-          </div>
-        </div>
-        <div class="price">38 PLN</div>
-      </div>
-
-      <div class="menu-item" data-cat="appetizers">
-        <div class="info">
-          <h4>Malai Tikka</h4>
-          <div class="desc">Chicken marinated with cream &amp; cashew nut, grilled in Tandoori oven</div>
-          <div class="meta">
-            <span class="spice">🌶️🌶️</span>
-          </div>
-        </div>
-        <div class="price">40 PLN</div>
-      </div>
-
-      <div class="menu-category" data-cat="soups">&#9679; Soups</div>
-
-      <div class="menu-item" data-cat="soups">
-        <div class="info">
-          <h4>Tomato Rasam</h4>
-          <div class="desc">Tangy South Indian tamarind &amp; tomato soup with aromatic spices</div>
-          <div class="meta">
-            <span class="spice">🌶️🌶️</span>
-            <span class="diet-tag v">V</span>
-            <span class="diet-tag gf">GF</span>
-          </div>
-        </div>
-        <div class="price">18 PLN</div>
-      </div>
-
-      <div class="menu-item" data-cat="soups">
-        <div class="info">
-          <h4>Dal Soup</h4>
-          <div class="desc">Comforting yellow lentil soup with traditional Indian tempering</div>
-          <div class="meta">
-            <span class="spice">🌶️</span>
-            <span class="diet-tag v">V</span>
-            <span class="diet-tag vg">VG</span>
-            <span class="diet-tag gf">GF</span>
-          </div>
-        </div>
-        <div class="price">18 PLN</div>
-      </div>
+      <div class="menu-category" data-cat="soups">&#9679; Zupy / Soups</div>
+      <div class="menu-item" data-cat="soups"><div class="info"><h4>Tomato Rasam</h4><div class="desc">Soup with shredded tomato, tamarind, cumin seeds, and Indian spices</div><div class="meta"><span class="spice">🌶️🌶️</span><span class="diet-tag v">V</span><span class="diet-tag vg">VG</span></div></div><div class="price">20 PLN</div></div>
+      <div class="menu-item" data-cat="soups"><div class="info"><h4>Dal Soup</h4><div class="desc">Boiled Indian lentil soup with Indian spices</div><div class="meta"><span class="spice">🌶️</span><span class="diet-tag v">V</span><span class="diet-tag vg">VG</span></div></div><div class="price">20 PLN</div></div>
+      <div class="menu-item" data-cat="soups"><div class="info"><h4>Coconut Prawns Soup</h4><div class="desc">Indian soup with prawns, coconut milk, and lemongrass</div><div class="meta"><span class="spice">🌶️</span></div></div><div class="price">26 PLN</div></div>
 
       <div class="menu-category" data-cat="vegetarian">&#9679; Classic Vegetarian</div>
-
-      <div class="menu-item" data-cat="vegetarian">
-        <div class="info">
-          <h4>Palak Paneer</h4>
-          <div class="desc">Indian cottage cheese in a rich, creamy spinach sauce</div>
-          <div class="meta">
-            <span class="spice">🌶️🌶️</span>
-            <span class="diet-tag v">V</span>
-            <span class="diet-tag gf">GF</span>
-          </div>
-        </div>
-        <div class="price">42 PLN</div>
-      </div>
-
-      <div class="menu-item" data-cat="vegetarian">
-        <div class="info">
-          <h4>Chana Masala</h4>
-          <div class="desc">Chickpeas cooked in a spiced onion-tomato gravy, a North Indian classic</div>
-          <div class="meta">
-            <span class="spice">🌶️🌶️</span>
-            <span class="diet-tag v">V</span>
-            <span class="diet-tag vg">VG</span>
-            <span class="diet-tag gf">GF</span>
-          </div>
-        </div>
-        <div class="price">36 PLN</div>
-      </div>
-
-      <div class="menu-item" data-cat="vegetarian">
-        <div class="info">
-          <h4>Dal Tadka</h4>
-          <div class="desc">Yellow &amp; red lentils cooked with Indian spices, finished with ghee tempering</div>
-          <div class="meta">
-            <span class="spice">🌶️</span>
-            <span class="diet-tag v">V</span>
-            <span class="diet-tag vg">VG</span>
-            <span class="diet-tag gf">GF</span>
-          </div>
-        </div>
-        <div class="price">36 PLN</div>
-      </div>
-
-      <div class="menu-item" data-cat="vegetarian">
-        <div class="info">
-          <h4>Aloo Gobi Methi</h4>
-          <div class="desc">Potatoes &amp; cauliflower cooked with fenugreek &amp; aromatic spices</div>
-          <div class="meta">
-            <span class="spice">🌶️🌶️</span>
-            <span class="diet-tag v">V</span>
-            <span class="diet-tag vg">VG</span>
-            <span class="diet-tag gf">GF</span>
-          </div>
-        </div>
-        <div class="price">37 PLN</div>
-      </div>
+      <div class="menu-item" data-cat="vegetarian"><div class="info"><h4>Assami Crispy Vegetables</h4><div class="desc">Deep fried vegetables with sweet and spicy Assami-style sauce</div><div class="meta"><span class="spice">🌶️🌶️</span><span class="diet-tag v">V</span></div></div><div class="price">37 PLN</div></div>
+      <div class="menu-item" data-cat="vegetarian"><div class="info"><h4>Chana Masala</h4><div class="desc">Chickpeas and tomatoes cooked with Indian spices</div><div class="meta"><span class="spice">🌶️🌶️</span><span class="diet-tag v">V</span><span class="diet-tag vg">VG</span></div></div><div class="price">36 PLN</div></div>
+      <div class="menu-item" data-cat="vegetarian"><div class="info"><h4>Palak Paneer</h4><div class="desc">Indian cheese paneer in spinach sauce with Indian spices</div><div class="meta"><span class="spice">🌶️🌶️</span><span class="diet-tag v">V</span></div></div><div class="price">40 PLN</div></div>
+      <div class="menu-item" data-cat="vegetarian"><div class="info"><h4>Dal Tadka</h4><div class="desc">Yellow and red lentils cooked with Indian spices</div><div class="meta"><span class="spice">🌶️</span><span class="diet-tag v">V</span><span class="diet-tag vg">VG</span></div></div><div class="price">35 PLN</div></div>
+      <div class="menu-item" data-cat="vegetarian"><div class="info"><h4>Aloo-Gobi Methi</h4><div class="desc">Potatoes and cauliflower in Indian sauce with fenugreek leaves</div><div class="meta"><span class="spice">🌶️🌶️</span><span class="diet-tag v">V</span><span class="diet-tag vg">VG</span></div></div><div class="price">36 PLN</div></div>
 
       <div class="menu-category" data-cat="curries">&#9679; Top Curries</div>
+      <div class="menu-item" data-cat="curries" data-builder="curry"><div class="info"><h4>Build Your Curry <span class="badge" style="font-size:9px;">Official</span></h4><div class="desc">Step 1 choose protein, Step 2 choose sauce: Butter Masala, Kerala, Guntur, Tikka Masala, Street 65, or Korma</div><div class="meta"><span class="spice">🌶️🌶️</span></div></div><div class="price">36-45 PLN</div></div>
 
-      <div class="menu-item" data-cat="curries">
-        <div class="info">
-          <h4>Butter Chicken <span class="badge" style="font-size:9px;">#1</span></h4>
-          <div class="desc">Tender chicken in a rich, creamy tomato &amp; butter sauce. Our most popular dish.</div>
-          <div class="meta">
-            <span class="spice">🌶️🌶️</span>
-          </div>
-        </div>
-        <div class="price">42 PLN</div>
-      </div>
+      <div class="menu-category" data-cat="rice">&#9679; Basmati Rice</div>
+      <div class="menu-item" data-cat="rice"><div class="info"><h4>Basmati Rice</h4><div class="desc">Choose plain, lemon, jeera, coconut, or tomato basmati rice</div><div class="meta"><span class="diet-tag v">V</span><span class="diet-tag vg">VG</span></div></div><div class="price">10/15 PLN</div></div>
 
-      <div class="menu-item" data-cat="curries">
-        <div class="info">
-          <h4>Chicken Tikka Masala</h4>
-          <div class="desc">Marinated &amp; grilled tikka pieces in a medium-spiced onion-tomato sauce</div>
-          <div class="meta">
-            <span class="spice">🌶️🌶️🌶️</span>
-          </div>
-        </div>
-        <div class="price">42 PLN</div>
-      </div>
-
-      <div class="menu-item" data-cat="curries">
-        <div class="info">
-          <h4>Dum Biryani</h4>
-          <div class="desc">Layered basmati rice with marinated chicken, slow-cooked with aromatic spices</div>
-          <div class="meta">
-            <span class="spice">🌶️🌶️🌶️</span>
-          </div>
-        </div>
-        <div class="price">42 PLN</div>
-      </div>
-
-      <div class="menu-item" data-cat="curries">
-        <div class="info">
-          <h4>Bhuna Mutton</h4>
-          <div class="desc">Tender lamb slow-cooked with dry masala in a rich, medium-spiced gravy</div>
-          <div class="meta">
-            <span class="spice">🌶️🌶️🌶️</span>
-            <span class="diet-tag gf">GF</span>
-          </div>
-        </div>
-        <div class="price">45 PLN</div>
-      </div>
-
-      <div class="menu-item" data-cat="curries">
-        <div class="info">
-          <h4>Vegetable Biryani</h4>
-          <div class="desc">Fragrant basmati rice layered with mixed vegetables &amp; saffron</div>
-          <div class="meta">
-            <span class="spice">🌶️🌶️</span>
-            <span class="diet-tag v">V</span>
-            <span class="diet-tag gf">GF</span>
-          </div>
-        </div>
-        <div class="price">38 PLN</div>
-      </div>
+      <div class="menu-category" data-cat="biryani">&#9679; Biryani</div>
+      <div class="menu-item" data-cat="biryani"><div class="info"><h4>Biryani</h4><div class="desc">Choose vegetables, chicken, mutton, fish, or prawns biryani</div><div class="meta"><span class="spice">🌶️🌶️</span></div></div><div class="price">39-46 PLN</div></div>
 
       <div class="menu-category" data-cat="breads">&#9679; Indian Breads</div>
+      <div class="menu-item" data-cat="breads"><div class="info"><h4>Naan</h4><div class="desc">Choose plain, butter, garlic, coconut, kalaunji, coriander, methi, or chili naan</div><div class="meta"><span class="diet-tag v">V</span></div></div><div class="price">10-15 PLN</div></div>
+      <div class="menu-item" data-cat="breads"><div class="info"><h4>Roti</h4><div class="desc">Choose plain, butter, garlic, coconut, chili, kalaunji, coriander, or methi roti</div><div class="meta"><span class="diet-tag v">V</span></div></div><div class="price">10-15 PLN</div></div>
 
-      <div class="menu-item" data-cat="breads">
-        <div class="info">
-          <h4>Garlic Naan</h4>
-          <div class="desc">Soft leavened bread topped with garlic &amp; butter, baked in tandoor</div>
-          <div class="meta">
-            <span class="diet-tag v">V</span>
-          </div>
-        </div>
-        <div class="price">8 PLN</div>
-      </div>
+      <div class="menu-category" data-cat="sides">&#9679; Dodatki / Sides</div>
+      <div class="menu-item" data-cat="sides"><div class="info"><h4>Vegetable Raita</h4><div class="desc">Refreshing natural yogurt with chopped vegetables</div><div class="meta"><span class="diet-tag v">V</span></div></div><div class="price">15 PLN</div></div>
+      <div class="menu-item" data-cat="sides"><div class="info"><h4>Papadam (2pcs)</h4><div class="desc">Crispy Indian lentil crackers</div><div class="meta"><span class="diet-tag v">V</span><span class="diet-tag vg">VG</span></div></div><div class="price">8 PLN</div></div>
 
-      <div class="menu-item" data-cat="breads">
-        <div class="info">
-          <h4>Butter Naan</h4>
-          <div class="desc">Classic tandoor-baked bread brushed with melted butter</div>
-          <div class="meta">
-            <span class="diet-tag v">V</span>
-          </div>
-        </div>
-        <div class="price">6 PLN</div>
-      </div>
-
-      <div class="menu-item" data-cat="breads">
-        <div class="info">
-          <h4>Roti</h4>
-          <div class="desc">Whole wheat unleavened bread, a daily staple of North India</div>
-          <div class="meta">
-            <span class="diet-tag v">V</span>
-            <span class="diet-tag vg">VG</span>
-          </div>
-        </div>
-        <div class="price">4 PLN</div>
-      </div>
+      <div class="menu-category" data-cat="drinks">&#9679; Drinks</div>
+      <div class="menu-item" data-cat="drinks"><div class="info"><h4>Lassi</h4><div class="desc">Choose mango, sweet, or salty lassi</div><div class="meta"><span class="diet-tag v">V</span></div></div><div class="price">14/15 PLN</div></div>
+      <div class="menu-item" data-cat="drinks"><div class="info"><h4>Cold Drink (330ml)</h4><div class="desc">Pepsi, Pepsi Max, 7UP, Mirinda, or Lipton</div><div class="meta"></div></div><div class="price">10 PLN</div></div>
+      <div class="menu-item" data-cat="drinks"><div class="info"><h4>Water (500ml)</h4><div class="desc">Sparkling or still water</div><div class="meta"></div></div><div class="price">6 PLN</div></div>
 
     </div>
   </div>
@@ -2665,6 +2467,16 @@
               <span>20 PLN</span>
             </button>
           </div>
+          <div class="curry-builder" id="curryBuilder" aria-label="Build your curry">
+            <div class="builder-group">
+              <strong>Step 1: Choose protein</strong>
+              <div class="builder-options" id="curryProteinOptions"></div>
+            </div>
+            <div class="builder-group">
+              <strong>Step 2: Choose sauce</strong>
+              <div class="builder-options" id="currySauceOptions"></div>
+            </div>
+          </div>
           <div class="modal-actions">
             <button class="btn-ar-modal" id="viewArBtn">
               <svg viewBox="0 0 24 24"><path d="M21 3H3v18h18V3zm-2 16H5V5h14v14zm-5-7l-4 5h8l-4-5z"/></svg>
@@ -2805,7 +2617,7 @@
         <button class="ai-close" id="aiClose" type="button" aria-label="Close assistant">&times;</button>
       </div>
       <div class="ai-messages" id="aiMessages">
-        <div class="ai-msg bot">Hi, I can help you choose from the Curry Leaves menu. Ask me things like “Is Dal Tadka vegan?”, “What is in Butter Chicken?”, or “Where are your locations?”</div>
+        <div class="ai-msg bot">Hi, I can help you choose from the Curry Leaves menu. Ask me things like “Is Dal Tadka vegan?”, “How do I build a curry?”, or “Where are your locations?”</div>
       </div>
       <div class="ai-chips" id="aiChips">
         <button class="ai-chip" type="button">vegan options</button>
@@ -2909,24 +2721,26 @@
       // Pairings data
       const pairings = {
         'Samosa': 'Mint Chutney',
-        'Vegetable Pakora (8pcs)': 'Tamarind Chutney',
-        'Fry 65 \u2014 Chicken (8pcs)': 'Mint Chutney',
-        'Fry 65 \u2014 Paneer (8pcs)': 'Mint Chutney',
+        'Tandoori Grill Paneer (5pcs)': 'Mint Chutney',
         'Tandoori Grill Chicken (6pcs)': 'Mint Chutney',
-        'Malai Tikka': 'Mint Chutney',
+        'Tandoori Grill Fish (6pcs)': 'Mint Chutney',
+        'Tandoori Grill Prawns (6pcs)': 'Mint Chutney',
+        'Fry 65 — Gobi (8pcs)': 'Tamarind Chutney',
+        'Fry 65 — Paneer (8pcs)': 'Mint Chutney',
+        'Fry 65 — Fish (8pcs)': 'Mint Chutney',
+        'Fry 65 — Chicken (8pcs)': 'Mint Chutney',
+        'Fry 65 — Prawns (6pcs)': 'Mint Chutney',
         'Tomato Rasam': 'Papadum',
         'Dal Soup': 'Papadum',
-        'Palak Paneer': 'Garlic Naan',
+        'Coconut Prawns Soup': 'Papadum',
+        'Assami Crispy Vegetables': 'Basmati Rice',
+        'Palak Paneer': 'Naan',
         'Chana Masala': 'Bhatura',
         'Dal Tadka': 'Roti',
-        'Aloo Gobi Methi': 'Roti',
-        'Butter Chicken': 'Butter Naan',
-        'Chicken Tikka Masala': 'Garlic Naan',
-        'Dum Biryani': 'Raita',
-        'Bhuna Mutton': 'Garlic Naan',
-        'Vegetable Biryani': 'Raita',
-        'Garlic Naan': 'Dal Tadka',
-        'Butter Naan': 'Butter Chicken',
+        'Aloo-Gobi Methi': 'Roti',
+        'Build Your Curry': 'Naan',
+        'Biryani': 'Vegetable Raita',
+        'Naan': 'Dal Tadka',
         'Roti': 'Dal Tadka',
       };
 
@@ -2946,7 +2760,7 @@
 
       document.querySelectorAll('.menu-item h4').forEach(h4 => {
         let name = h4.textContent.trim();
-        name = name.replace(/ (Bestseller|#1)$/, '');
+        name = name.replace(/ (Bestseller|#1|Official)$/, '');
         if (pairings[name]) {
           const info = h4.closest('.info');
           const meta = info.querySelector('.meta');
@@ -3279,8 +3093,12 @@
         }
 
         if (/creamy|buttery|rich/.test(q)) {
-          const creamy = ['Butter Chicken', 'Palak Paneer', 'Malai Tikka', 'Butter Naan'].map(name => menuData.find(item => item.name === name)).filter(Boolean);
+          const creamy = ['Build Your Curry', 'Palak Paneer', 'Naan', 'Lassi'].map(name => menuData.find(item => item.name === name)).filter(Boolean);
           return `For creamy/rich flavors, try:\n${creamy.map(formatDish).join('\n\n')}`;
+        }
+
+        if (/build.*curry|top curr|protein|sauce|butter masala|kerala|guntur|korma/.test(q)) {
+          return 'Top Curries work in two steps: choose protein (Veg 36 PLN, Paneer 40 PLN, Chicken 40 PLN, Mutton 45 PLN, Fish 40 PLN, or Prawns 45 PLN), then choose sauce (Butter Masala, Kerala, Guntur, Tikka Masala, Street 65, or Korma). Open “Build Your Curry” in the menu to add the exact combination to cart.';
         }
 
         if (/ar|augmented|3d|model/.test(q)) {
@@ -3304,7 +3122,7 @@
             const spicy = menuData.filter(item => (item.spice.match(/🌶️/g) || []).length >= 3).slice(0, 5);
             return `For a spicy order, I would recommend:\n${spicy.map(formatDish).join('\n\n')}`;
           }
-          const picks = ['Butter Chicken', 'Samosa', 'Chicken Tikka Masala', 'Palak Paneer'].map(name => menuData.find(item => item.name === name)).filter(Boolean);
+          const picks = ['Build Your Curry', 'Samosa', 'Biryani', 'Palak Paneer'].map(name => menuData.find(item => item.name === name)).filter(Boolean);
           return `A strong first order would be:\n${picks.map(formatDish).join('\n\n')}`;
         }
 
@@ -3607,25 +3425,20 @@
       let cart = JSON.parse(localStorage.getItem('clCart') || '[]');
       let pendingRecommendation = null;
       const smartRecommendations = {
-        'Samosa': 'Garlic Naan',
-        'Vegetable Pakora (8pcs)': 'Dal Tadka',
-        'Fry 65 — Chicken (8pcs)': 'Butter Naan',
-        'Fry 65 — Paneer (8pcs)': 'Garlic Naan',
-        'Tandoori Grill Chicken (6pcs)': 'Butter Naan',
-        'Malai Tikka': 'Garlic Naan',
-        'Tomato Rasam': 'Roti',
-        'Dal Soup': 'Roti',
-        'Palak Paneer': 'Garlic Naan',
+        'Samosa': 'Naan',
+        'Fry 65 — Chicken (8pcs)': 'Naan',
+        'Fry 65 — Paneer (8pcs)': 'Naan',
+        'Fry 65 — Gobi (8pcs)': 'Dal Tadka',
+        'Tandoori Grill Chicken (6pcs)': 'Naan',
+        'Tomato Rasam': 'Papadam (2pcs)',
+        'Dal Soup': 'Papadam (2pcs)',
+        'Palak Paneer': 'Naan',
         'Chana Masala': 'Roti',
         'Dal Tadka': 'Roti',
-        'Aloo Gobi Methi': 'Roti',
-        'Butter Chicken': 'Butter Naan',
-        'Chicken Tikka Masala': 'Garlic Naan',
-        'Dum Biryani': 'Roti',
-        'Bhuna Mutton': 'Garlic Naan',
-        'Vegetable Biryani': 'Roti',
-        'Garlic Naan': 'Butter Chicken',
-        'Butter Naan': 'Butter Chicken',
+        'Aloo-Gobi Methi': 'Roti',
+        'Build Your Curry': 'Naan',
+        'Biryani': 'Vegetable Raita',
+        'Naan': 'Dal Tadka',
         'Roti': 'Dal Tadka'
       };
 
@@ -3748,8 +3561,102 @@
       const modal = document.getElementById('dishModal');
       const modalClose = document.getElementById('modalClose');
       const variantPicker = document.getElementById('variantPicker');
+      const curryBuilder = document.getElementById('curryBuilder');
+      const curryProteinOptions = document.getElementById('curryProteinOptions');
+      const currySauceOptions = document.getElementById('currySauceOptions');
       const modalPrice = document.getElementById('modalPrice');
       let currentDish = null;
+
+      const variantGroups = {
+        'Samosa': [
+          { name: 'Samosa - Veg', label: 'Veg Samosa', price: '18 PLN' },
+          { name: 'Samosa - Chicken', label: 'Chicken Samosa', price: '20 PLN' }
+        ],
+        'Basmati Rice': [
+          { name: 'Plain Basmati Rice', label: 'Plain', price: '10 PLN' },
+          { name: 'Lemon Basmati Rice', label: 'Lemon', price: '15 PLN' },
+          { name: 'Jeera Basmati Rice', label: 'Jeera', price: '15 PLN' },
+          { name: 'Coconut Basmati Rice', label: 'Coconut', price: '15 PLN' },
+          { name: 'Tomato Basmati Rice', label: 'Tomato', price: '15 PLN' }
+        ],
+        'Biryani': [
+          { name: 'Vegetables Biryani', label: 'Vegetables', price: '39 PLN' },
+          { name: 'Chicken Biryani', label: 'Chicken', price: '42 PLN' },
+          { name: 'Mutton Biryani', label: 'Mutton', price: '46 PLN' },
+          { name: 'Fish Biryani', label: 'Fish', price: '42 PLN' },
+          { name: 'Prawns Biryani', label: 'Prawns', price: '46 PLN' }
+        ],
+        'Naan': [
+          { name: 'Naan — Plain', label: 'Plain', price: '10 PLN' },
+          { name: 'Naan — Butter', label: 'Butter', price: '12 PLN' },
+          { name: 'Naan — Garlic', label: 'Garlic', price: '14 PLN' },
+          { name: 'Naan — Coconut', label: 'Coconut', price: '15 PLN' },
+          { name: 'Naan — Kalaunji', label: 'Kalaunji', price: '15 PLN' },
+          { name: 'Naan — Coriander', label: 'Coriander', price: '15 PLN' },
+          { name: 'Naan — Methi', label: 'Methi', price: '15 PLN' },
+          { name: 'Naan — Chili', label: 'Chili', price: '15 PLN' }
+        ],
+        'Roti': [
+          { name: 'Roti — Plain', label: 'Plain', price: '10 PLN' },
+          { name: 'Roti — Butter', label: 'Butter', price: '12 PLN' },
+          { name: 'Roti — Garlic', label: 'Garlic', price: '14 PLN' },
+          { name: 'Roti — Coconut', label: 'Coconut', price: '15 PLN' },
+          { name: 'Roti — Chili', label: 'Chili', price: '15 PLN' },
+          { name: 'Roti — Kalaunji', label: 'Kalaunji', price: '15 PLN' },
+          { name: 'Roti — Coriander', label: 'Coriander', price: '15 PLN' },
+          { name: 'Roti — Methi', label: 'Methi', price: '15 PLN' }
+        ],
+        'Lassi': [
+          { name: 'Lassi — Mango', label: 'Mango', price: '15 PLN' },
+          { name: 'Lassi — Sweet', label: 'Sweet', price: '14 PLN' },
+          { name: 'Lassi — Salty', label: 'Salty', price: '14 PLN' }
+        ]
+      };
+
+      const curryProteins = [
+        { label: 'Veg / Wege', price: '36 PLN', vegetarian: true },
+        { label: 'Paneer / Ser', price: '40 PLN', vegetarian: true },
+        { label: 'Chicken / Kurczak', price: '40 PLN' },
+        { label: 'Mutton / Baranina', price: '45 PLN' },
+        { label: 'Fish / Ryba', price: '40 PLN' },
+        { label: 'Prawns / Krewetki', price: '45 PLN' }
+      ];
+
+      const currySauces = [
+        { label: 'Butter Masala', desc: 'Tomato, cream, and butter sauce' },
+        { label: 'Kerala', desc: 'Malabar coconut curry with mustard seeds and curry leaves' },
+        { label: 'Guntur', desc: 'Hot fresh chili curry with curry leaves, mustard, and coconut' },
+        { label: 'Tikka Masala', desc: 'Medium spicy onion-tomato sauce with grilled tikka flavor' },
+        { label: 'Street 65', desc: 'Hot fried chili sauce with fresh coriander and mustard seeds' },
+        { label: 'Korma', desc: 'Creamy cashew nut sauce' }
+      ];
+
+      function updateCurrySelection() {
+        const protein = curryProteinOptions.querySelector('.variant-option.active');
+        const sauce = currySauceOptions.querySelector('.variant-option.active');
+        if (!protein || !sauce) return;
+        currentDish = {
+          name: `${protein.dataset.label} ${sauce.dataset.label}`,
+          price: protein.dataset.price,
+          baseName: 'Build Your Curry'
+        };
+        modalPrice.textContent = currentDish.price;
+        refreshModalDishVisual();
+      }
+
+      function renderCurryBuilder() {
+        curryProteinOptions.innerHTML = curryProteins.map((protein, index) => `
+          <button class="variant-option ${index === 0 ? 'active' : ''}" type="button" data-curry-role="protein" data-label="${escapeHtml(protein.label)}" data-price="${protein.price}">
+            <strong>${escapeHtml(protein.label)}</strong>
+            <span>${protein.price}</span>
+          </button>`).join('');
+        currySauceOptions.innerHTML = currySauces.map((sauce, index) => `
+          <button class="variant-option ${index === 0 ? 'active' : ''}" type="button" data-curry-role="sauce" data-label="${escapeHtml(sauce.label)}">
+            <strong>${escapeHtml(sauce.label)}</strong>
+            <span>${escapeHtml(sauce.desc)}</span>
+          </button>`).join('');
+        updateCurrySelection();
+      }
 
       variantPicker.addEventListener('click', (e) => {
         const option = e.target.closest('.variant-option');
@@ -3760,10 +3667,21 @@
           ...currentDish,
           name: option.dataset.name,
           price: option.dataset.price,
-          baseName: 'Samosa'
+          baseName: option.dataset.baseName || currentDish.baseName
         };
         modalPrice.textContent = currentDish.price;
+        refreshModalDishVisual();
       });
+
+      function renderVariantPicker(baseName) {
+        const variants = variantGroups[baseName] || [];
+        variantPicker.innerHTML = variants.map((variant, index) => `
+          <button class="variant-option ${index === 0 ? 'active' : ''}" type="button" data-name="${escapeHtml(variant.name)}" data-price="${variant.price}" data-base-name="${escapeHtml(baseName)}">
+            <strong>${escapeHtml(variant.label)}</strong>
+            <span>${variant.price}</span>
+          </button>`).join('');
+        return variants[0] || null;
+      }
 
       modalClose.addEventListener('click', closeModal);
       modal.addEventListener('click', (e) => {
@@ -3780,22 +3698,99 @@
         mv.style.display = 'none';
         mv.removeAttribute('src');
         variantPicker.classList.remove('active');
+        curryBuilder.classList.remove('active');
       }
+
+      curryBuilder.addEventListener('click', (e) => {
+        const option = e.target.closest('.variant-option');
+        if (!option || !currentDish) return;
+        const group = option.closest('.builder-options');
+        group.querySelectorAll('.variant-option').forEach(btn => btn.classList.remove('active'));
+        option.classList.add('active');
+        updateCurrySelection();
+      });
 
       const modelFiles = {
         'Samosa': { src: 'models/Samosa.glb', scale: '0.05 0.05 0.05' },
       };
       // TODO: Future upgrade: add real 3D models for top-selling dishes once the owner provides/approves them.
 
-      // Keep this strict: only add URLs here when the official website has a clearly matching dish photo.
-      const officialDishPhotos = {
-        'Samosa': 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=85',
-        'Vegetable Pakora (8pcs)': 'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&w=900&q=85'
+      // Verified dish photo URLs — each entry must be an exact match for the named dish.
+      // Source: curryleaves.pl (proteins only), Wikimedia Commons (CC-BY-SA / CC-BY).
+      const dishPhotoMap = {
+        'Samosa (2pcs)': 'https://live.staticflickr.com/8389/8591319203_ac25b2e607_b.jpg',
+        'Tandoori Grill Paneer (5pcs)': 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Tandoori_Paneer_Tikka.jpg',
+        'Tandoori Grill Chicken (6pcs)': 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Chicken_tandoori.jpg',
+        'Tandoori Grill Fish (6pcs)': 'https://upload.wikimedia.org/wikipedia/commons/f/ff/Indian_Style_Fish_Fry.jpg',
+        'Tandoori Grill Prawns (6pcs)': 'https://upload.wikimedia.org/wikipedia/commons/1/16/Prawns_tikka.jpg',
+        'Fry 65 — Gobi (8pcs)': 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Gobi_manchurian.jpg',
+        'Fry 65 — Paneer (8pcs)': 'https://upload.wikimedia.org/wikipedia/commons/7/71/Paneer_Manchurian.jpg',
+        'Fry 65 — Chicken (8pcs)': 'https://upload.wikimedia.org/wikipedia/commons/d/d7/Chicken_65.jpg',
+        'Fry 65 — Fish (8pcs)': 'https://upload.wikimedia.org/wikipedia/commons/f/ff/Indian_Style_Fish_Fry.jpg',
+        'Fry 65 — Prawns (8pcs)': 'https://upload.wikimedia.org/wikipedia/commons/1/16/Prawns_tikka.jpg',
+        'Tomato Rasam Soup': 'https://upload.wikimedia.org/wikipedia/commons/5/5c/Rasam_Soup.JPG',
+        'Dal Soup': 'https://upload.wikimedia.org/wikipedia/commons/2/20/Dal_Tadka_01_%2836779549481%29.jpg',
+        'Coconut Prawn Soup': 'https://upload.wikimedia.org/wikipedia/commons/3/3d/Prawn_Malai_Curry.jpg',
+        'Assami Crispy Vegetables': 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Gobi_manchurian.jpg',
+        'Chana Masala': 'https://upload.wikimedia.org/wikipedia/commons/8/8e/Chana_masala.jpg',
+        'Palak Paneer': 'https://upload.wikimedia.org/wikipedia/commons/b/b5/Palak_Paneer_at_WCI_2023.jpg',
+        'Dal Tadka': 'https://upload.wikimedia.org/wikipedia/commons/2/20/Dal_Tadka_01_%2836779549481%29.jpg',
+        'Aloo Gobi Methi': 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Aloo_gobi.jpg',
+        'Chicken Curry': 'https://upload.wikimedia.org/wikipedia/commons/2/21/Chicken_curry.jpg',
+        'Lamb Rogan Josh': 'https://upload.wikimedia.org/wikipedia/commons/1/1c/Lamb_Rogan_Josh_at_Restaurant_Guru%2C_Tallinn.jpg',
+        'Fish Curry': 'https://upload.wikimedia.org/wikipedia/commons/4/4f/Meen_curry_%28fish_curry%29_from_Kerala%2C_traditionally_prepared_in_earthern_pot.jpg',
+        'Prawns Curry': 'https://upload.wikimedia.org/wikipedia/commons/c/cc/King_prawn_curry_-_Sunoso.jpg',
+        'Basmati Rice': 'https://upload.wikimedia.org/wikipedia/commons/d/da/Plain_rice.jpg',
+        'Chicken Biryani': 'https://upload.wikimedia.org/wikipedia/commons/f/fe/Chicken_Biryani.jpg',
+        'Mutton Biryani': 'https://upload.wikimedia.org/wikipedia/commons/f/fe/Chicken_Biryani.jpg',
+        'Naan': 'https://upload.wikimedia.org/wikipedia/commons/8/83/Naan_shiva.jpg',
+        'Roti': 'https://upload.wikimedia.org/wikipedia/commons/5/5b/Chapati.jpg',
+        'Vegetable Raita': 'https://upload.wikimedia.org/wikipedia/commons/1/18/Vegetable_Raita.jpg',
+        'Papadam': 'https://upload.wikimedia.org/wikipedia/commons/5/53/Papadum.jpg',
+        'Lassi': 'https://upload.wikimedia.org/wikipedia/commons/a/af/Mango_lassi.jpg',
+        'Mango Lassi': 'https://upload.wikimedia.org/wikipedia/commons/a/af/Mango_lassi.jpg',
+        'Sweet Lassi': 'https://upload.wikimedia.org/wikipedia/commons/a/af/Mango_lassi.jpg',
+        'Veg / Wege': 'https://curryleaves.pl/wp-content/uploads/2021/10/Untitled-design-6.png',
+        'Paneer / Ser': 'https://curryleaves.pl/wp-content/uploads/2021/10/5.png',
+        'Chicken / Kurczak': 'https://curryleaves.pl/wp-content/uploads/2021/10/6.png',
+        'Mutton / Baranina': 'https://curryleaves.pl/wp-content/uploads/2021/10/7.png',
+        'Fish / Ryba': 'https://curryleaves.pl/wp-content/uploads/2021/10/8.png',
+        'Prawns / Krewetki': 'https://curryleaves.pl/wp-content/uploads/2021/10/9.png'
       };
 
+      function getCurryProteinPhotoName(name) {
+        if (!name) return '';
+        const protein = curryProteins.find(option => name.startsWith(option.label));
+        return protein ? protein.label : '';
+      }
+
+      function getVariantPhotoName(name) {
+        if (!name) return '';
+        if (name === 'Build Your Curry') return '';
+        if (/^Naan\s*—/.test(name)) return 'Naan';
+        if (/^Roti\s*—/.test(name)) return 'Roti';
+        if (/^Lassi\s*—/.test(name)) return 'Lassi';
+        if (/\bBasmati Rice$/.test(name)) return 'Basmati Rice';
+        if (/\bChicken Biryani$/.test(name)) return 'Chicken Biryani';
+        if (/\bMutton Biryani$/.test(name)) return 'Mutton Biryani';
+        if (/\bRice$/.test(name) && name !== 'Basmati Rice') return 'Basmati Rice';
+        return name;
+      }
+
+      function getDishPhotoName(name) {
+        if (dishPhotoMap[name]) return name;
+        const variantName = getVariantPhotoName(name);
+        if (dishPhotoMap[variantName]) return variantName;
+        if (name === 'Build Your Curry') {
+          return getCurryProteinPhotoName(currentDish?.name) || curryProteins[0]?.label || name;
+        }
+        return getCurryProteinPhotoName(name) || name;
+      }
+
       function dishPhotoSources(name) {
-        if (officialDishPhotos[name]) return [officialDishPhotos[name]];
-        const safeName = encodeURIComponent(name);
+        const photoName = getDishPhotoName(name);
+        if (dishPhotoMap[photoName]) return [dishPhotoMap[photoName]];
+        const safeName = encodeURIComponent(photoName);
         return ['webp', 'jpg', 'jpeg', 'png'].map(ext => `assets/dish-photos/${safeName}.${ext}`);
       }
 
@@ -3814,7 +3809,7 @@
 
       function getDishName(h4) {
         let name = h4.textContent.trim();
-        return name.replace(/ (Bestseller|#1)$/, '');
+        return name.replace(/ (Bestseller|#1|Official)$/, '');
       }
 
       document.querySelectorAll('.menu-item').forEach(item => {
@@ -3850,18 +3845,22 @@
           const dietTags = info.querySelectorAll('.diet-tag');
           const pairing = pairings[name];
 
-          currentDish = name === 'Samosa'
-            ? { name: 'Samosa - Veg', price: '18 PLN', baseName: 'Samosa' }
+          const isCurryBuilder = this.dataset.builder === 'curry';
+          const firstVariant = variantGroups[name]?.[0];
+          currentDish = firstVariant
+            ? { name: firstVariant.name, price: firstVariant.price, baseName: name }
+            : isCurryBuilder
+              ? { name: 'Veg / Wege Butter Masala', price: '36 PLN', baseName: 'Build Your Curry' }
             : { name, price, baseName: name };
           trackEvent('dish_open', { item_name: name, category: this.dataset.cat || '', price });
 
           document.getElementById('modalTitle').textContent = name;
           document.getElementById('modalDesc').textContent = desc;
           modalPrice.textContent = currentDish.price;
-          variantPicker.classList.toggle('active', name === 'Samosa');
-          if (name === 'Samosa') {
-            variantPicker.querySelectorAll('.variant-option').forEach((option, index) => option.classList.toggle('active', index === 0));
-          }
+          variantPicker.classList.toggle('active', Boolean(firstVariant));
+          curryBuilder.classList.toggle('active', isCurryBuilder);
+          if (firstVariant) renderVariantPicker(name);
+          if (isCurryBuilder) renderCurryBuilder();
 
           // Meta (spice + tags)
           let metaHtml = '';
@@ -3984,11 +3983,12 @@
       });
 
       function showPlaceholder(visual, name) {
-        const sources = dishPhotoSources(name);
+        const photoName = getDishPhotoName(name);
+        const sources = dishPhotoSources(photoName);
         if (sources.length) {
           const img = document.createElement('img');
           img.className = 'dish-photo';
-          img.alt = name;
+          img.alt = photoName;
           img.loading = 'lazy';
           img.decoding = 'async';
           loadImageWithFallback(img, sources, () => {
@@ -4016,8 +4016,18 @@
           'Vegetable Biryani': '\ud83c\udf5a', 'Garlic Naan': '\ud83e\uded1',
           'Butter Naan': '\ud83e\uded1', 'Roti': '\ud83e\uded1',
         };
-        ph.innerHTML = `<span>${emojiMap[name] || '🍽️'}</span><span>${name}</span><div class="photo-needed-note">Need to take an official photo of this dish for the website.</div>`;
+        ph.innerHTML = `<span>${emojiMap[photoName] || emojiMap[name] || '🍽️'}</span><span>${name}</span><div class="photo-needed-note">Need to take an official photo of this dish for the website.</div>`;
         visual.appendChild(ph);
+      }
+
+      function refreshModalDishVisual() {
+        const visual = document.getElementById('modalVisual');
+        if (!visual || !currentDish) return;
+        const existingPH = visual.querySelector('.placeholder-dish');
+        const existingPhoto = visual.querySelector('.dish-photo');
+        if (existingPH) existingPH.remove();
+        if (existingPhoto) existingPhoto.remove();
+        showPlaceholder(visual, currentDish.baseName === 'Build Your Curry' ? currentDish.name : currentDish.name);
       }
 
       // ===== Cart Sidebar =====

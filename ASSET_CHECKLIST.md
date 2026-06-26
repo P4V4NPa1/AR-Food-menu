@@ -11,25 +11,21 @@ Host animations needed in `assets/order-host/`:
 
 Dish photos needed in `assets/dish-photos/`:
 
+Use exact dish names from the customer menu. Priority photos:
+
 - Samosa.webp
-- Vegetable Pakora (8pcs).webp
-- Fry 65 — Chicken (8pcs).webp
-- Fry 65 — Paneer (8pcs).webp
+- Build Your Curry.webp
 - Tandoori Grill Chicken (6pcs).webp
-- Malai Tikka.webp
-- Tomato Rasam.webp
-- Dal Soup.webp
+- Fry 65 — Chicken (8pcs).webp
 - Palak Paneer.webp
 - Chana Masala.webp
 - Dal Tadka.webp
-- Aloo Gobi Methi.webp
-- Butter Chicken.webp
-- Chicken Tikka Masala.webp
-- Dum Biryani.webp
-- Bhuna Mutton.webp
-- Vegetable Biryani.webp
-- Garlic Naan.webp
-- Butter Naan.webp
-- Roti.webp
+- Chicken Biryani.webp
+- Vegetables Biryani.webp
+- Naan.webp
+- Biryani.webp
+- Basmati Rice.webp
+- Vegetable Raita.webp
+- Lassi — Mango.webp
 
-The site also accepts `.jpg`, `.jpeg`, and `.png` with the same names.
+The site also accepts `.jpg`, `.jpeg`, and `.png` with the same names. Add more photos for the remaining official menu items as owner-approved images become available.
