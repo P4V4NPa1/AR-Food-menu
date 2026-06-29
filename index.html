@@ -1308,15 +1308,42 @@
       border: 1px solid #E8DCC8;
       border-radius: 14px;
       background: white;
-      padding: 12px;
+      padding: 10px;
       cursor: pointer;
       font-family: 'Inter', sans-serif;
       text-align: left;
       transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
+    .variant-thumb {
+      width: 58px;
+      height: 46px;
+      border-radius: 12px;
+      overflow: hidden;
+      flex: 0 0 auto;
+      background: linear-gradient(135deg, #2D1A05, #1A0F00);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.55);
+    }
+    .variant-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .variant-copy { min-width: 0; }
     .variant-option strong { display: block; color: #1A0F00; font-size: 14px; }
     .variant-option span { display: block; margin-top: 4px; color: #C4943A; font-size: 13px; font-weight: 800; }
     .variant-option.active { border-color: #C4943A; background: rgba(196,148,58,0.1); box-shadow: 0 8px 20px rgba(196,148,58,0.12); }
+    .menu-varieties {
+      display: inline-flex;
+      margin-left: 8px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(196,148,58,0.14);
+      color: #8B1A1A;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      vertical-align: middle;
+    }
     @media (max-width: 520px) { .variant-picker, .builder-options { grid-template-columns: 1fr; } }
     .btn-add-cart {
       width: 100%;
@@ -1672,6 +1699,18 @@
 
     .ai-toggle:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 22px 60px rgba(26,15,0,0.38), 0 0 0 8px rgba(196,148,58,0.12); }
     .ai-toggle svg { width: 30px; height: 30px; fill: currentColor; }
+    .ai-helper-text {
+      margin-top: 8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(26,15,0,0.78);
+      color: #FFF8E7;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      box-shadow: 0 12px 32px rgba(26,15,0,0.22);
+      white-space: nowrap;
+    }
 
     .ai-panel {
       position: absolute;
@@ -1986,6 +2025,7 @@
         margin-left: auto;
         border-radius: 19px;
       }
+      .ai-helper-text { display: none; }
 
       .ai-panel {
         left: 0;
@@ -2152,15 +2192,8 @@
 
       <div class="menu-category" data-cat="appetizers">&#9679; Przystawki / Appetizers</div>
       <div class="menu-item" data-cat="appetizers"><div class="info"><h4>Samosa <span class="badge" style="font-size:9px;">Bestseller</span></h4><div class="desc">Triangular pastries stuffed with vegetables or chicken</div><div class="meta"><span class="spice">🌶️🌶️</span></div></div><div class="price">18/20 PLN</div></div>
-      <div class="menu-item" data-cat="appetizers"><div class="info"><h4>Tandoori Grill Paneer (5pcs)</h4><div class="desc">Paneer marinated in yogurt and Indian spices, grilled in tandoor</div><div class="meta"><span class="spice">🌶️🌶️</span><span class="diet-tag v">V</span></div></div><div class="price">40 PLN</div></div>
-      <div class="menu-item" data-cat="appetizers"><div class="info"><h4>Tandoori Grill Chicken (6pcs)</h4><div class="desc">Chicken marinated in yogurt and Indian spices, grilled in tandoor</div><div class="meta"><span class="spice">🌶️🌶️</span></div></div><div class="price">40 PLN</div></div>
-      <div class="menu-item" data-cat="appetizers"><div class="info"><h4>Tandoori Grill Fish (6pcs)</h4><div class="desc">Fish marinated in yogurt and Indian spices, grilled in tandoor</div><div class="meta"><span class="spice">🌶️🌶️</span></div></div><div class="price">40 PLN</div></div>
-      <div class="menu-item" data-cat="appetizers"><div class="info"><h4>Tandoori Grill Prawns (6pcs)</h4><div class="desc">Prawns marinated in yogurt and Indian spices, grilled in tandoor</div><div class="meta"><span class="spice">🌶️🌶️</span></div></div><div class="price">42 PLN</div></div>
-      <div class="menu-item" data-cat="appetizers"><div class="info"><h4>Fry 65 — Gobi (8pcs)</h4><div class="desc">Marinated crispy cauliflower, deep fried with blended spices</div><div class="meta"><span class="spice">🌶️🌶️🌶️</span><span class="diet-tag v">V</span><span class="diet-tag vg">VG</span></div></div><div class="price">29 PLN</div></div>
-      <div class="menu-item" data-cat="appetizers"><div class="info"><h4>Fry 65 — Paneer (8pcs)</h4><div class="desc">Marinated crispy paneer, deep fried with blended spices</div><div class="meta"><span class="spice">🌶️🌶️🌶️</span><span class="diet-tag v">V</span></div></div><div class="price">39 PLN</div></div>
-      <div class="menu-item" data-cat="appetizers"><div class="info"><h4>Fry 65 — Fish (8pcs)</h4><div class="desc">Marinated crispy fish, deep fried with blended spices</div><div class="meta"><span class="spice">🌶️🌶️🌶️</span></div></div><div class="price">38 PLN</div></div>
-      <div class="menu-item" data-cat="appetizers"><div class="info"><h4>Fry 65 — Chicken (8pcs)</h4><div class="desc">Marinated crispy chicken, deep fried with blended spices</div><div class="meta"><span class="spice">🌶️🌶️🌶️</span></div></div><div class="price">38 PLN</div></div>
-      <div class="menu-item" data-cat="appetizers"><div class="info"><h4>Fry 65 — Prawns (6pcs)</h4><div class="desc">Marinated crispy prawns, deep fried with blended spices</div><div class="meta"><span class="spice">🌶️🌶️🌶️</span></div></div><div class="price">40 PLN</div></div>
+      <div class="menu-item" data-cat="appetizers"><div class="info"><h4>Tandoori Grill <span class="menu-varieties">Paneer / Chicken / Fish / Prawns</span></h4><div class="desc">Choose paneer, chicken, fish, or prawns marinated in yogurt and Indian spices, grilled in tandoor</div><div class="meta"><span class="spice">🌶️🌶️</span></div></div><div class="price">40/42 PLN</div></div>
+      <div class="menu-item" data-cat="appetizers"><div class="info"><h4>Fry 65 <span class="menu-varieties">Gobi / Paneer / Fish / Chicken / Prawns</span></h4><div class="desc">Choose gobi, paneer, fish, chicken, or prawns: marinated, crispy, deep fried with blended spices</div><div class="meta"><span class="spice">🌶️🌶️🌶️</span></div></div><div class="price">29-40 PLN</div></div>
 
       <div class="menu-category" data-cat="soups">&#9679; Zupy / Soups</div>
       <div class="menu-item" data-cat="soups"><div class="info"><h4>Tomato Rasam</h4><div class="desc">Soup with shredded tomato, tamarind, cumin seeds, and Indian spices</div><div class="meta"><span class="spice">🌶️🌶️</span><span class="diet-tag v">V</span><span class="diet-tag vg">VG</span></div></div><div class="price">20 PLN</div></div>
@@ -2637,6 +2670,7 @@
     <button class="ai-toggle" id="aiToggle" type="button" aria-label="Open AI menu assistant" aria-expanded="false">
       <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-7 7v1.1A5 5 0 007 20h10a5 5 0 002-9.58V9a7 7 0 00-7-7zm-3 8.5a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5zm6 0a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5zm-6.4 3.1h6.8c-.45 1.35-1.64 2.25-3.4 2.25s-2.95-.9-3.4-2.25z"/></svg>
     </button>
+    <div class="ai-helper-text">Ask me anything</div>
   </div>
 
   <script src="order-system.js"></script>
@@ -2721,10 +2755,12 @@
       // Pairings data
       const pairings = {
         'Samosa': 'Mint Chutney',
+        'Tandoori Grill': 'Mint Chutney',
         'Tandoori Grill Paneer (5pcs)': 'Mint Chutney',
         'Tandoori Grill Chicken (6pcs)': 'Mint Chutney',
         'Tandoori Grill Fish (6pcs)': 'Mint Chutney',
         'Tandoori Grill Prawns (6pcs)': 'Mint Chutney',
+        'Fry 65': 'Mint Chutney',
         'Fry 65 — Gobi (8pcs)': 'Tamarind Chutney',
         'Fry 65 — Paneer (8pcs)': 'Mint Chutney',
         'Fry 65 — Fish (8pcs)': 'Mint Chutney',
@@ -3426,6 +3462,8 @@
       let pendingRecommendation = null;
       const smartRecommendations = {
         'Samosa': 'Naan',
+        'Tandoori Grill': 'Naan',
+        'Fry 65': 'Naan',
         'Fry 65 — Chicken (8pcs)': 'Naan',
         'Fry 65 — Paneer (8pcs)': 'Naan',
         'Fry 65 — Gobi (8pcs)': 'Dal Tadka',
@@ -3572,6 +3610,19 @@
           { name: 'Samosa - Veg', label: 'Veg Samosa', price: '18 PLN' },
           { name: 'Samosa - Chicken', label: 'Chicken Samosa', price: '20 PLN' }
         ],
+        'Tandoori Grill': [
+          { name: 'Tandoori Grill Paneer (5pcs)', label: 'Paneer', price: '40 PLN' },
+          { name: 'Tandoori Grill Chicken (6pcs)', label: 'Chicken', price: '40 PLN' },
+          { name: 'Tandoori Grill Fish (6pcs)', label: 'Fish', price: '40 PLN' },
+          { name: 'Tandoori Grill Prawns (6pcs)', label: 'Prawns', price: '42 PLN' }
+        ],
+        'Fry 65': [
+          { name: 'Fry 65 — Gobi (8pcs)', label: 'Gobi', price: '29 PLN' },
+          { name: 'Fry 65 — Paneer (8pcs)', label: 'Paneer', price: '39 PLN' },
+          { name: 'Fry 65 — Fish (8pcs)', label: 'Fish', price: '38 PLN' },
+          { name: 'Fry 65 — Chicken (8pcs)', label: 'Chicken', price: '38 PLN' },
+          { name: 'Fry 65 — Prawns (6pcs)', label: 'Prawns', price: '40 PLN' }
+        ],
         'Basmati Rice': [
           { name: 'Plain Basmati Rice', label: 'Plain', price: '10 PLN' },
           { name: 'Lemon Basmati Rice', label: 'Lemon', price: '15 PLN' },
@@ -3610,6 +3661,17 @@
           { name: 'Lassi — Mango', label: 'Mango', price: '15 PLN' },
           { name: 'Lassi — Sweet', label: 'Sweet', price: '14 PLN' },
           { name: 'Lassi — Salty', label: 'Salty', price: '14 PLN' }
+        ],
+        'Cold Drink (330ml)': [
+          { name: 'Cold Drink — Pepsi', label: 'Pepsi', price: '10 PLN' },
+          { name: 'Cold Drink — Pepsi Max', label: 'Pepsi Max', price: '10 PLN' },
+          { name: 'Cold Drink — 7UP', label: '7UP', price: '10 PLN' },
+          { name: 'Cold Drink — Mirinda', label: 'Mirinda', price: '10 PLN' },
+          { name: 'Cold Drink — Lipton', label: 'Lipton', price: '10 PLN' }
+        ],
+        'Water (500ml)': [
+          { name: 'Water — Sparkling', label: 'Sparkling', price: '6 PLN' },
+          { name: 'Water — Still', label: 'Still', price: '6 PLN' }
         ]
       };
 
@@ -3677,9 +3739,20 @@
         const variants = variantGroups[baseName] || [];
         variantPicker.innerHTML = variants.map((variant, index) => `
           <button class="variant-option ${index === 0 ? 'active' : ''}" type="button" data-name="${escapeHtml(variant.name)}" data-price="${variant.price}" data-base-name="${escapeHtml(baseName)}">
-            <strong>${escapeHtml(variant.label)}</strong>
-            <span>${variant.price}</span>
+            <div class="variant-thumb" data-photo-name="${escapeHtml(variant.name)}"></div>
+            <div class="variant-copy">
+              <strong>${escapeHtml(variant.label)}</strong>
+              <span>${variant.price}</span>
+            </div>
           </button>`).join('');
+        variantPicker.querySelectorAll('.variant-thumb').forEach(thumb => {
+          const img = document.createElement('img');
+          img.alt = '';
+          img.loading = 'lazy';
+          img.decoding = 'async';
+          loadImageWithFallback(img, dishPhotoSources(thumb.dataset.photoName), () => thumb.remove());
+          thumb.appendChild(img);
+        });
         return variants[0] || null;
       }
 
@@ -3712,50 +3785,148 @@
 
       const modelFiles = {
         'Samosa': { src: 'models/Samosa.glb', scale: '0.05 0.05 0.05' },
+        'Samosa - Veg': { src: 'models/Samosa.glb', scale: '0.05 0.05 0.05' },
+        'Samosa - Chicken': { src: 'models/Samosa.glb', scale: '0.05 0.05 0.05' },
+        'Tandoori Grill': { src: 'models/Tandoori.glb' },
+        'Tandoori Grill Paneer (5pcs)': { src: 'models/Tandoori.glb' },
+        'Tandoori Grill Chicken (6pcs)': { src: 'models/Tandoori.glb' },
+        'Tandoori Grill Fish (6pcs)': { src: 'models/Tandoori.glb' },
+        'Tandoori Grill Prawns (6pcs)': { src: 'models/Tandoori.glb' },
+        'Fry 65': { src: 'models/fry65.glb' },
+        'Fry 65 — Gobi (8pcs)': { src: 'models/fry65.glb' },
+        'Fry 65 — Paneer (8pcs)': { src: 'models/fry65.glb' },
+        'Fry 65 — Fish (8pcs)': { src: 'models/fry65.glb' },
+        'Fry 65 — Chicken (8pcs)': { src: 'models/fry65.glb' },
+        'Fry 65 — Prawns (6pcs)': { src: 'models/fry65.glb' },
+        'Dal Tadka': { src: 'models/Dal Tadka.glb' },
+        'Palak Paneer': { src: 'models/Palak Paneer.glb' },
       };
       // TODO: Future upgrade: add real 3D models for top-selling dishes once the owner provides/approves them.
 
-      // Verified dish photo URLs — each entry must be an exact match for the named dish.
-      // Source: curryleaves.pl (proteins only), Wikimedia Commons (CC-BY-SA / CC-BY).
+      // License-safe fallback photos. Local owner-approved assets in assets/dish-photos/ load first.
+      // Source: Openverse results from Wikimedia Commons/Flickr/Rawpixel with commercial-compatible licenses.
       const dishPhotoMap = {
-        'Samosa (2pcs)': 'https://live.staticflickr.com/8389/8591319203_ac25b2e607_b.jpg',
+        'Samosa': 'https://live.staticflickr.com/3149/3048032066_8cbec7e3ed_b.jpg',
+        'Samosa - Veg': 'https://live.staticflickr.com/3149/3048032066_8cbec7e3ed_b.jpg',
+        'Samosa - Chicken': 'https://live.staticflickr.com/7433/10614395664_af573fbf6b_b.jpg',
+        'Tandoori Grill': 'https://live.staticflickr.com/2907/14636748317_052f20dd93_b.jpg',
         'Tandoori Grill Paneer (5pcs)': 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Tandoori_Paneer_Tikka.jpg',
-        'Tandoori Grill Chicken (6pcs)': 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Chicken_tandoori.jpg',
-        'Tandoori Grill Fish (6pcs)': 'https://upload.wikimedia.org/wikipedia/commons/f/ff/Indian_Style_Fish_Fry.jpg',
-        'Tandoori Grill Prawns (6pcs)': 'https://upload.wikimedia.org/wikipedia/commons/1/16/Prawns_tikka.jpg',
-        'Fry 65 — Gobi (8pcs)': 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Gobi_manchurian.jpg',
+        'Tandoori Grill Chicken (6pcs)': 'https://live.staticflickr.com/2907/14636748317_052f20dd93_b.jpg',
+        'Tandoori Grill Fish (6pcs)': 'https://upload.wikimedia.org/wikipedia/commons/3/3c/Tandoori_Fish_tikka.jpg',
+        'Tandoori Grill Prawns (6pcs)': 'https://live.staticflickr.com/6029/5923196784_b30cd7fef6_b.jpg',
+        'Fry 65': 'https://upload.wikimedia.org/wikipedia/commons/5/5d/Chicken_65_%28Dish%29.jpg',
+        'Fry 65 — Gobi (8pcs)': 'https://live.staticflickr.com/1854/30710378048_87bf505074_b.jpg',
         'Fry 65 — Paneer (8pcs)': 'https://upload.wikimedia.org/wikipedia/commons/7/71/Paneer_Manchurian.jpg',
-        'Fry 65 — Chicken (8pcs)': 'https://upload.wikimedia.org/wikipedia/commons/d/d7/Chicken_65.jpg',
-        'Fry 65 — Fish (8pcs)': 'https://upload.wikimedia.org/wikipedia/commons/f/ff/Indian_Style_Fish_Fry.jpg',
-        'Fry 65 — Prawns (8pcs)': 'https://upload.wikimedia.org/wikipedia/commons/1/16/Prawns_tikka.jpg',
-        'Tomato Rasam Soup': 'https://upload.wikimedia.org/wikipedia/commons/5/5c/Rasam_Soup.JPG',
+        'Fry 65 — Chicken (8pcs)': 'https://upload.wikimedia.org/wikipedia/commons/5/5d/Chicken_65_%28Dish%29.jpg',
+        'Fry 65 — Fish (8pcs)': 'https://live.staticflickr.com/4526/23942179517_60a963a5bf_b.jpg',
+        'Fry 65 — Prawns (6pcs)': 'https://upload.wikimedia.org/wikipedia/commons/1/16/Prawns_tikka.jpg',
+        'Tomato Rasam': 'https://live.staticflickr.com/3092/2634501698_30401cc65e_b.jpg',
         'Dal Soup': 'https://upload.wikimedia.org/wikipedia/commons/2/20/Dal_Tadka_01_%2836779549481%29.jpg',
-        'Coconut Prawn Soup': 'https://upload.wikimedia.org/wikipedia/commons/3/3d/Prawn_Malai_Curry.jpg',
-        'Assami Crispy Vegetables': 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Gobi_manchurian.jpg',
-        'Chana Masala': 'https://upload.wikimedia.org/wikipedia/commons/8/8e/Chana_masala.jpg',
-        'Palak Paneer': 'https://upload.wikimedia.org/wikipedia/commons/b/b5/Palak_Paneer_at_WCI_2023.jpg',
-        'Dal Tadka': 'https://upload.wikimedia.org/wikipedia/commons/2/20/Dal_Tadka_01_%2836779549481%29.jpg',
+        'Coconut Prawns Soup': 'https://upload.wikimedia.org/wikipedia/commons/3/3d/Prawn_Malai_Curry.jpg',
+        'Assami Crispy Vegetables': 'https://live.staticflickr.com/1854/30710378048_87bf505074_b.jpg',
+        'Chana Masala': 'https://live.staticflickr.com/2788/5727362126_4e71410611_b.jpg',
+        'Palak Paneer': 'https://live.staticflickr.com/2188/1517531815_d2551acc04_b.jpg',
+        'Dal Tadka': 'https://live.staticflickr.com/7172/6833122071_857c7e564f_b.jpg',
         'Aloo Gobi Methi': 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Aloo_gobi.jpg',
-        'Chicken Curry': 'https://upload.wikimedia.org/wikipedia/commons/2/21/Chicken_curry.jpg',
+        'Aloo-Gobi Methi': 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Aloo_gobi.jpg',
+        'Chicken Curry': 'https://live.staticflickr.com/1421/1453447361_03b08ebc5c_b.jpg',
         'Lamb Rogan Josh': 'https://upload.wikimedia.org/wikipedia/commons/1/1c/Lamb_Rogan_Josh_at_Restaurant_Guru%2C_Tallinn.jpg',
-        'Fish Curry': 'https://upload.wikimedia.org/wikipedia/commons/4/4f/Meen_curry_%28fish_curry%29_from_Kerala%2C_traditionally_prepared_in_earthern_pot.jpg',
+        'Fish Curry': 'https://live.staticflickr.com/115/309333096_de09fb4647_b.jpg',
         'Prawns Curry': 'https://upload.wikimedia.org/wikipedia/commons/c/cc/King_prawn_curry_-_Sunoso.jpg',
-        'Basmati Rice': 'https://upload.wikimedia.org/wikipedia/commons/d/da/Plain_rice.jpg',
-        'Chicken Biryani': 'https://upload.wikimedia.org/wikipedia/commons/f/fe/Chicken_Biryani.jpg',
-        'Mutton Biryani': 'https://upload.wikimedia.org/wikipedia/commons/f/fe/Chicken_Biryani.jpg',
-        'Naan': 'https://upload.wikimedia.org/wikipedia/commons/8/83/Naan_shiva.jpg',
-        'Roti': 'https://upload.wikimedia.org/wikipedia/commons/5/5b/Chapati.jpg',
+        'Basmati Rice': 'https://live.staticflickr.com/6182/6121427720_bde3e8dc66_b.jpg',
+        'Plain Basmati Rice': 'https://live.staticflickr.com/6182/6121427720_bde3e8dc66_b.jpg',
+        'Lemon Basmati Rice': 'https://live.staticflickr.com/6182/6121427720_bde3e8dc66_b.jpg',
+        'Jeera Basmati Rice': 'https://live.staticflickr.com/6182/6121427720_bde3e8dc66_b.jpg',
+        'Coconut Basmati Rice': 'https://live.staticflickr.com/6182/6121427720_bde3e8dc66_b.jpg',
+        'Tomato Basmati Rice': 'https://live.staticflickr.com/6182/6121427720_bde3e8dc66_b.jpg',
+        'Biryani': 'https://live.staticflickr.com/2336/2182870752_080dbcaf8c_b.jpg',
+        'Vegetables Biryani': 'https://live.staticflickr.com/5210/5276421343_1ef76a841f_b.jpg',
+        'Chicken Biryani': 'https://live.staticflickr.com/2336/2182870752_080dbcaf8c_b.jpg',
+        'Mutton Biryani': 'https://upload.wikimedia.org/wikipedia/commons/b/b9/Mutton_biryani.JPG',
+        'Fish Biryani': 'https://upload.wikimedia.org/wikipedia/commons/8/8f/Fish_Biryani_02.jpg',
+        'Prawns Biryani': 'https://upload.wikimedia.org/wikipedia/commons/c/c6/Prawn_Biryani.jpg',
+        'Naan': 'https://live.staticflickr.com/6183/6116740954_fb4f13bf20_b.jpg',
+        'Roti': 'https://upload.wikimedia.org/wikipedia/commons/0/0b/Chapati_roti.jpg',
         'Vegetable Raita': 'https://upload.wikimedia.org/wikipedia/commons/1/18/Vegetable_Raita.jpg',
         'Papadam': 'https://upload.wikimedia.org/wikipedia/commons/5/53/Papadum.jpg',
-        'Lassi': 'https://upload.wikimedia.org/wikipedia/commons/a/af/Mango_lassi.jpg',
-        'Mango Lassi': 'https://upload.wikimedia.org/wikipedia/commons/a/af/Mango_lassi.jpg',
-        'Sweet Lassi': 'https://upload.wikimedia.org/wikipedia/commons/a/af/Mango_lassi.jpg',
-        'Veg / Wege': 'https://curryleaves.pl/wp-content/uploads/2021/10/Untitled-design-6.png',
-        'Paneer / Ser': 'https://curryleaves.pl/wp-content/uploads/2021/10/5.png',
-        'Chicken / Kurczak': 'https://curryleaves.pl/wp-content/uploads/2021/10/6.png',
-        'Mutton / Baranina': 'https://curryleaves.pl/wp-content/uploads/2021/10/7.png',
-        'Fish / Ryba': 'https://curryleaves.pl/wp-content/uploads/2021/10/8.png',
-        'Prawns / Krewetki': 'https://curryleaves.pl/wp-content/uploads/2021/10/9.png'
+        'Papadam (2pcs)': 'https://upload.wikimedia.org/wikipedia/commons/5/53/Papadum.jpg',
+        'Lassi': 'https://live.staticflickr.com/2752/4142353694_e5697e154a_b.jpg',
+        'Lassi — Mango': 'https://live.staticflickr.com/2752/4142353694_e5697e154a_b.jpg',
+        'Lassi — Sweet': 'https://live.staticflickr.com/3571/3337098232_353f93c135_b.jpg',
+        'Lassi — Salty': 'https://live.staticflickr.com/2752/4142353694_e5697e154a_b.jpg',
+        'Cold Drink (330ml)': 'https://live.staticflickr.com/3006/3025660880_21af89b354_b.jpg',
+        'Cold Drink — Pepsi': 'https://live.staticflickr.com/2370/2201054380_37c7e21b2d_b.jpg',
+        'Cold Drink — Pepsi Max': 'https://upload.wikimedia.org/wikipedia/commons/d/d5/Pepsi_max_cans.jpg',
+        'Cold Drink — 7UP': 'https://live.staticflickr.com/3225/3155231955_1073b90e19_b.jpg',
+        'Cold Drink — Mirinda': 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Mirinda-Vietnam-Can.jpg',
+        'Cold Drink — Lipton': 'https://live.staticflickr.com/4118/4829476650_35e0e66fc3_b.jpg',
+        'Water (500ml)': 'https://live.staticflickr.com/4059/5119504789_12f5b571a3_b.jpg',
+        'Water — Sparkling': 'https://live.staticflickr.com/4059/5119504789_12f5b571a3_b.jpg',
+        'Water — Still': 'https://live.staticflickr.com/4059/5119504789_12f5b571a3_b.jpg',
+        'Veg / Wege': 'https://live.staticflickr.com/2788/5727362126_4e71410611_b.jpg',
+        'Paneer / Ser': 'https://live.staticflickr.com/2188/1517531815_d2551acc04_b.jpg',
+        'Chicken / Kurczak': 'https://live.staticflickr.com/1421/1453447361_03b08ebc5c_b.jpg',
+        'Mutton / Baranina': 'https://upload.wikimedia.org/wikipedia/commons/1/1c/Lamb_Rogan_Josh_at_Restaurant_Guru%2C_Tallinn.jpg',
+        'Fish / Ryba': 'https://live.staticflickr.com/115/309333096_de09fb4647_b.jpg',
+        'Prawns / Krewetki': 'https://upload.wikimedia.org/wikipedia/commons/c/cc/King_prawn_curry_-_Sunoso.jpg'
+      };
+
+      const localDishPhotoAliases = {
+        'Tandoori Grill': ['Tandoori Grill Chicken.jpg'],
+        'Tandoori Grill Paneer (5pcs)': ['Tandoori Grill Paneer.jpg'],
+        'Tandoori Grill Chicken (6pcs)': ['Tandoori Grill Chicken.jpg'],
+        'Tandoori Grill Fish (6pcs)': ['Tandoori Grill Fish.jpeg'],
+        'Tandoori Grill Prawns (6pcs)': ['Tandoori Grill Prawns.webp'],
+        'Fry 65': ['Fry65 chicken.jpg.webp'],
+        'Fry 65 — Gobi (8pcs)': ['Fry65 Gobi.jpg'],
+        'Fry 65 — Paneer (8pcs)': ['Fry65 Paneer.jpg'],
+        'Fry 65 — Fish (8pcs)': ['Fry65 Fish.jpg'],
+        'Fry 65 — Chicken (8pcs)': ['Fry65 chicken.jpg.webp'],
+        'Fry 65 — Prawns (6pcs)': ['Fry65 Prawns.jpg'],
+        'Tomato Rasam': ['Tamato Rasam.jpeg'],
+        'Dal Soup': ['Dal Soup.jpeg'],
+        'Coconut Prawns Soup': ['Coconut Prawns soup.jpg.webp'],
+        'Assami Crispy Vegetables': ['Assami Crispy Vegetables.jpeg'],
+        'Chana Masala': ['Chana Masala.jpg.webp'],
+        'Palak Paneer': ['Palak Paneer.jpg.webp'],
+        'Dal Tadka': ['Dal Tadka.jpeg'],
+        'Basmati Rice': ['Basmati rice.jpg'],
+        'Plain Basmati Rice': ['Basmati rice.jpg'],
+        'Lemon Basmati Rice': ['Basmati rice.jpg'],
+        'Jeera Basmati Rice': ['Basmati rice.jpg'],
+        'Coconut Basmati Rice': ['Basmati rice.jpg'],
+        'Tomato Basmati Rice': ['Basmati rice.jpg'],
+        'Biryani': ['Biryani.jpg'],
+        'Vegetables Biryani': ['Biryani.jpg'],
+        'Chicken Biryani': ['Biryani.jpg'],
+        'Mutton Biryani': ['Biryani.jpg'],
+        'Fish Biryani': ['Biryani.jpg'],
+        'Prawns Biryani': ['Biryani.jpg'],
+        'Naan': ['Naan.jpg.webp'],
+        'Roti': ['Roti.jpeg'],
+        'Vegetable Raita': ['Vegetable Raita.jpg.avif'],
+        'Papadam (2pcs)': ['Papadam.jpg'],
+        'Papadam': ['Papadam.jpg'],
+        'Lassi': ['Lassi.jpg'],
+        'Lassi — Mango': ['Lassi.jpg'],
+        'Lassi — Sweet': ['Lassi.jpg'],
+        'Lassi — Salty': ['Lassi.jpg'],
+        'Cold Drink (330ml)': ['hard-facts-about-soft-drinks-872739128.jpg', 'Cold Drink (330ml).webp', 'Cold Drink.jpg', 'Cold Drinks.jpg'],
+        'Cold Drink — Pepsi': ['Unknown.jpg', 'Cold Drink — Pepsi.webp', 'Pepsi.webp', 'Pepsi.jpg'],
+        'Cold Drink — Pepsi Max': ['Unknown-2.jpg', 'Cold Drink — Pepsi Max.webp', 'Pepsi Max.webp', 'Pepsi Max.jpg'],
+        'Cold Drink — 7UP': ['Unknown-3.jpg', 'Cold Drink — 7UP.webp', '7UP.webp', '7UP.jpg'],
+        'Cold Drink — Mirinda': ['Unknown-4.jpg', 'Cold Drink — Mirinda.webp', 'Mirinda.webp', 'Mirinda.jpg'],
+        'Cold Drink — Lipton': ['Lipton.jpeg', 'Cold Drink — Lipton.webp', 'Lipton.webp', 'Lipton.jpg'],
+        'Water (500ml)': ['Water.jpeg'],
+        'Water — Sparkling': ['Water.jpeg'],
+        'Water — Still': ['Water.jpeg'],
+        'Build Your Curry': ['Build Your curry.jpg.webp'],
+        'Veg / Wege': ['Build Your curry.jpg.webp'],
+        'Paneer / Ser': ['Build Your curry.jpg.webp'],
+        'Chicken / Kurczak': ['Build Your curry.jpg.webp'],
+        'Mutton / Baranina': ['Build Your curry.jpg.webp'],
+        'Fish / Ryba': ['Build Your curry.jpg.webp'],
+        'Prawns / Krewetki': ['Build Your curry.jpg.webp']
       };
 
       function getCurryProteinPhotoName(name) {
@@ -3767,12 +3938,18 @@
       function getVariantPhotoName(name) {
         if (!name) return '';
         if (name === 'Build Your Curry') return '';
+        if (/^Samosa\s*-/.test(name)) return name;
         if (/^Naan\s*—/.test(name)) return 'Naan';
         if (/^Roti\s*—/.test(name)) return 'Roti';
-        if (/^Lassi\s*—/.test(name)) return 'Lassi';
+        if (/^Lassi\s*—/.test(name)) return dishPhotoMap[name] ? name : 'Lassi';
+        if (/^Cold Drink\s*—/.test(name)) return dishPhotoMap[name] ? name : 'Cold Drink (330ml)';
+        if (/^Water\s*—/.test(name)) return dishPhotoMap[name] ? name : 'Water (500ml)';
+        if (name === 'Tomato Rasam Soup') return 'Tomato Rasam';
+        if (name === 'Coconut Prawn Soup') return 'Coconut Prawns Soup';
+        if (name === 'Aloo Gobi Methi') return 'Aloo-Gobi Methi';
+        if (name === 'Papadam') return 'Papadam (2pcs)';
         if (/\bBasmati Rice$/.test(name)) return 'Basmati Rice';
-        if (/\bChicken Biryani$/.test(name)) return 'Chicken Biryani';
-        if (/\bMutton Biryani$/.test(name)) return 'Mutton Biryani';
+        if (/\bBiryani$/.test(name) && dishPhotoMap[name]) return name;
         if (/\bRice$/.test(name) && name !== 'Basmati Rice') return 'Basmati Rice';
         return name;
       }
@@ -3787,11 +3964,20 @@
         return getCurryProteinPhotoName(name) || name;
       }
 
+      function getLocalPhotoName(name) {
+        return name.replace(/\s*\/\s*/g, ' - ');
+      }
+
+      function dishPhotoAssetPath(fileName) {
+        return `assets/dish-photos/${encodeURIComponent(fileName)}`;
+      }
+
       function dishPhotoSources(name) {
         const photoName = getDishPhotoName(name);
-        if (dishPhotoMap[photoName]) return [dishPhotoMap[photoName]];
-        const safeName = encodeURIComponent(photoName);
-        return ['webp', 'jpg', 'jpeg', 'png'].map(ext => `assets/dish-photos/${safeName}.${ext}`);
+        const safeName = encodeURIComponent(getLocalPhotoName(photoName));
+        const localSources = ['webp', 'jpg', 'jpeg', 'png'].map(ext => `assets/dish-photos/${safeName}.${ext}`);
+        const aliasSources = (localDishPhotoAliases[photoName] || []).map(dishPhotoAssetPath);
+        return dishPhotoMap[photoName] ? [...localSources, ...aliasSources, dishPhotoMap[photoName]] : [...localSources, ...aliasSources];
       }
 
       function loadImageWithFallback(img, sources, onMissing) {
@@ -3808,7 +3994,9 @@
       }
 
       function getDishName(h4) {
-        let name = h4.textContent.trim();
+        const clone = h4.cloneNode(true);
+        clone.querySelectorAll('.badge, .menu-varieties').forEach(el => el.remove());
+        let name = clone.textContent.trim();
         return name.replace(/ (Bestseller|#1|Official)$/, '');
       }
 
@@ -3898,16 +4086,24 @@
           const arBtn = document.getElementById('viewArBtn');
           arBtn.disabled = true;
           arBtn.onclick = null;
+          arBtn.innerHTML = `
+            <svg viewBox="0 0 24 24"><path d="M21 3H3v18h18V3zm-2 16H5V5h14v14zm-5-7l-4 5h8l-4-5z"/></svg>
+            See in AR`;
 
           // Show/hide model-viewer
           mv.style.display = 'none';
+          mv.removeAttribute('src');
 
           if (modelFiles[name]) {
             const model = modelFiles[name];
             loader.style.display = 'flex';
             mv.style.display = 'block';
             mv.setAttribute('src', model.src);
-            if (model.scale) mv.setAttribute('scale', model.scale);
+            if (model.scale) {
+              mv.setAttribute('scale', model.scale);
+            } else {
+              mv.removeAttribute('scale');
+            }
 
             // Enable AR button — try activateAR(), fall back to scrolling to AR section
             arBtn.onclick = async () => {
@@ -3945,6 +4141,10 @@
               clearTimeout(modelTimeout);
               loader.style.display = 'none';
               mv.style.display = 'none';
+              arBtn.disabled = true;
+              arBtn.innerHTML = `
+                <svg viewBox="0 0 24 24"><path d="M21 3H3v18h18V3zm-2 16H5V5h14v14zm-5-7l-4 5h8l-4-5z"/></svg>
+                AR Model Coming Soon`;
               showPlaceholder(visual, name);
             }, { once: true });
 
@@ -3954,6 +4154,9 @@
             }
           } else {
             loader.style.display = 'none';
+            arBtn.innerHTML = `
+              <svg viewBox="0 0 24 24"><path d="M21 3H3v18h18V3zm-2 16H5V5h14v14zm-5-7l-4 5h8l-4-5z"/></svg>
+              AR Model Coming Soon`;
             showPlaceholder(visual, name);
           }
 
@@ -3978,6 +4181,7 @@
           };
 
           modal.classList.add('active');
+          modal.querySelector('.modal-content')?.scrollTo({ top: 0, left: 0 });
           document.body.style.overflow = 'hidden';
         });
       });
@@ -4027,7 +4231,26 @@
         const existingPhoto = visual.querySelector('.dish-photo');
         if (existingPH) existingPH.remove();
         if (existingPhoto) existingPhoto.remove();
-        showPlaceholder(visual, currentDish.baseName === 'Build Your Curry' ? currentDish.name : currentDish.name);
+        const mv = document.getElementById('modalModelViewer');
+        const loader = document.getElementById('modalLoader');
+        const arBtn = document.getElementById('viewArBtn');
+        const model = modelFiles[currentDish.name] || modelFiles[currentDish.baseName];
+        if (model && mv && loader && arBtn) {
+          loader.style.display = mv.loaded && mv.getAttribute('src') === model.src ? 'none' : 'flex';
+          mv.style.display = 'block';
+          if (mv.getAttribute('src') !== model.src) mv.setAttribute('src', model.src);
+          if (model.scale) {
+            mv.setAttribute('scale', model.scale);
+          } else {
+            mv.removeAttribute('scale');
+          }
+          arBtn.disabled = false;
+          arBtn.innerHTML = `
+            <svg viewBox="0 0 24 24"><path d="M21 3H3v18h18V3zm-2 16H5V5h14v14zm-5-7l-4 5h8l-4-5z"/></svg>
+            See in AR`;
+          return;
+        }
+        showPlaceholder(visual, currentDish.name);
       }
 
       // ===== Cart Sidebar =====
