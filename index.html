@@ -1232,6 +1232,8 @@
       position: absolute;
       inset: 0;
       display: flex;
+      flex-direction: column;
+      gap: 10px;
       align-items: center;
       justify-content: center;
     }
@@ -1241,6 +1243,12 @@
       border-top-color: #C4943A;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
+    }
+    .modal-visual .loading-label {
+      color: #E7C46F;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
     }
     .modal-info { padding: 24px 28px; }
     .modal-info h3 {
@@ -3801,6 +3809,10 @@
         'Dal Tadka': { src: 'models/Dal Tadka.glb' },
         'Palak Paneer': { src: 'models/Palak Paneer.glb' },
       };
+
+      function modelAssetSrc(src) {
+        return src.split('/').map(encodeURIComponent).join('/');
+      }
       // TODO: Future upgrade: add real 3D models for top-selling dishes once the owner provides/approves them.
 
       // License-safe fallback photos. Local owner-approved assets in assets/dish-photos/ load first.
@@ -4096,9 +4108,10 @@
 
           if (modelFiles[name]) {
             const model = modelFiles[name];
+            const modelSrc = modelAssetSrc(model.src);
             loader.style.display = 'flex';
             mv.style.display = 'block';
-            mv.setAttribute('src', model.src);
+            mv.setAttribute('src', modelSrc);
             if (model.scale) {
               mv.setAttribute('scale', model.scale);
             } else {
@@ -4128,9 +4141,12 @@
 
             const modelTimeout = setTimeout(() => {
               if (loader.style.display !== 'none') {
-                loader.style.display = 'none';
+                const label = loader.querySelector('.loading-label') || document.createElement('span');
+                label.className = 'loading-label';
+                label.textContent = 'Still loading AR model...';
+                loader.appendChild(label);
               }
-            }, 12000);
+            }, 45000);
 
             mv.addEventListener('load', () => {
               clearTimeout(modelTimeout);
@@ -4236,9 +4252,10 @@
         const arBtn = document.getElementById('viewArBtn');
         const model = modelFiles[currentDish.name] || modelFiles[currentDish.baseName];
         if (model && mv && loader && arBtn) {
-          loader.style.display = mv.loaded && mv.getAttribute('src') === model.src ? 'none' : 'flex';
+          const modelSrc = modelAssetSrc(model.src);
+          loader.style.display = mv.loaded && mv.getAttribute('src') === modelSrc ? 'none' : 'flex';
           mv.style.display = 'block';
-          if (mv.getAttribute('src') !== model.src) mv.setAttribute('src', model.src);
+          if (mv.getAttribute('src') !== modelSrc) mv.setAttribute('src', modelSrc);
           if (model.scale) {
             mv.setAttribute('scale', model.scale);
           } else {
