@@ -1250,6 +1250,21 @@
       font-size: 12px;
       font-weight: 700;
     }
+    .modal-visual .model-error-note {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 18px;
+      padding: 12px 14px;
+      border: 1px solid rgba(231,196,111,0.38);
+      border-radius: 14px;
+      background: rgba(26,15,0,0.78);
+      color: #FFF8E7;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      line-height: 1.45;
+      z-index: 3;
+    }
     .modal-info { padding: 24px 28px; }
     .modal-info h3 {
       font-family: 'Playfair Display', serif;
@@ -3813,6 +3828,13 @@
       function modelAssetSrc(src) {
         return src.split('/').map(encodeURIComponent).join('/');
       }
+
+      function showModelError(visual, modelSrc) {
+        const note = document.createElement('div');
+        note.className = 'model-error-note';
+        note.textContent = `AR model failed to load: ${modelSrc}. Try refreshing, or optimize this GLB if it keeps failing.`;
+        visual.appendChild(note);
+      }
       // TODO: Future upgrade: add real 3D models for top-selling dishes once the owner provides/approves them.
 
       // License-safe fallback photos. Local owner-approved assets in assets/dish-photos/ load first.
@@ -4092,8 +4114,10 @@
           const mv = document.getElementById('modalModelViewer');
           const existingPH = visual.querySelector('.placeholder-dish');
           const existingPhoto = visual.querySelector('.dish-photo');
+          const existingModelError = visual.querySelector('.model-error-note');
           if (existingPH) existingPH.remove();
           if (existingPhoto) existingPhoto.remove();
+          if (existingModelError) existingModelError.remove();
 
           const arBtn = document.getElementById('viewArBtn');
           arBtn.disabled = true;
@@ -4156,12 +4180,11 @@
             mv.addEventListener('error', () => {
               clearTimeout(modelTimeout);
               loader.style.display = 'none';
-              mv.style.display = 'none';
               arBtn.disabled = true;
               arBtn.innerHTML = `
                 <svg viewBox="0 0 24 24"><path d="M21 3H3v18h18V3zm-2 16H5V5h14v14zm-5-7l-4 5h8l-4-5z"/></svg>
                 AR Model Coming Soon`;
-              showPlaceholder(visual, name);
+              showModelError(visual, modelSrc);
             }, { once: true });
 
             if (mv.loaded) {
@@ -4245,8 +4268,10 @@
         if (!visual || !currentDish) return;
         const existingPH = visual.querySelector('.placeholder-dish');
         const existingPhoto = visual.querySelector('.dish-photo');
+        const existingModelError = visual.querySelector('.model-error-note');
         if (existingPH) existingPH.remove();
         if (existingPhoto) existingPhoto.remove();
+        if (existingModelError) existingModelError.remove();
         const mv = document.getElementById('modalModelViewer');
         const loader = document.getElementById('modalLoader');
         const arBtn = document.getElementById('viewArBtn');
