@@ -2302,6 +2302,154 @@
         </div>
       </div>
 
+      <div class="card fade-up" id="tandoori-ar">
+        <div class="card-header">
+          <div class="info">
+            <h3>Tandoori Grill <span class="badge">New in AR</span></h3>
+            <div class="desc">Paneer, chicken, fish, or prawns marinated in yogurt and spices, then grilled tandoori-style.</div>
+          </div>
+          <div class="price">40/42 PLN</div>
+        </div>
+        <div class="viewer-wrap">
+          <div class="loading" id="load-tandoori">
+            <div class="spinner"></div>
+            <span>Loading 3D model...</span>
+          </div>
+          <model-viewer
+            id="tandoori-viewer"
+            src="models/Tandoori.glb"
+            ar
+            ar-modes="webxr scene-viewer quick-look"
+            camera-controls
+            auto-rotate
+            rotation-per-second="30deg"
+            shadow-intensity="0"
+            exposure="1.2"
+            ar-scale="fixed"
+            loading="lazy"
+            reveal="auto">
+          </model-viewer>
+        </div>
+        <div class="divider-line"></div>
+        <div class="card-actions">
+          <button class="btn-ar" onclick="document.getElementById('tandoori-viewer').activateAR()">
+            <svg viewBox="0 0 24 24"><path d="M21 3H3v18h18V3zm-2 16H5V5h14v14zm-5-7l-4 5h8l-4-5z"/></svg>
+            View in AR
+          </button>
+        </div>
+      </div>
+
+      <div class="card fade-up" id="fry65-ar">
+        <div class="card-header">
+          <div class="info">
+            <h3>Fry 65 <span class="badge">New in AR</span></h3>
+            <div class="desc">Crispy marinated bites with blended spices. Choose gobi, paneer, fish, chicken, or prawns.</div>
+          </div>
+          <div class="price">29-40 PLN</div>
+        </div>
+        <div class="viewer-wrap">
+          <div class="loading" id="load-fry65">
+            <div class="spinner"></div>
+            <span>Loading 3D model...</span>
+          </div>
+          <model-viewer
+            id="fry65-viewer"
+            src="models/fry65.glb"
+            ar
+            ar-modes="webxr scene-viewer quick-look"
+            camera-controls
+            auto-rotate
+            rotation-per-second="30deg"
+            shadow-intensity="0"
+            exposure="1.2"
+            ar-scale="fixed"
+            loading="lazy"
+            reveal="auto">
+          </model-viewer>
+        </div>
+        <div class="divider-line"></div>
+        <div class="card-actions">
+          <button class="btn-ar" onclick="document.getElementById('fry65-viewer').activateAR()">
+            <svg viewBox="0 0 24 24"><path d="M21 3H3v18h18V3zm-2 16H5V5h14v14zm-5-7l-4 5h8l-4-5z"/></svg>
+            View in AR
+          </button>
+        </div>
+      </div>
+
+      <div class="card fade-up" id="palak-paneer-ar">
+        <div class="card-header">
+          <div class="info">
+            <h3>Palak Paneer <span class="badge">New in AR</span></h3>
+            <div class="desc">Indian paneer cheese in spinach sauce with traditional spices.</div>
+          </div>
+          <div class="price">40 PLN</div>
+        </div>
+        <div class="viewer-wrap">
+          <div class="loading" id="load-palak-paneer">
+            <div class="spinner"></div>
+            <span>Loading 3D model...</span>
+          </div>
+          <model-viewer
+            id="palak-paneer-viewer"
+            src="models/Palak%20Paneer.glb"
+            ar
+            ar-modes="webxr scene-viewer quick-look"
+            camera-controls
+            auto-rotate
+            rotation-per-second="30deg"
+            shadow-intensity="0"
+            exposure="1.2"
+            ar-scale="fixed"
+            loading="lazy"
+            reveal="auto">
+          </model-viewer>
+        </div>
+        <div class="divider-line"></div>
+        <div class="card-actions">
+          <button class="btn-ar" onclick="document.getElementById('palak-paneer-viewer').activateAR()">
+            <svg viewBox="0 0 24 24"><path d="M21 3H3v18h18V3zm-2 16H5V5h14v14zm-5-7l-4 5h8l-4-5z"/></svg>
+            View in AR
+          </button>
+        </div>
+      </div>
+
+      <div class="card fade-up" id="dal-tadka-ar">
+        <div class="card-header">
+          <div class="info">
+            <h3>Dal Tadka <span class="badge">New in AR</span></h3>
+            <div class="desc">Yellow and red lentils cooked with Indian spices.</div>
+          </div>
+          <div class="price">35 PLN</div>
+        </div>
+        <div class="viewer-wrap">
+          <div class="loading" id="load-dal-tadka">
+            <div class="spinner"></div>
+            <span>Loading 3D model...</span>
+          </div>
+          <model-viewer
+            id="dal-tadka-viewer"
+            src="models/Dal%20Tadka.glb"
+            ar
+            ar-modes="webxr scene-viewer quick-look"
+            camera-controls
+            auto-rotate
+            rotation-per-second="30deg"
+            shadow-intensity="0"
+            exposure="1.2"
+            ar-scale="fixed"
+            loading="lazy"
+            reveal="auto">
+          </model-viewer>
+        </div>
+        <div class="divider-line"></div>
+        <div class="card-actions">
+          <button class="btn-ar" onclick="document.getElementById('dal-tadka-viewer').activateAR()">
+            <svg viewBox="0 0 24 24"><path d="M21 3H3v18h18V3zm-2 16H5V5h14v14zm-5-7l-4 5h8l-4-5z"/></svg>
+            View in AR
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -2767,13 +2915,16 @@
         });
       });
 
-      const samosaViewer = document.getElementById('samosa-viewer');
-
-      if (samosaViewer) {
-        samosaViewer.addEventListener('load', () => {
-          document.getElementById('load-samosa').style.display = 'none';
+      document.querySelectorAll('#ar-menu + .menu-section model-viewer').forEach(viewer => {
+        const loader = viewer.closest('.viewer-wrap')?.querySelector('.loading');
+        if (!loader) return;
+        viewer.addEventListener('load', () => {
+          loader.style.display = 'none';
         });
-      }
+        viewer.addEventListener('error', () => {
+          loader.querySelector('span').textContent = 'Could not load 3D model';
+        });
+      });
 
       // Pairings data
       const pairings = {
