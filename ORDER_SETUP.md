@@ -97,3 +97,34 @@ Recommended providers:
 - PayU / Przelewy24 / Tpay: BLIK and Polish payment methods
 
 Do not put secret payment keys in GitHub Pages. Payment confirmation must go through a secure backend or provider-hosted checkout.
+
+## ChatGPT Menu Assistant
+
+The website can call ChatGPT through a Supabase Edge Function. The OpenAI API key must stay in Supabase secrets, never in `index.html`.
+
+Function path in this repo:
+
+```text
+supabase/functions/menu-chat/index.ts
+```
+
+Deploy and configure:
+
+```bash
+supabase functions deploy menu-chat
+supabase secrets set OPENAI_API_KEY=sk-your-key-here
+```
+
+Optional model override:
+
+```bash
+supabase secrets set OPENAI_MODEL=gpt-4o-mini
+```
+
+The frontend uses `window.CurryOrderConfig.aiEndpoint` from `order-system.js`:
+
+```js
+aiEndpoint: 'https://YOUR_PROJECT.supabase.co/functions/v1/menu-chat'
+```
+
+If the function is not deployed, the site automatically falls back to the local rule-based menu assistant.

@@ -3,6 +3,7 @@ window.CurryOrderConfig = window.CurryOrderConfig || {
   supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpam15eXpscHN2ZWl0bXZjbXloIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4NjYyMjgsImV4cCI6MjA5NzQ0MjIyOH0.0zy4USnKLTaBEyU0Vg9Y49Nes6qs9C75H6Os48n8q5c',
   ordersTable: 'orders',
   availabilityTable: 'menu_availability',
+  aiEndpoint: 'https://bijmyyzlpsveitmvcmyh.supabase.co/functions/v1/menu-chat',
   staffPasscode: 'CL-STAFF-2026'
 };
 

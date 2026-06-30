@@ -3452,13 +3452,60 @@
         return `I do not have live internet or general ChatGPT access here, but I can answer almost anything about this restaurant page: menu items, variants, prices, spice, ingredients, diet tags, AR models, ordering, and locations. Try asking “recommend a vegetarian order”, “what drinks do you have?”, or “where is Curry Leaves in Warsaw?”`;
       }
 
-      function submitAiQuestion(question) {
+      function aiMenuContext() {
+        return {
+          menu: menuData.map(item => ({
+            name: item.name,
+            category: item.category,
+            description: item.desc,
+            price: item.price,
+            spice: item.spice,
+            tags: item.tags,
+            pairing: item.pairing,
+            variants: (variantGroups[item.name] || []).map(variant => ({ name: variant.name, label: variant.label, price: variant.price }))
+          })),
+          curryProteins,
+          currySauces,
+          locations: locationData,
+          arModels: Object.keys(modelFiles)
+        };
+      }
+
+      async function answerWithChatGpt(question) {
+        const endpoint = window.CurryOrderConfig?.aiEndpoint;
+        if (!endpoint) return '';
+        const headers = { 'Content-Type': 'application/json' };
+        if (window.CurryOrderConfig?.supabaseAnonKey) {
+          headers.Authorization = `Bearer ${window.CurryOrderConfig.supabaseAnonKey}`;
+        }
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ question, context: aiMenuContext() })
+        });
+        if (!res.ok) throw new Error(await res.text());
+        const data = await res.json();
+        return data.answer || '';
+      }
+
+      async function submitAiQuestion(question) {
         const text = question.trim();
         if (!text) return;
         trackEvent('ai_question', { question: text });
         addAiMessage(text, 'user');
         aiInput.value = '';
-        setTimeout(() => addAiMessage(answerQuestion(text)), 180);
+        const thinking = document.createElement('div');
+        thinking.className = 'ai-msg bot';
+        thinking.textContent = 'Thinking...';
+        aiMessages.appendChild(thinking);
+        aiMessages.scrollTop = aiMessages.scrollHeight;
+        try {
+          const answer = await answerWithChatGpt(text);
+          thinking.textContent = answer || answerQuestion(text);
+        } catch (error) {
+          console.warn('ChatGPT assistant unavailable, using local answer:', error);
+          thinking.textContent = answerQuestion(text);
+        }
       }
 
       aiToggle.addEventListener('click', () => {
