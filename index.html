@@ -3181,14 +3181,30 @@
       });
       applyLanguage(localStorage.getItem('clLang') || 'en');
 
-      const cleanName = (name) => name.replace(/\s*(Bestseller|#1)\s*$/i, '').trim();
+      function normalizeText(value) {
+        return String(value || '')
+          .toLowerCase()
+          .replace(/[—–]/g, '-')
+          .replace(/[^a-z0-9ąćęłńóśźż\s-]/gi, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+      }
+
+      function cleanNameFromHeading(h4) {
+        const clone = h4?.cloneNode(true);
+        if (!clone) return '';
+        clone.querySelectorAll('.badge, .menu-varieties').forEach(el => el.remove());
+        return clone.textContent.replace(/\s*(Bestseller|#1|Official)\s*$/i, '').trim();
+      }
+
+      const cleanName = (name) => name.replace(/\s*(Bestseller|#1|Official)\s*$/i, '').trim();
       const menuData = Array.from(menuItems).map(item => {
         const tags = Array.from(item.querySelectorAll('.diet-tag')).map(tag => tag.textContent.trim().toUpperCase());
         const spice = item.querySelector('.spice')?.textContent.trim() || 'Mild';
-        const name = cleanName(item.querySelector('h4')?.textContent || '');
+        const name = cleanNameFromHeading(item.querySelector('h4')) || cleanName(item.querySelector('h4')?.textContent || '');
         return {
           name,
-          searchName: name.toLowerCase(),
+          searchName: normalizeText(name),
           category: item.dataset.cat || '',
           desc: item.querySelector('.desc')?.textContent.trim() || '',
           price: item.querySelector('.price')?.textContent.trim() || '',
@@ -3256,13 +3272,39 @@
         aiMessages.scrollTop = aiMessages.scrollHeight;
       }
 
+      function variantLines(baseName) {
+        const variants = variantGroups[baseName] || [];
+        return variants.map(variant => `• ${variant.label}: ${variant.price}`).join('\n');
+      }
+
+      function categoryLabel(category) {
+        return {
+          appetizers: 'Appetizers', soups: 'Soups', vegetarian: 'Classic Vegetarian', curries: 'Top Curries', rice: 'Basmati Rice', biryani: 'Biryani', breads: 'Indian Breads', sides: 'Sides', drinks: 'Drinks'
+        }[category] || category || 'Menu';
+      }
+
+      function similarityScore(query, item) {
+        const q = normalizeText(query);
+        const name = item.searchName;
+        if (!q || !name) return 0;
+        if (q.includes(name)) return 100;
+        if (name.includes(q)) return 90;
+        const qWords = q.split(/\s+/).filter(word => word.length > 2);
+        const haystack = normalizeText(`${item.name} ${item.desc} ${item.category}`);
+        const hits = qWords.filter(word => haystack.includes(word)).length;
+        return hits ? hits * 12 + (haystack.includes(q) ? 30 : 0) : 0;
+      }
+
       function findDish(query) {
-        const q = query.toLowerCase();
-        return menuData.find(item => q.includes(item.searchName)) ||
-          menuData.find(item => item.searchName.split(/\s+|—|-|\(|\)/).filter(Boolean).some(part => part.length > 3 && q.includes(part)));
+        const ranked = menuData
+          .map(item => ({ item, score: similarityScore(query, item) }))
+          .filter(result => result.score > 0)
+          .sort((a, b) => b.score - a.score);
+        return ranked[0]?.item || null;
       }
 
       function formatDish(item) {
+        if (!item) return 'I found that option, but its menu details are not available right now.';
         const diet = [];
         if (item.tags.includes('VG')) diet.push('vegan');
         if (item.tags.includes('V')) diet.push('vegetarian');
@@ -3277,9 +3319,43 @@
           : `I could not find any ${label.toLowerCase()} marked on this menu.`;
       }
 
+      function listByCategory(category) {
+        const matches = menuData.filter(item => item.category === category);
+        return matches.length
+          ? `${categoryLabel(category)}:\n${matches.map(item => `• ${item.name} (${item.price})`).join('\n')}`
+          : `I could not find that category on this menu.`;
+      }
+
+      function recommendedOrder(q) {
+        if (/spicy|hot|chilli|chili/.test(q)) {
+          const spicy = menuData.filter(item => (item.spice.match(/🌶️/g) || []).length >= 3).slice(0, 5);
+          return `For a spicy order, I would recommend:\n${spicy.map(formatDish).join('\n\n')}`;
+        }
+        if (/vegetarian|veggie|paneer/.test(q)) {
+          const picks = ['Samosa', 'Tandoori Grill', 'Palak Paneer', 'Dal Tadka', 'Naan'].map(name => menuByName[name]).filter(Boolean);
+          return `A strong vegetarian order would be:\n${picks.map(formatDish).join('\n\n')}`;
+        }
+        if (/light|small|snack|starter|quick/.test(q)) {
+          const picks = ['Samosa', 'Tomato Rasam', 'Tandoori Grill', 'Lassi'].map(name => menuByName[name]).filter(Boolean);
+          return `For something lighter, try:\n${picks.map(formatDish).join('\n\n')}`;
+        }
+        const picks = ['Build Your Curry', 'Samosa', 'Biryani', 'Palak Paneer', 'Naan'].map(name => menuByName[name]).filter(Boolean);
+        return `A strong first order would be:\n${picks.map(formatDish).join('\n\n')}`;
+      }
+
       function answerQuestion(question) {
         const q = question.toLowerCase();
         const dish = findDish(q);
+
+        if (/\b(hi|hello|hey|yo)\b/.test(q)) {
+          return 'Hi! Ask me anything about the menu, spice level, ingredients, prices, vegetarian/vegan options, AR dishes, locations, or what to order.';
+        }
+
+        if (/thank|thanks/.test(q)) return 'You are welcome. Ask me if you want a recommendation or help building an order.';
+
+        if (/what can you do|help|how do i use|commands|ask you/.test(q)) {
+          return 'You can ask me things like:\n• What is in Palak Paneer?\n• Which dishes are vegetarian?\n• Recommend something spicy\n• What AR models are available?\n• What cold drinks do you have?\n• Where is the Warszawa branch?\n• How do I build a curry?';
+        }
 
         if (/allergen|allergy|nut|nuts|cashew|dairy|milk|cream|yogurt|lactose/.test(q)) {
           return 'Allergen note: many Indian dishes can contain dairy, nuts/cashews, gluten, or shared-kitchen cross-contact. The website can guide from menu tags, but customers with allergies should call the main branch before ordering: +48 577 777 695.';
@@ -3293,9 +3369,30 @@
           return 'Main branch: Warszawa — Koszykowa, Koszykowa 63, 00-667 Warszawa. Phone: +48 577 777 695.';
         }
 
-        if (/delivery|ubereats|uber eats|pyszne|takeaway|take away|order online/.test(q)) {
+        if (/delivery|ubereats|uber eats|pyszne|takeaway|take away|order online|cart|checkout|payment|pay/.test(q)) {
           return 'You can order online using the Uber Eats or Pyszne.pl buttons on this page. You can also add items to the cart here and send the order directly to the selected branch.';
         }
+
+        if (/cold drink|pepsi|max|7up|mirinda|lipton|soda|soft drink/.test(q)) {
+          return `Cold Drink options are:\n${variantLines('Cold Drink (330ml)')}`;
+        }
+
+        if (/water|sparkling|still/.test(q)) {
+          return `Water options are:\n${variantLines('Water (500ml)')}`;
+        }
+
+        if (/tandoori|grill/.test(q)) {
+          return `Tandoori Grill options are:\n${variantLines('Tandoori Grill')}\n\n${formatDish(menuByName['Tandoori Grill'])}`;
+        }
+
+        if (/fry\s*65|fried 65|65/.test(q)) {
+          return `Fry 65 options are:\n${variantLines('Fry 65')}\n\n${formatDish(menuByName['Fry 65'])}`;
+        }
+
+        if (/biryani/.test(q)) return `Biryani options are:\n${variantLines('Biryani')}\n\n${formatDish(menuByName['Biryani'])}`;
+        if (/naan/.test(q)) return `Naan options are:\n${variantLines('Naan')}\n\n${formatDish(menuByName['Naan'])}`;
+        if (/roti/.test(q)) return `Roti options are:\n${variantLines('Roti')}\n\n${formatDish(menuByName['Roti'])}`;
+        if (/lassi/.test(q)) return `Lassi options are:\n${variantLines('Lassi')}\n\n${formatDish(menuByName['Lassi'])}`;
 
         if (/mild|not spicy|kids|children|child/.test(q)) {
           const mild = menuData.filter(item => (item.spice.match(/🌶️/g) || []).length <= 1).slice(0, 5);
@@ -3307,16 +3404,16 @@
           return `For creamy/rich flavors, try:\n${creamy.map(formatDish).join('\n\n')}`;
         }
 
-        if (/build.*curry|top curr|protein|sauce|butter masala|kerala|guntur|korma/.test(q)) {
+        if (/build.*curry|top curr|protein|sauce|butter masala|kerala|guntur|korma|tikka masala|street 65/.test(q)) {
           return 'Top Curries work in two steps: choose protein (Veg 36 PLN, Paneer 40 PLN, Chicken 40 PLN, Mutton 45 PLN, Fish 40 PLN, or Prawns 45 PLN), then choose sauce (Butter Masala, Kerala, Guntur, Tikka Masala, Street 65, or Korma). Open “Build Your Curry” in the menu to add the exact combination to cart.';
         }
 
         if (/ar|augmented|3d|model/.test(q)) {
-          return 'The AR preview currently works best for Samosa because that 3D model is available. More 3D dish models should be added later for a full owner-ready AR menu.';
+          return 'AR models are currently available for Samosa, Tandoori Grill, Fry 65, Palak Paneer, and Dal Tadka. Open the AR Experience section or tap those items in the menu to preview the 3D model.';
         }
 
         if (/photo|picture|image/.test(q)) {
-          return 'Official dish photos are still needed for most menu items. I only use restaurant-owned website images when there is a clear dish match, otherwise the modal marks the dish as needing an official photo.';
+          return 'The menu uses local restaurant photos from assets/dish-photos first. If a local image is missing, it falls back to a safe external image.';
         }
 
         if (/location|address|where|phone|hours|open|warszawa|warsaw|gda|poznan|pozna/.test(q)) {
@@ -3327,13 +3424,15 @@
         if (/vegetarian|veggie/.test(q)) return listByTag('V', 'Vegetarian options');
         if (/gluten|gf|gluten-free|gluten free/.test(q)) return listByTag('GF', 'Gluten-free options');
 
+        if (/appetizer|starter|snack/.test(q)) return listByCategory('appetizers');
+        if (/soup/.test(q)) return listByCategory('soups');
+        if (/rice/.test(q)) return listByCategory('rice');
+        if (/bread/.test(q)) return listByCategory('breads');
+        if (/side|extra/.test(q)) return listByCategory('sides');
+        if (/drink|beverage/.test(q)) return listByCategory('drinks');
+
         if (/recommend|suggest|best|popular|what should|choose/.test(q)) {
-          if (/spicy|hot|chilli|chili/.test(q)) {
-            const spicy = menuData.filter(item => (item.spice.match(/🌶️/g) || []).length >= 3).slice(0, 5);
-            return `For a spicy order, I would recommend:\n${spicy.map(formatDish).join('\n\n')}`;
-          }
-          const picks = ['Build Your Curry', 'Samosa', 'Biryani', 'Palak Paneer'].map(name => menuData.find(item => item.name === name)).filter(Boolean);
-          return `A strong first order would be:\n${picks.map(formatDish).join('\n\n')}`;
+          return recommendedOrder(q);
         }
 
         if (dish) {
@@ -3347,10 +3446,10 @@
         }
 
         if (/menu|food|dish/.test(q)) {
-          return `You can ask me about any dish name, dietary filter, spice level, price, pairing, or ingredients. Try “Is Chana Masala vegan?”, “What is in Samosa?”, or “recommend something spicy”.`;
+          return `Menu categories:\n${['appetizers','soups','vegetarian','curries','rice','biryani','breads','sides','drinks'].map(category => `• ${categoryLabel(category)}`).join('\n')}\n\nAsk about any dish, price, ingredients, spice level, variants, AR models, locations, or recommendations.`;
         }
 
-        return `I can help with menu questions, vegan/vegetarian/gluten-free options, ingredients, spice levels, prices, pairings, and locations. Try asking “Is Dal Tadka vegan?” or “Where is Curry Leaves in Warszawa?”`;
+        return `I do not have live internet or general ChatGPT access here, but I can answer almost anything about this restaurant page: menu items, variants, prices, spice, ingredients, diet tags, AR models, ordering, and locations. Try asking “recommend a vegetarian order”, “what drinks do you have?”, or “where is Curry Leaves in Warsaw?”`;
       }
 
       function submitAiQuestion(question) {
