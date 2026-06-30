@@ -3430,8 +3430,6 @@
       function restoreActiveOrder() {
         const orderId = localStorage.getItem(activeOrderStorageKey);
         if (!orderId) return;
-        checkoutOverlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
         submitOrderBtn.textContent = 'Send Order to Restaurant';
         startOrderPolling(orderId);
       }
@@ -4009,9 +4007,9 @@
       function dishPhotoSources(name) {
         const photoName = getDishPhotoName(name);
         const safeName = encodeURIComponent(getLocalPhotoName(photoName));
-        const localSources = ['webp', 'jpg', 'jpeg', 'png'].map(ext => `assets/dish-photos/${safeName}.${ext}`);
         const aliasSources = (localDishPhotoAliases[photoName] || []).map(dishPhotoAssetPath);
-        return dishPhotoMap[photoName] ? [...localSources, ...aliasSources, dishPhotoMap[photoName]] : [...localSources, ...aliasSources];
+        const localSources = ['webp', 'jpg', 'jpeg', 'png', 'avif'].map(ext => `assets/dish-photos/${safeName}.${ext}`);
+        return dishPhotoMap[photoName] ? [...aliasSources, ...localSources, dishPhotoMap[photoName]] : [...aliasSources, ...localSources];
       }
 
       function loadImageWithFallback(img, sources, onMissing) {
